@@ -143,10 +143,8 @@ public class AbilityWeaponBubbleDeflector extends AbilityWeapon implements Abili
             final int duration = this.getEffectDuration(grade);
             final double range = 1.5;
             final double bubbleDamage = this.getCastBonusDamage(grade) + damage * (this.getCastPercentDamage(grade) / 100.0);
-            final PotionEffect potionEffect = PotionUtil.createPotion(PotionEffectType.SLOW, duration, 4);
             final Set<LivingEntity> units = new HashSet<LivingEntity>();
             final Collection<Player> players = (Collection<Player>)PlayerUtil.getNearbyPlayers(location, mainConfig.getEffectRange());
-            victims.addPotionEffect(potionEffect);
             Bridge.getBridgeParticle().playParticle((Collection)players, ParticleEnum.WATER_SPLASH, location, 40, 0.25, 0.25, 0.25, 0.0);
             Bridge.getBridgeParticle().playParticle((Collection)players, ParticleEnum.WATER_WAKE, location, 40, 0.25, 0.25, 0.25, 0.0);
             Bridge.getBridgeSound().playSound((Collection)players, location, SoundEnum.ENTITY_GUARDIAN_FLOP, 5.0f, 1.0f);
@@ -161,7 +159,6 @@ public class AbilityWeaponBubbleDeflector extends AbilityWeapon implements Abili
                     for (final LivingEntity unit : CombatUtil.getNearbyUnits(location, 1.5)) {
                         if (!unit.equals(attacker) && !unit.equals(victims) && !units.contains(unit)) {
                             CombatUtil.areaDamage(attacker, unit, bubbleDamage);
-                            unit.addPotionEffect(potionEffect);
                             units.add(unit);
                         }
                     }
