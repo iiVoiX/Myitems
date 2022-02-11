@@ -1,6 +1,6 @@
 main: com.praya.myitems.MyItems
 name: '${project.name}'
-version: '${project.version}'
+version: '${project.version} ${devbuild.version}'
 api-version: 1.13
 website: https://www.spigotmc.org/resources/authors/70791/
 author: Praya Amadiga Pitasa

@@ -6,8 +6,6 @@ package com.praya.myitems;
 
 import com.praya.myitems.utility.main.AntiBugUtil;
 import org.bukkit.event.Listener;
-import com.praya.myitems.listener.support.ListenerMythicMobDeath;
-import com.praya.myitems.listener.support.ListenerMythicMobSpawn;
 import com.praya.agarthalib.utility.PluginUtil;
 import com.praya.myitems.listener.main.ListenerPlayerSwapHandItems;
 import com.praya.myitems.listener.main.ListenerBlockExplode;
@@ -76,6 +74,8 @@ import com.praya.myitems.command.CommandEnchant;
 import com.praya.myitems.command.CommandAttributes;
 import com.praya.myitems.command.CommandMyItems;
 import java.util.List;
+import java.util.logging.Level;
+
 import com.praya.myitems.manager.register.RegisterManager;
 import com.praya.myitems.manager.task.TaskManager;
 import com.praya.myitems.manager.game.GameManager;
@@ -322,10 +322,14 @@ public class MyItems extends JavaPlugin implements Agartha
             ServerEventUtil.registerEvent((Plugin)this, listenerPlayerSwapHandItems);
         }
         if (PluginUtil.isPluginInstalled("MythicMobs")) {
-            final Listener listenerMythicMobSpawn = (Listener)new ListenerMythicMobSpawn(this);
+          /*  final Listener listenerMythicMobSpawn = (Listener)new ListenerMythicMobSpawn(this);
             final Listener listenerMythicMobDeath = (Listener)new ListenerMythicMobDeath(this);
+            // TODO Add MythicMobs Support
             ServerEventUtil.registerEvent((Plugin)this, listenerMythicMobSpawn);
             ServerEventUtil.registerEvent((Plugin)this, listenerMythicMobDeath);
+
+           */
+            getLogger().log(Level.INFO, "MythicMobs Support will be add soon");
         }
     }
     
