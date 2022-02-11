@@ -4,33 +4,33 @@
 
 package com.praya.myitems.listener.main;
 
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.EventHandler;
+import com.praya.agarthalib.utility.PlayerUtil;
+import com.praya.myitems.MyItems;
+import com.praya.myitems.builder.handler.HandlerEvent;
 import com.praya.myitems.manager.game.GameManager;
-import org.bukkit.plugin.Plugin;
+import com.praya.myitems.manager.game.ItemSetManager;
+import core.praya.agarthalib.bridge.unity.Bridge;
+import core.praya.agarthalib.enums.main.Slot;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.inventory.InventoryType;
-import com.praya.myitems.manager.game.ItemSetManager;
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
-import core.praya.agarthalib.bridge.unity.Bridge;
 import org.bukkit.inventory.ItemStack;
-import core.praya.agarthalib.enums.main.Slot;
-import java.util.HashMap;
-import com.praya.agarthalib.utility.PlayerUtil;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import com.praya.myitems.MyItems;
-import org.bukkit.event.Listener;
-import com.praya.myitems.builder.handler.HandlerEvent;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
-public class ListenerInventoryDrag extends HandlerEvent implements Listener
-{
+import java.util.HashMap;
+
+public class ListenerInventoryDrag extends HandlerEvent implements Listener {
     public ListenerInventoryDrag(final MyItems plugin) {
         super(plugin);
     }
-    
+
     @EventHandler(priority = EventPriority.MONITOR)
     public void inventoryDragEvent(final InventoryDragEvent event) {
         final GameManager gameManager = this.plugin.getGameManager();
@@ -48,7 +48,7 @@ public class ListenerInventoryDrag extends HandlerEvent implements Listener
                 public void run() {
                     final InventoryView inventoryView = player.getOpenInventory();
                     final InventoryType inventoryType = inventoryView.getType();
-                    final Inventory inventory = inventoryType.equals((Object)InventoryType.CREATIVE) ? null : inventoryView.getTopInventory();
+                    final Inventory inventory = inventoryType.equals(InventoryType.CREATIVE) ? null : inventoryView.getTopInventory();
                     Slot[] values;
                     for (int length = (values = Slot.values()).length, i = 0; i < length; ++i) {
                         final Slot slot = values[i];
@@ -57,20 +57,19 @@ public class ListenerInventoryDrag extends HandlerEvent implements Listener
                         final boolean isSolidBefore = itemBefore != null;
                         final boolean isSolidAfter = itemAfter != null;
                         if (isSolidBefore && isSolidAfter) {
-                            if (itemBefore.equals((Object)itemAfter)) {
+                            if (itemBefore.equals(itemAfter)) {
                                 continue;
                             }
-                        }
-                        else if (isSolidBefore == isSolidAfter) {
+                        } else if (isSolidBefore == isSolidAfter) {
                             continue;
                         }
                         if (itemSetManager.isItemSet(itemBefore) || itemSetManager.isItemSet(itemAfter)) {
-                            itemSetManager.updateItemSet((LivingEntity)player, true, inventory);
+                            itemSetManager.updateItemSet(player, true, inventory);
                             break;
                         }
                     }
                 }
-            }.runTaskLater((Plugin)this.plugin, 0L);
+            }.runTaskLater(this.plugin, 0L);
         }
     }
 }

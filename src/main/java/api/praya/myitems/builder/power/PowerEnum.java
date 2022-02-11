@@ -4,15 +4,14 @@
 
 package api.praya.myitems.builder.power;
 
-public enum PowerEnum
-{
-    COMMAND("COMMAND", 0), 
-    SHOOT("SHOOT", 1), 
+public enum PowerEnum {
+    COMMAND("COMMAND", 0),
+    SHOOT("SHOOT", 1),
     SPECIAL("SPECIAL", 2);
-    
-    private PowerEnum(final String name, final int ordinal) {
+
+    PowerEnum(final String name, final int ordinal) {
     }
-    
+
     public static final PowerEnum get(final String power) {
         final String upperCase;
         switch (upperCase = power.toUpperCase()) {

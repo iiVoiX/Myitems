@@ -4,36 +4,35 @@
 
 package api.praya.myitems.builder.lorestats;
 
-public class LoreStatsModifier
-{
+public class LoreStatsModifier {
     private final LoreStatsWeapon weaponModifier;
     private final LoreStatsArmor armorModifier;
     private final LoreStatsUniversal universalModifier;
-    
+
     public LoreStatsModifier() {
         this.weaponModifier = new LoreStatsWeapon(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
         this.armorModifier = new LoreStatsArmor(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
         this.universalModifier = new LoreStatsUniversal(1.0, 1.0);
     }
-    
+
     public LoreStatsModifier(final LoreStatsWeapon weaponModifier, final LoreStatsArmor armorModifier, final LoreStatsUniversal universalModifier) {
         this.weaponModifier = weaponModifier;
         this.armorModifier = armorModifier;
         this.universalModifier = universalModifier;
     }
-    
+
     public final LoreStatsWeapon getWeaponModifier() {
         return this.weaponModifier;
     }
-    
+
     public final LoreStatsArmor getArmorModifier() {
         return this.armorModifier;
     }
-    
+
     public final LoreStatsUniversal getUniversalModifier() {
         return this.universalModifier;
     }
-    
+
     public final double getModifier(final LoreStatsEnum loreStats) {
         switch (loreStats) {
             case BLOCK_AMOUNT: {

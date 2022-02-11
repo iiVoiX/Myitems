@@ -4,48 +4,47 @@
 
 package com.praya.myitems.config.game;
 
+import api.praya.myitems.builder.item.ItemType;
+import api.praya.myitems.builder.item.ItemTypeNBT;
+import api.praya.myitems.builder.lorestats.LoreStatsArmor;
+import api.praya.myitems.builder.lorestats.LoreStatsModifier;
+import api.praya.myitems.builder.lorestats.LoreStatsUniversal;
+import api.praya.myitems.builder.lorestats.LoreStatsWeapon;
+import com.praya.agarthalib.utility.EnchantmentUtil;
+import com.praya.agarthalib.utility.FileUtil;
+import com.praya.agarthalib.utility.MaterialUtil;
+import com.praya.myitems.MyItems;
+import com.praya.myitems.builder.handler.HandlerConfig;
+import com.praya.myitems.manager.plugin.DataManager;
+import com.praya.myitems.manager.plugin.PluginManager;
+import core.praya.agarthalib.enums.main.Slot;
+import core.praya.agarthalib.enums.main.TagsAttribute;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import java.io.File;
-import com.praya.myitems.manager.plugin.DataManager;
-import com.praya.myitems.manager.plugin.PluginManager;
-import api.praya.myitems.builder.lorestats.LoreStatsUniversal;
-import api.praya.myitems.builder.lorestats.LoreStatsArmor;
-import api.praya.myitems.builder.lorestats.LoreStatsWeapon;
-import core.praya.agarthalib.enums.main.TagsAttribute;
-import com.praya.agarthalib.utility.EnchantmentUtil;
-import com.praya.agarthalib.utility.MaterialUtil;
-import api.praya.myitems.builder.lorestats.LoreStatsModifier;
-import api.praya.myitems.builder.item.ItemTypeNBT;
-import core.praya.agarthalib.enums.main.Slot;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.plugin.java.JavaPlugin;
-import com.praya.agarthalib.utility.FileUtil;
-import java.util.Iterator;
-import java.util.Collection;
-import com.praya.myitems.MyItems;
-import api.praya.myitems.builder.item.ItemType;
-import java.util.HashMap;
-import com.praya.myitems.builder.handler.HandlerConfig;
 
-public class ItemTypeConfig extends HandlerConfig
-{
+import java.io.File;
+import java.util.Collection;
+import java.util.HashMap;
+
+public class ItemTypeConfig extends HandlerConfig {
     private final HashMap<String, ItemType> mapType;
-    
+
     public ItemTypeConfig(final MyItems plugin) {
         super(plugin);
         this.mapType = new HashMap<String, ItemType>();
     }
-    
+
     public final Collection<String> getItemTypeIDs() {
         return this.mapType.keySet();
     }
-    
+
     public final Collection<ItemType> getItemTypes() {
         return this.mapType.values();
     }
-    
+
     public final ItemType getItemType(final String id) {
         for (final String key : this.getItemTypeIDs()) {
             if (key.equalsIgnoreCase(id)) {
@@ -54,26 +53,26 @@ public class ItemTypeConfig extends HandlerConfig
         }
         return null;
     }
-    
+
     public final void setup() {
         this.moveOldFile();
         this.reset();
         this.loadConfig();
     }
-    
+
     private final void reset() {
         this.mapType.clear();
     }
-    
+
     private final void loadConfig() {
         final PluginManager pluginManager = this.plugin.getPluginManager();
         final DataManager dataManager = pluginManager.getDataManager();
         final String pathDefault = dataManager.getPath("Path_File_Item_Type");
         final String pathFolder = dataManager.getPath("Path_Folder_Item_Type");
-        final File fileDefault = FileUtil.getFile((JavaPlugin)this.plugin, pathDefault);
-        final File fileFolder = FileUtil.getFile((JavaPlugin)this.plugin, pathFolder);
+        final File fileDefault = FileUtil.getFile(this.plugin, pathDefault);
+        final File fileFolder = FileUtil.getFile(this.plugin, pathFolder);
         if (!fileDefault.exists()) {
-            FileUtil.saveResource((JavaPlugin)this.plugin, pathDefault);
+            FileUtil.saveResource(this.plugin, pathDefault);
         }
         File[] listFiles;
         for (int length = (listFiles = fileFolder.listFiles()).length, i = 0; i < length; ++i) {
@@ -90,14 +89,11 @@ public class ItemTypeConfig extends HandlerConfig
                 for (final String mainData : mainDataSection.getKeys(false)) {
                     if (mainData.equalsIgnoreCase("Material")) {
                         material = MaterialUtil.getMaterial(mainDataSection.getString(mainData));
-                    }
-                    else if (mainData.equalsIgnoreCase("Data")) {
-                        data = (short)mainDataSection.getInt(mainData);
-                    }
-                    else if (mainData.equalsIgnoreCase("Shiny")) {
+                    } else if (mainData.equalsIgnoreCase("Data")) {
+                        data = (short) mainDataSection.getInt(mainData);
+                    } else if (mainData.equalsIgnoreCase("Shiny")) {
                         shiny = mainDataSection.getBoolean(mainData);
-                    }
-                    else if (mainData.equalsIgnoreCase("Enchantment")) {
+                    } else if (mainData.equalsIgnoreCase("Enchantment")) {
                         final ConfigurationSection enchantmentDataSection = mainDataSection.getConfigurationSection(mainData);
                         for (final String enchantmentData : enchantmentDataSection.getKeys(false)) {
                             final Enchantment enchantment = EnchantmentUtil.getEnchantment(enchantmentData);
@@ -106,8 +102,7 @@ public class ItemTypeConfig extends HandlerConfig
                                 mapEnchantment.put(enchantment, grade);
                             }
                         }
-                    }
-                    else if (mainData.equalsIgnoreCase("NBT")) {
+                    } else if (mainData.equalsIgnoreCase("NBT")) {
                         final ConfigurationSection nbtDataSection = mainDataSection.getConfigurationSection(mainData);
                         for (final String nbtData : nbtDataSection.getKeys(false)) {
                             final Slot slot = Slot.get(nbtData);
@@ -125,8 +120,7 @@ public class ItemTypeConfig extends HandlerConfig
                                 mapNBT.put(slot, itemTypeNBT);
                             }
                         }
-                    }
-                    else {
+                    } else {
                         if (!mainData.equalsIgnoreCase("Modifier")) {
                             continue;
                         }
@@ -155,65 +149,45 @@ public class ItemTypeConfig extends HandlerConfig
                         for (final String modifierData : modifierDataSection.getKeys(false)) {
                             if (modifierData.equalsIgnoreCase("Damage")) {
                                 damage = modifierDataSection.getDouble(modifierData);
-                            }
-                            else if (modifierData.equalsIgnoreCase("Penetration")) {
+                            } else if (modifierData.equalsIgnoreCase("Penetration")) {
                                 penetration = modifierDataSection.getDouble(modifierData);
-                            }
-                            else if (modifierData.equalsIgnoreCase("PvP_Damage")) {
+                            } else if (modifierData.equalsIgnoreCase("PvP_Damage")) {
                                 pvpDamage = modifierDataSection.getDouble(modifierData);
-                            }
-                            else if (modifierData.equalsIgnoreCase("PvE_Damage")) {
+                            } else if (modifierData.equalsIgnoreCase("PvE_Damage")) {
                                 pveDamage = modifierDataSection.getDouble(modifierData);
-                            }
-                            else if (modifierData.equalsIgnoreCase("Critical_Chance")) {
+                            } else if (modifierData.equalsIgnoreCase("Critical_Chance")) {
                                 criticalChance = modifierDataSection.getDouble(modifierData);
-                            }
-                            else if (modifierData.equalsIgnoreCase("Critical_Damage")) {
+                            } else if (modifierData.equalsIgnoreCase("Critical_Damage")) {
                                 criticalDamage = modifierDataSection.getDouble(modifierData);
-                            }
-                            else if (modifierData.equalsIgnoreCase("Hit_Rate")) {
+                            } else if (modifierData.equalsIgnoreCase("Hit_Rate")) {
                                 hitRate = modifierDataSection.getDouble(modifierData);
-                            }
-                            else if (modifierData.equalsIgnoreCase("Defense")) {
+                            } else if (modifierData.equalsIgnoreCase("Defense")) {
                                 defense = modifierDataSection.getDouble(modifierData);
-                            }
-                            else if (modifierData.equalsIgnoreCase("PvP_Defense")) {
+                            } else if (modifierData.equalsIgnoreCase("PvP_Defense")) {
                                 pvpDefense = modifierDataSection.getDouble(modifierData);
-                            }
-                            else if (modifierData.equalsIgnoreCase("PvE_Defense")) {
+                            } else if (modifierData.equalsIgnoreCase("PvE_Defense")) {
                                 pveDefense = modifierDataSection.getDouble(modifierData);
-                            }
-                            else if (modifierData.equalsIgnoreCase("Health")) {
+                            } else if (modifierData.equalsIgnoreCase("Health")) {
                                 health = modifierDataSection.getDouble(modifierData);
-                            }
-                            else if (modifierData.equalsIgnoreCase("Health_Regen")) {
+                            } else if (modifierData.equalsIgnoreCase("Health_Regen")) {
                                 healthRegen = modifierDataSection.getDouble(modifierData);
-                            }
-                            else if (modifierData.equalsIgnoreCase("Stamina_Max")) {
+                            } else if (modifierData.equalsIgnoreCase("Stamina_Max")) {
                                 staminaMax = modifierDataSection.getDouble(modifierData);
-                            }
-                            else if (modifierData.equalsIgnoreCase("Stamina_Regen")) {
+                            } else if (modifierData.equalsIgnoreCase("Stamina_Regen")) {
                                 staminaRegen = modifierDataSection.getDouble(modifierData);
-                            }
-                            else if (modifierData.equalsIgnoreCase("Attack_AoE_Radius")) {
+                            } else if (modifierData.equalsIgnoreCase("Attack_AoE_Radius")) {
                                 attackAoERadius = modifierDataSection.getDouble(modifierData);
-                            }
-                            else if (modifierData.equalsIgnoreCase("Attack_AoE_Damage")) {
+                            } else if (modifierData.equalsIgnoreCase("Attack_AoE_Damage")) {
                                 attackAoEDamage = modifierDataSection.getDouble(modifierData);
-                            }
-                            else if (modifierData.equalsIgnoreCase("Block_Amount")) {
+                            } else if (modifierData.equalsIgnoreCase("Block_Amount")) {
                                 blockAmount = modifierDataSection.getDouble(modifierData);
-                            }
-                            else if (modifierData.equalsIgnoreCase("Block_Rate")) {
+                            } else if (modifierData.equalsIgnoreCase("Block_Rate")) {
                                 blockRate = modifierDataSection.getDouble(modifierData);
-                            }
-                            else if (modifierData.equalsIgnoreCase("Dodge_Rate")) {
+                            } else if (modifierData.equalsIgnoreCase("Dodge_Rate")) {
                                 dodgeRate = modifierDataSection.getDouble(modifierData);
-                            }
-                            else if (modifierData.equalsIgnoreCase("Durability")) {
+                            } else if (modifierData.equalsIgnoreCase("Durability")) {
                                 durability = modifierDataSection.getDouble(modifierData);
-                            }
-                            else {
+                            } else {
                                 if (!modifierData.equalsIgnoreCase("Level")) {
                                     continue;
                                 }
@@ -233,20 +207,19 @@ public class ItemTypeConfig extends HandlerConfig
             }
         }
     }
-    
+
     private final void moveOldFile() {
         final PluginManager pluginManager = this.plugin.getPluginManager();
         final DataManager dataManager = pluginManager.getDataManager();
         final String pathSource_1 = "item_type.yml";
         final String pathSource_2 = "Configuration/item_type.yml";
         final String pathTarget = dataManager.getPath("Path_File_Item_Type");
-        final File fileSource_1 = FileUtil.getFile((JavaPlugin)this.plugin, "item_type.yml");
-        final File fileSource_2 = FileUtil.getFile((JavaPlugin)this.plugin, "Configuration/item_type.yml");
-        final File fileTarget = FileUtil.getFile((JavaPlugin)this.plugin, pathTarget);
+        final File fileSource_1 = FileUtil.getFile(this.plugin, "item_type.yml");
+        final File fileSource_2 = FileUtil.getFile(this.plugin, "Configuration/item_type.yml");
+        final File fileTarget = FileUtil.getFile(this.plugin, pathTarget);
         if (fileSource_1.exists()) {
             FileUtil.moveFileSilent(fileSource_1, fileTarget);
-        }
-        else if (fileSource_2.exists()) {
+        } else if (fileSource_2.exists()) {
             FileUtil.moveFileSilent(fileSource_2, fileTarget);
         }
     }

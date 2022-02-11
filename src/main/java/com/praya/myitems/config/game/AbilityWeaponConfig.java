@@ -4,37 +4,36 @@
 
 package com.praya.myitems.config.game;
 
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import java.io.File;
+import api.praya.myitems.builder.ability.AbilityWeaponProperties;
+import com.praya.agarthalib.utility.FileUtil;
+import com.praya.myitems.MyItems;
+import com.praya.myitems.builder.handler.HandlerConfig;
 import com.praya.myitems.manager.plugin.DataManager;
 import com.praya.myitems.manager.plugin.PluginManager;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import com.praya.agarthalib.utility.FileUtil;
-import java.util.Iterator;
-import java.util.Collection;
-import com.praya.myitems.MyItems;
-import api.praya.myitems.builder.ability.AbilityWeaponProperties;
-import java.util.HashMap;
-import com.praya.myitems.builder.handler.HandlerConfig;
 
-public class AbilityWeaponConfig extends HandlerConfig
-{
+import java.io.File;
+import java.util.Collection;
+import java.util.HashMap;
+
+public class AbilityWeaponConfig extends HandlerConfig {
     private final HashMap<String, AbilityWeaponProperties> mapAbilityWeaponProperties;
-    
+
     public AbilityWeaponConfig(final MyItems plugin) {
         super(plugin);
         this.mapAbilityWeaponProperties = new HashMap<String, AbilityWeaponProperties>();
     }
-    
+
     public final Collection<String> getAbilityWeaponPropertiesIDs() {
         return this.mapAbilityWeaponProperties.keySet();
     }
-    
+
     public final Collection<AbilityWeaponProperties> getAllAbilityWeaponProperties() {
         return this.mapAbilityWeaponProperties.values();
     }
-    
+
     public final AbilityWeaponProperties getAbilityWeaponProperties(final String ability) {
         if (ability != null) {
             for (final String key : this.getAbilityWeaponPropertiesIDs()) {
@@ -45,31 +44,30 @@ public class AbilityWeaponConfig extends HandlerConfig
         }
         return null;
     }
-    
+
     public final void setup() {
         this.moveOldFile();
         this.reset();
         this.loadConfig();
     }
-    
+
     private final void reset() {
         this.mapAbilityWeaponProperties.clear();
     }
-    
+
     private final void loadConfig() {
         final PluginManager pluginManager = this.plugin.getPluginManager();
         final DataManager dataManager = pluginManager.getDataManager();
         final String path = dataManager.getPath("Path_File_Ability_Weapon");
-        final File file = FileUtil.getFile((JavaPlugin)this.plugin, path);
+        final File file = FileUtil.getFile(this.plugin, path);
         if (!file.exists()) {
-            FileUtil.saveResource((JavaPlugin)this.plugin, path);
+            FileUtil.saveResource(this.plugin, path);
         }
         for (int t = 0; t < 2; ++t) {
             FileConfiguration config;
             if (t == 0) {
-                config = FileUtil.getFileConfigurationResource((JavaPlugin)this.plugin, path);
-            }
-            else {
+                config = FileUtil.getFileConfigurationResource(this.plugin, path);
+            } else {
                 config = FileUtil.getFileConfiguration(file);
             }
             for (final String key : config.getKeys(false)) {
@@ -84,23 +82,17 @@ public class AbilityWeaponConfig extends HandlerConfig
                 for (final String keySection : mainDataSection.getKeys(false)) {
                     if (keySection.equalsIgnoreCase("Max_Grade")) {
                         maxGrade = mainDataSection.getInt(keySection);
-                    }
-                    else if (keySection.equalsIgnoreCase("Base_Duration_Effect")) {
+                    } else if (keySection.equalsIgnoreCase("Base_Duration_Effect")) {
                         baseDurationEffect = mainDataSection.getInt(keySection);
-                    }
-                    else if (keySection.equalsIgnoreCase("Scale_Duration_Effect")) {
+                    } else if (keySection.equalsIgnoreCase("Scale_Duration_Effect")) {
                         scaleDurationEffect = mainDataSection.getInt(keySection);
-                    }
-                    else if (keySection.equalsIgnoreCase("Scale_Base_Bonus_Damage")) {
+                    } else if (keySection.equalsIgnoreCase("Scale_Base_Bonus_Damage")) {
                         scaleBaseBonusDamage = mainDataSection.getDouble(keySection);
-                    }
-                    else if (keySection.equalsIgnoreCase("Scale_Base_Percent_Damage")) {
+                    } else if (keySection.equalsIgnoreCase("Scale_Base_Percent_Damage")) {
                         scaleBasePercentDamage = mainDataSection.getDouble(keySection);
-                    }
-                    else if (keySection.equalsIgnoreCase("Scale_Cast_Bonus_Damage")) {
+                    } else if (keySection.equalsIgnoreCase("Scale_Cast_Bonus_Damage")) {
                         scaleCastBonusDamage = mainDataSection.getDouble(keySection);
-                    }
-                    else {
+                    } else {
                         if (!keySection.equalsIgnoreCase("Scale_Cast_Percent_Damage")) {
                             continue;
                         }
@@ -115,14 +107,14 @@ public class AbilityWeaponConfig extends HandlerConfig
             }
         }
     }
-    
+
     private final void moveOldFile() {
         final PluginManager pluginManager = this.plugin.getPluginManager();
         final DataManager dataManager = pluginManager.getDataManager();
         final String pathSource = "Configuration/ability.yml";
         final String pathTarget = dataManager.getPath("Path_File_Ability_Weapon");
-        final File fileSource = FileUtil.getFile((JavaPlugin)this.plugin, "Configuration/ability.yml");
-        final File fileTarget = FileUtil.getFile((JavaPlugin)this.plugin, pathTarget);
+        final File fileSource = FileUtil.getFile(this.plugin, "Configuration/ability.yml");
+        final File fileTarget = FileUtil.getFile(this.plugin, pathTarget);
         if (fileSource.exists()) {
             FileUtil.moveFileSilent(fileSource, fileTarget);
         }

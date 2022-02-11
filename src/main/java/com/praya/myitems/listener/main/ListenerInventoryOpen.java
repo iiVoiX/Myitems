@@ -4,25 +4,24 @@
 
 package com.praya.myitems.listener.main;
 
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.EventHandler;
-import org.bukkit.entity.HumanEntity;
-import org.bukkit.inventory.Inventory;
-import com.praya.myitems.manager.game.ItemSetManager;
+import com.praya.myitems.MyItems;
+import com.praya.myitems.builder.handler.HandlerEvent;
 import com.praya.myitems.manager.game.GameManager;
+import com.praya.myitems.manager.game.ItemSetManager;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryOpenEvent;
-import com.praya.myitems.MyItems;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import com.praya.myitems.builder.handler.HandlerEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.inventory.Inventory;
 
-public class ListenerInventoryOpen extends HandlerEvent implements Listener
-{
+public class ListenerInventoryOpen extends HandlerEvent implements Listener {
     public ListenerInventoryOpen(final MyItems plugin) {
         super(plugin);
     }
-    
+
     @EventHandler(priority = EventPriority.MONITOR)
     public void inventoryOpenEvent(final InventoryOpenEvent event) {
         final GameManager gameManager = this.plugin.getGameManager();
@@ -31,8 +30,8 @@ public class ListenerInventoryOpen extends HandlerEvent implements Listener
             final Inventory inventory = event.getInventory();
             final HumanEntity human = event.getPlayer();
             if (human instanceof Player) {
-                final Player player = (Player)human;
-                itemSetManager.updateItemSet((LivingEntity)player, false, inventory);
+                final Player player = (Player) human;
+                itemSetManager.updateItemSet(player, false, inventory);
             }
         }
     }

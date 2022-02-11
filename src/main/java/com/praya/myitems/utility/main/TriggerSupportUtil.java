@@ -4,15 +4,13 @@
 
 package com.praya.myitems.utility.main;
 
+import api.praya.agarthalib.main.AgarthaLibAPI;
 import api.praya.agarthalib.manager.plugin.SupportManagerAPI;
-import org.bukkit.OfflinePlayer;
 import com.praya.agarthalib.utility.PlayerUtil;
 import com.praya.myitems.config.plugin.MainConfig;
-import api.praya.agarthalib.main.AgarthaLibAPI;
 import org.bukkit.entity.Player;
 
-public class TriggerSupportUtil
-{
+public class TriggerSupportUtil {
     public static final void updateSupport(final Player player) {
         final AgarthaLibAPI agarthaLibAPI = AgarthaLibAPI.getInstance();
         final SupportManagerAPI supportManagerAPI = agarthaLibAPI.getPluginManagerAPI().getSupportManager();

@@ -6,8 +6,7 @@ package com.praya.myitems.builder.handler;
 
 import com.praya.myitems.MyItems;
 
-public class HandlerConfig extends Handler
-{
+public class HandlerConfig extends Handler {
     protected HandlerConfig(final MyItems plugin) {
         super(plugin);
     }

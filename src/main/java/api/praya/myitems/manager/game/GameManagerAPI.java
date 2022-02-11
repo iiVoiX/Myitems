@@ -7,8 +7,7 @@ package api.praya.myitems.manager.game;
 import com.praya.myitems.MyItems;
 import com.praya.myitems.builder.handler.HandlerManager;
 
-public class GameManagerAPI extends HandlerManager
-{
+public class GameManagerAPI extends HandlerManager {
     private final ElementManagerAPI elementManagerAPI;
     private final ItemGeneratorManagerAPI itemGeneratorManagerAPI;
     private final ItemManagerAPI itemManagerAPI;
@@ -18,7 +17,7 @@ public class GameManagerAPI extends HandlerManager
     private final PassiveEffectManagerAPI passiveEffectManagerAPI;
     private final PowerManagerAPI powerManagerAPI;
     private final SocketManagerAPI socketManagerAPI;
-    
+
     public GameManagerAPI(final MyItems plugin) {
         super(plugin);
         this.elementManagerAPI = new ElementManagerAPI(plugin);
@@ -31,39 +30,39 @@ public class GameManagerAPI extends HandlerManager
         this.powerManagerAPI = new PowerManagerAPI(plugin);
         this.socketManagerAPI = new SocketManagerAPI(plugin);
     }
-    
+
     public final ElementManagerAPI getElementManagerAPI() {
         return this.elementManagerAPI;
     }
-    
+
     public final ItemGeneratorManagerAPI getItemGeneratorManagerAPI() {
         return this.itemGeneratorManagerAPI;
     }
-    
+
     public final ItemManagerAPI getItemManagerAPI() {
         return this.itemManagerAPI;
     }
-    
+
     public final ItemTierManagerAPI getItemTierManagerAPI() {
         return this.itemTierManagerAPI;
     }
-    
+
     public final ItemTypeManagerAPI getItemTypeManagerAPI() {
         return this.itemTypeManagerAPI;
     }
-    
+
     public final LoreStatsManagerAPI getLoreStatsManagerAPI() {
         return this.loreStatsManagerAPI;
     }
-    
+
     public final PassiveEffectManagerAPI getPassiveEffectManagerAPI() {
         return this.passiveEffectManagerAPI;
     }
-    
+
     public final PowerManagerAPI getPowerManagerAPI() {
         return this.powerManagerAPI;
     }
-    
+
     public final SocketManagerAPI getSocketManagerAPI() {
         return this.socketManagerAPI;
     }

@@ -4,59 +4,34 @@
 
 package com.praya.myitems.manager.register;
 
-import com.praya.myitems.builder.ability.weapon.AbilityWeaponLevitation;
-import com.praya.myitems.builder.ability.weapon.AbilityWeaponBadLuck;
-import com.praya.agarthalib.utility.ServerUtil;
-import core.praya.agarthalib.enums.main.VersionNMS;
-import com.praya.myitems.builder.ability.weapon.AbilityWeaponWither;
-import com.praya.myitems.builder.ability.weapon.AbilityWeaponWeak;
-import com.praya.myitems.builder.ability.weapon.AbilityWeaponVenomSpread;
-import com.praya.myitems.builder.ability.weapon.AbilityWeaponVenomBlast;
-import com.praya.myitems.builder.ability.weapon.AbilityWeaponVampirism;
-import com.praya.myitems.builder.ability.weapon.AbilityWeaponTired;
-import com.praya.myitems.builder.ability.weapon.AbilityWeaponSlow;
-import com.praya.myitems.builder.ability.weapon.AbilityWeaponRoots;
-import com.praya.myitems.builder.ability.weapon.AbilityWeaponPoison;
-import com.praya.myitems.builder.ability.weapon.AbilityWeaponLightning;
-import com.praya.myitems.builder.ability.weapon.AbilityWeaponHungry;
-import com.praya.myitems.builder.ability.weapon.AbilityWeaponHarm;
-import com.praya.myitems.builder.ability.weapon.AbilityWeaponFreeze;
-import com.praya.myitems.builder.ability.weapon.AbilityWeaponFlameWheel;
-import com.praya.myitems.builder.ability.weapon.AbilityWeaponFlame;
-import com.praya.myitems.builder.ability.weapon.AbilityWeaponDarkImpact;
-import com.praya.myitems.builder.ability.weapon.AbilityWeaponDarkFlame;
-import com.praya.myitems.builder.ability.weapon.AbilityWeaponCurse;
-import com.praya.myitems.builder.ability.weapon.AbilityWeaponConfuse;
-import com.praya.myitems.builder.ability.weapon.AbilityWeaponCannibalism;
-import com.praya.myitems.builder.ability.weapon.AbilityWeaponBubbleDeflector;
-import com.praya.myitems.builder.ability.weapon.AbilityWeaponBlind;
-import com.praya.myitems.builder.ability.weapon.AbilityWeaponAirShock;
-import com.praya.agarthalib.utility.TextUtil;
-import java.util.Iterator;
-import java.util.Collection;
-import com.praya.myitems.MyItems;
 import api.praya.myitems.builder.ability.AbilityWeapon;
-import java.util.HashMap;
+import com.praya.agarthalib.utility.ServerUtil;
+import com.praya.agarthalib.utility.TextUtil;
+import com.praya.myitems.MyItems;
+import com.praya.myitems.builder.ability.weapon.*;
 import com.praya.myitems.builder.handler.HandlerManager;
+import core.praya.agarthalib.enums.main.VersionNMS;
 
-public class RegisterAbilityWeaponManager extends HandlerManager
-{
+import java.util.Collection;
+import java.util.HashMap;
+
+public class RegisterAbilityWeaponManager extends HandlerManager {
     private final HashMap<String, AbilityWeapon> mapAbilityWeapon;
-    
+
     protected RegisterAbilityWeaponManager(final MyItems plugin) {
         super(plugin);
         this.mapAbilityWeapon = new HashMap<String, AbilityWeapon>();
         this.setup();
     }
-    
+
     public final Collection<String> getAbilityIDs() {
         return this.mapAbilityWeapon.keySet();
     }
-    
+
     public final Collection<AbilityWeapon> getAllAbilityWeapon() {
         return this.mapAbilityWeapon.values();
     }
-    
+
     public final AbilityWeapon getAbilityWeapon(final String ability) {
         if (ability != null) {
             for (final String key : this.getAbilityIDs()) {
@@ -67,11 +42,11 @@ public class RegisterAbilityWeaponManager extends HandlerManager
         }
         return null;
     }
-    
+
     public final boolean isExists(final String ability) {
         return this.getAbilityWeapon(ability) != null;
     }
-    
+
     public final AbilityWeapon getAbilityWeaponByKeyLore(final String keyLore) {
         if (keyLore != null) {
             final String coloredKeyLore = TextUtil.colorful(keyLore);
@@ -83,11 +58,11 @@ public class RegisterAbilityWeaponManager extends HandlerManager
         }
         return null;
     }
-    
+
     public final boolean isKeyLoreExists(final String keyLore) {
         return this.getAbilityWeaponByKeyLore(keyLore) != null;
     }
-    
+
     public final boolean register(final AbilityWeapon abilityWeapon) {
         if (abilityWeapon != null) {
             final String id = abilityWeapon.getID();
@@ -98,7 +73,7 @@ public class RegisterAbilityWeaponManager extends HandlerManager
         }
         return false;
     }
-    
+
     public final boolean unregister(final String ability) {
         final AbilityWeapon abilityWeapon = this.getAbilityWeapon(ability);
         if (abilityWeapon != null) {
@@ -108,7 +83,7 @@ public class RegisterAbilityWeaponManager extends HandlerManager
         }
         return false;
     }
-    
+
     private final void setup() {
         final AbilityWeapon abilityWeaponAirShock = AbilityWeaponAirShock.getInstance();
         final AbilityWeapon abilityWeaponBlind = AbilityWeaponBlind.getInstance();

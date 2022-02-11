@@ -6,8 +6,7 @@ package api.praya.myitems.builder.ability;
 
 import com.praya.agarthalib.utility.MathUtil;
 
-public class AbilityWeaponProperties
-{
+public class AbilityWeaponProperties {
     private final int maxGrade;
     private final int baseDurationEffect;
     private final int scaleDurationEffect;
@@ -15,7 +14,7 @@ public class AbilityWeaponProperties
     private final double scaleBasePercentDamage;
     private final double scaleCastBonusDamage;
     private final double scaleCastPercentDamage;
-    
+
     public AbilityWeaponProperties(final int maxGrade, final int baseDurationEffect, final int scaleDurationEffect, final double scaleBaseBonusDamage, final double scaleBasePercentDamage, final double scaleCastBonusDamage, final double scaleCastPercentDamage) {
         this.maxGrade = maxGrade;
         this.baseDurationEffect = baseDurationEffect;
@@ -25,35 +24,35 @@ public class AbilityWeaponProperties
         this.scaleCastBonusDamage = scaleCastBonusDamage;
         this.scaleCastPercentDamage = scaleCastPercentDamage;
     }
-    
+
     public final int getMaxGrade() {
         return this.maxGrade;
     }
-    
+
     public final int getBaseDurationEffect() {
         return this.baseDurationEffect;
     }
-    
+
     public final int getScaleDurationEffect() {
         return this.scaleDurationEffect;
     }
-    
+
     public final double getScaleBaseBonusDamage() {
         return this.scaleBaseBonusDamage;
     }
-    
+
     public final double getScaleBasePercentDamage() {
         return this.scaleBasePercentDamage;
     }
-    
+
     public final double getScaleCastBonusDamage() {
         return this.scaleCastBonusDamage;
     }
-    
+
     public final double getScaleCastPercentDamage() {
         return this.scaleCastPercentDamage;
     }
-    
+
     public final int getTotalDuration(final int grade) {
         final int finalGrade = MathUtil.limitInteger(grade, 0, this.getMaxGrade());
         final int baseDuration = this.getBaseDurationEffect();
@@ -61,7 +60,7 @@ public class AbilityWeaponProperties
         final int totalDuration = baseDuration + finalGrade * scaleDuration;
         return totalDuration;
     }
-    
+
     public final double getTotalBaseDamage(final int grade, final double damage) {
         final int finalGrade = MathUtil.limitInteger(grade, 0, this.getMaxGrade());
         final double scaleBonusDamage = this.getScaleBaseBonusDamage();
@@ -69,7 +68,7 @@ public class AbilityWeaponProperties
         final double totalDamage = finalGrade * scaleBonusDamage + damage * (finalGrade * scalePercentDamage / 100.0);
         return totalDamage;
     }
-    
+
     public final double getTotalCastDamage(final int grade, final double damage) {
         final int finalGrade = MathUtil.limitInteger(grade, 0, this.getMaxGrade());
         final double scaleBonusDamage = this.getScaleCastBonusDamage();

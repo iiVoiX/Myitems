@@ -4,9 +4,8 @@
 
 package api.praya.myitems.builder.ability;
 
-public interface AbilityWeaponAttributeBaseDamage
-{
+public interface AbilityWeaponAttributeBaseDamage {
     double getBaseBonusDamage(final int p0);
-    
+
     double getBasePercentDamage(final int p0);
 }

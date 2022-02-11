@@ -4,40 +4,31 @@
 
 package com.praya.myitems.command;
 
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.entity.Player;
-import core.praya.agarthalib.builder.message.MessageBuild;
-import com.praya.myitems.manager.plugin.LanguageManager;
-import com.praya.myitems.manager.plugin.CommandManager;
-import com.praya.myitems.manager.plugin.PluginManager;
-import org.bukkit.inventory.ItemFlag;
-import com.praya.agarthalib.utility.ItemFlagUtil;
-import com.praya.agarthalib.utility.TextUtil;
-import com.praya.agarthalib.utility.EquipmentUtil;
-import core.praya.agarthalib.enums.main.Slot;
-import core.praya.agarthalib.bridge.unity.Bridge;
-import com.praya.agarthalib.utility.PlayerUtil;
-import com.praya.agarthalib.utility.SenderUtil;
-import core.praya.agarthalib.enums.branch.SoundEnum;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
+import com.praya.agarthalib.utility.*;
 import com.praya.myitems.MyItems;
-import org.bukkit.command.CommandExecutor;
 import com.praya.myitems.builder.handler.HandlerCommand;
+import com.praya.myitems.manager.plugin.CommandManager;
+import com.praya.myitems.manager.plugin.LanguageManager;
+import com.praya.myitems.manager.plugin.PluginManager;
+import core.praya.agarthalib.bridge.unity.Bridge;
+import core.praya.agarthalib.builder.message.MessageBuild;
+import core.praya.agarthalib.enums.branch.SoundEnum;
+import core.praya.agarthalib.enums.main.Slot;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 
-public class CommandFlagRemove extends HandlerCommand implements CommandExecutor
-{
+public class CommandFlagRemove extends HandlerCommand implements CommandExecutor {
     public CommandFlagRemove(final MyItems plugin) {
         super(plugin);
     }
-    
-    public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
-        return removeFlag(sender, command, label, args);
-    }
-    
+
     protected static final boolean removeFlag(final CommandSender sender, final Command command, final String label, final String[] args) {
-        final MyItems plugin = (MyItems)JavaPlugin.getPlugin((Class)MyItems.class);
+        final MyItems plugin = (MyItems) JavaPlugin.getPlugin((Class) MyItems.class);
         final PluginManager pluginManager = plugin.getPluginManager();
         final CommandManager commandManager = pluginManager.getCommandManager();
         final LanguageManager lang = pluginManager.getLanguageManager();
@@ -78,10 +69,14 @@ public class CommandFlagRemove extends HandlerCommand implements CommandExecutor
         }
         final ItemFlag flag = ItemFlagUtil.getFlag(flagName);
         final MessageBuild message5 = lang.getMessage(sender, "MyItems_RemoveFlag_Success");
-        ItemFlagUtil.removeFlag(item, new ItemFlag[] { flag });
+        ItemFlagUtil.removeFlag(item, flag);
         message5.sendMessage(sender, "flag", flag.toString());
         SenderUtil.playSound(sender, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
         player.updateInventory();
         return true;
+    }
+
+    public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
+        return removeFlag(sender, command, label, args);
     }
 }

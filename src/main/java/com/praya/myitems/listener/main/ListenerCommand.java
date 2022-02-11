@@ -4,30 +4,30 @@
 
 package com.praya.myitems.listener.main;
 
-import org.bukkit.event.EventHandler;
-import com.praya.myitems.manager.game.GameManager;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.inventory.ItemStack;
 import api.praya.myitems.builder.passive.PassiveEffectEnum;
-import java.util.Collection;
-import com.praya.myitems.manager.game.PassiveEffectManager;
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import com.praya.agarthalib.utility.EquipmentUtil;
-import core.praya.agarthalib.enums.main.Slot;
-import core.praya.agarthalib.bridge.unity.Bridge;
-import com.praya.myitems.config.plugin.MainConfig;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import com.praya.myitems.MyItems;
-import org.bukkit.event.Listener;
 import com.praya.myitems.builder.handler.HandlerEvent;
+import com.praya.myitems.config.plugin.MainConfig;
+import com.praya.myitems.manager.game.GameManager;
+import com.praya.myitems.manager.game.PassiveEffectManager;
+import core.praya.agarthalib.bridge.unity.Bridge;
+import core.praya.agarthalib.enums.main.Slot;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
-public class ListenerCommand extends HandlerEvent implements Listener
-{
+import java.util.Collection;
+
+public class ListenerCommand extends HandlerEvent implements Listener {
     public ListenerCommand(final MyItems plugin) {
         super(plugin);
     }
-    
+
     @EventHandler
     public void onCommand(final PlayerCommandPreprocessEvent event) {
         final GameManager gameManager = this.plugin.getGameManager();
@@ -50,6 +50,6 @@ public class ListenerCommand extends HandlerEvent implements Listener
                     }
                 }
             }
-        }.runTaskLater((Plugin)this.plugin, 1L);
+        }.runTaskLater(this.plugin, 1L);
     }
 }

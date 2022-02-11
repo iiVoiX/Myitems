@@ -5,73 +5,69 @@
 package com.praya.myitems.manager.game;
 
 import api.praya.agarthalib.builder.support.main.SupportClass;
-import api.praya.agarthalib.manager.plugin.SupportManagerAPI;
 import api.praya.agarthalib.builder.support.main.SupportLevel;
 import api.praya.agarthalib.main.AgarthaLibAPI;
-import org.bukkit.entity.Player;
-import com.praya.agarthalib.utility.MathUtil;
-import java.util.List;
-import com.praya.agarthalib.utility.PlayerUtil;
-import java.util.UUID;
-import core.praya.agarthalib.bridge.unity.Bridge;
-import com.praya.agarthalib.utility.ServerUtil;
-import core.praya.agarthalib.enums.main.VersionNMS;
-import com.praya.agarthalib.utility.EquipmentUtil;
-import org.bukkit.inventory.ItemStack;
-import com.praya.agarthalib.utility.TextUtil;
-import java.util.HashMap;
-import org.bukkit.OfflinePlayer;
-import com.praya.myitems.config.plugin.MainConfig;
+import api.praya.agarthalib.manager.plugin.SupportManagerAPI;
+import com.praya.agarthalib.utility.*;
 import com.praya.myitems.MyItems;
 import com.praya.myitems.builder.handler.HandlerManager;
+import com.praya.myitems.config.plugin.MainConfig;
+import core.praya.agarthalib.bridge.unity.Bridge;
+import core.praya.agarthalib.enums.main.VersionNMS;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
-public class RequirementManager extends HandlerManager
-{
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
+
+public class RequirementManager extends HandlerManager {
     protected RequirementManager(final MyItems plugin) {
         super(plugin);
     }
-    
+
     public final String getTextSoulUnbound() {
         final MainConfig mainConfig = MainConfig.getInstance();
         return mainConfig.getRequirementFormatSoulUnbound();
     }
-    
+
     public final String getTextSoulBound(final OfflinePlayer player) {
         final MainConfig mainConfig = MainConfig.getInstance();
         final HashMap<String, String> map = new HashMap<String, String>();
         String format = mainConfig.getRequirementFormatSoulBound();
         map.put("player", this.getKeyReqSoulBound(player, false));
-        format = TextUtil.placeholder((HashMap)map, format, "<", ">");
+        format = TextUtil.placeholder(map, format, "<", ">");
         return format;
     }
-    
+
     public final String getTextLevel(final int level) {
         final MainConfig mainConfig = MainConfig.getInstance();
         final HashMap<String, String> map = new HashMap<String, String>();
         String format = mainConfig.getRequirementFormatLevel();
         map.put("level", this.getKeyReqLevel(level, false));
-        format = TextUtil.placeholder((HashMap)map, format, "<", ">");
+        format = TextUtil.placeholder(map, format, "<", ">");
         return format;
     }
-    
+
     public final String getTextPermission(final String permission) {
         final MainConfig mainConfig = MainConfig.getInstance();
         final HashMap<String, String> map = new HashMap<String, String>();
         String format = mainConfig.getRequirementFormatPermission();
         map.put("permission", this.getKeyReqPermission(permission, false));
-        format = TextUtil.placeholder((HashMap)map, format, "<", ">");
+        format = TextUtil.placeholder(map, format, "<", ">");
         return format;
     }
-    
+
     public final String getTextClass(final String playerClass) {
         final MainConfig mainConfig = MainConfig.getInstance();
         final HashMap<String, String> map = new HashMap<String, String>();
         String format = mainConfig.getRequirementFormatClass();
         map.put("class", this.getKeyReqClass(playerClass, false));
-        format = TextUtil.placeholder((HashMap)map, format, "<", ">");
+        format = TextUtil.placeholder(map, format, "<", ">");
         return format;
     }
-    
+
     public final Integer getLineRequirementSoulUnbound(final ItemStack item) {
         final MainConfig mainConfig = MainConfig.getInstance();
         final String key = mainConfig.getRequirementFormatSoulUnbound();
@@ -81,7 +77,7 @@ public class RequirementManager extends HandlerManager
         }
         return null;
     }
-    
+
     public final Integer getLineRequirementSoulBound(final ItemStack item) {
         final String key = this.getKeyReqSoulBound();
         if (EquipmentUtil.hasLore(item)) {
@@ -90,7 +86,7 @@ public class RequirementManager extends HandlerManager
         }
         return null;
     }
-    
+
     public final Integer getLineRequirementLevel(final ItemStack item) {
         final String key = this.getKeyReqLevel();
         if (EquipmentUtil.hasLore(item)) {
@@ -99,7 +95,7 @@ public class RequirementManager extends HandlerManager
         }
         return null;
     }
-    
+
     public final Integer getLineRequirementPermission(final ItemStack item) {
         final String key = this.getKeyReqPermission();
         if (EquipmentUtil.hasLore(item)) {
@@ -108,7 +104,7 @@ public class RequirementManager extends HandlerManager
         }
         return null;
     }
-    
+
     public final Integer getLineRequirementClass(final ItemStack item) {
         final String key = this.getKeyReqClass();
         if (EquipmentUtil.hasLore(item)) {
@@ -117,27 +113,27 @@ public class RequirementManager extends HandlerManager
         }
         return null;
     }
-    
+
     public final boolean hasRequirementSoulUnbound(final ItemStack item) {
         return this.getLineRequirementSoulUnbound(item) != null;
     }
-    
+
     public final boolean hasRequirementSoulBound(final ItemStack item) {
         return this.getLineRequirementSoulBound(item) != null;
     }
-    
+
     public final boolean hasrequirementLevel(final ItemStack item) {
         return this.getLineRequirementLevel(item) != null;
     }
-    
+
     public final boolean hasRequirementPermission(final ItemStack item) {
         return this.getLineRequirementPermission(item) != null;
     }
-    
+
     public final boolean hasRequirementClass(final ItemStack item) {
         return this.getLineRequirementClass(item) != null;
     }
-    
+
     public final void setMetadataSoulbound(final OfflinePlayer player, final ItemStack item) {
         if (ServerUtil.isCompatible(VersionNMS.V1_8_R3)) {
             final String metadata = this.getMetadataSoulBound();
@@ -145,12 +141,12 @@ public class RequirementManager extends HandlerManager
             Bridge.getBridgeTagsNBT().setString(metadata, item, bound);
         }
     }
-    
+
     public final String getRequirementSoulBound(final ItemStack item) {
         final OfflinePlayer bound = this.getRequirementSoulBoundPlayer(item);
         return (bound != null) ? bound.getName() : null;
     }
-    
+
     public final String getRequirementSoulBound(final String lore) {
         final MainConfig mainConfig = MainConfig.getInstance();
         final String key = MainConfig.KEY_REQ_BOUND;
@@ -162,11 +158,11 @@ public class RequirementManager extends HandlerManager
         }
         return null;
     }
-    
+
     public final OfflinePlayer getRequirementSoulBoundPlayer(final ItemStack item) {
         final Integer line = this.getLineRequirementSoulBound(item);
         if (line != null) {
-            final List<String> lores = (List<String>)EquipmentUtil.getLores(item);
+            final List<String> lores = EquipmentUtil.getLores(item);
             final String lore = lores.get(line - 1);
             if (ServerUtil.isCompatible(VersionNMS.V1_8_R3)) {
                 final String metadata = this.getMetadataSoulBound();
@@ -184,17 +180,17 @@ public class RequirementManager extends HandlerManager
         }
         return null;
     }
-    
+
     public final Integer getRequirementLevel(final ItemStack item) {
         final Integer line = this.getLineRequirementLevel(item);
         if (line != null) {
-            final List<String> lores = (List<String>)EquipmentUtil.getLores(item);
+            final List<String> lores = EquipmentUtil.getLores(item);
             final String lore = lores.get(line - 1);
             return this.getRequirementLevel(lore);
         }
         return null;
     }
-    
+
     public final Integer getRequirementLevel(final String lore) {
         final MainConfig mainConfig = MainConfig.getInstance();
         final String key = MainConfig.KEY_REQ_LEVEL;
@@ -209,17 +205,17 @@ public class RequirementManager extends HandlerManager
         }
         return null;
     }
-    
+
     public final String getRequirementPermission(final ItemStack item) {
         final Integer line = this.getLineRequirementPermission(item);
         if (line != null) {
-            final List<String> lores = (List<String>)EquipmentUtil.getLores(item);
+            final List<String> lores = EquipmentUtil.getLores(item);
             final String lore = lores.get(line - 1);
             return this.getRequirementPermission(lore);
         }
         return null;
     }
-    
+
     public final String getRequirementPermission(final String lore) {
         final MainConfig mainConfig = MainConfig.getInstance();
         final String key = MainConfig.KEY_REQ_PERMISSION;
@@ -231,17 +227,17 @@ public class RequirementManager extends HandlerManager
         }
         return null;
     }
-    
+
     public final String getRequirementClass(final ItemStack item) {
         final Integer line = this.getLineRequirementClass(item);
         if (line != null) {
-            final List<String> lores = (List<String>)EquipmentUtil.getLores(item);
+            final List<String> lores = EquipmentUtil.getLores(item);
             final String lore = lores.get(line - 1);
             return this.getRequirementClass(lore);
         }
         return null;
     }
-    
+
     public final String getRequirementClass(final String lore) {
         final MainConfig mainConfig = MainConfig.getInstance();
         final String key = MainConfig.KEY_REQ_CLASS;
@@ -253,7 +249,7 @@ public class RequirementManager extends HandlerManager
         }
         return null;
     }
-    
+
     public final boolean isAllowed(final Player player, final ItemStack item) {
         final boolean allowSoulBound = this.isAllowedReqSoulBound(player, item);
         final boolean allowLevel = this.isAllowedReqLevel(player, item);
@@ -261,12 +257,12 @@ public class RequirementManager extends HandlerManager
         final boolean allowClass = this.isAllowedReqClass(player, item);
         return allowSoulBound && allowLevel && allowPermission && allowClass;
     }
-    
+
     public final boolean isAllowedReqSoulBound(final Player player, final ItemStack item) {
         final String bound = this.getRequirementSoulBound(item);
         return bound == null || this.isAllowedReqSoulBound(player, bound);
     }
-    
+
     public final boolean isAllowedReqSoulBound(final Player player, final String bound) {
         final String name = player.getName();
         final String id = player.getUniqueId().toString();
@@ -274,19 +270,20 @@ public class RequirementManager extends HandlerManager
         final boolean matchUUID = bound.equalsIgnoreCase(id);
         return matchName || matchUUID;
     }
-    
+
     public final boolean isAllowedReqLevel(final Player player, final ItemStack item) {
         final Integer reqLevel = this.getRequirementLevel(item);
         return reqLevel == null || this.isAllowedReqLevel(player, reqLevel);
     }
-    
+
     public final boolean isAllowedReqLevel(final Player player, final int reqLevel) {
         final AgarthaLibAPI agarthaLibAPI = AgarthaLibAPI.getInstance();
         final SupportManagerAPI supportManagerAPI = agarthaLibAPI.getPluginManagerAPI().getSupportManager();
         final MainConfig mainConfig = MainConfig.getInstance();
         final String textLevelType = mainConfig.getSupportTypeLevel();
         SupportLevel supportLevel = null;
-        Label_0223: {
+        Label_0223:
+        {
             final String upperCase;
             switch (upperCase = textLevelType.toUpperCase()) {
                 case "SKILLAPI": {
@@ -314,15 +311,15 @@ public class RequirementManager extends HandlerManager
             }
             supportLevel = null;
         }
-        final int playerLevel = (supportLevel != null) ? supportLevel.getPlayerLevel((OfflinePlayer)player) : player.getLevel();
+        final int playerLevel = (supportLevel != null) ? supportLevel.getPlayerLevel(player) : player.getLevel();
         return reqLevel <= playerLevel;
     }
-    
+
     public final boolean isAllowedReqPermission(final Player player, final ItemStack item) {
         final String reqPermission = this.getRequirementPermission(item);
         return reqPermission == null || player.hasPermission(reqPermission);
     }
-    
+
     public final boolean isAllowedReqClass(final Player player, final ItemStack item) {
         final AgarthaLibAPI agarthaLibAPI = AgarthaLibAPI.getInstance();
         final SupportManagerAPI supportManagerAPI = agarthaLibAPI.getPluginManagerAPI().getSupportManager();
@@ -334,10 +331,10 @@ public class RequirementManager extends HandlerManager
             return true;
         }
         final SupportClass supportClass = this.getSupportReqClass();
-        final String playerClass = supportClass.getPlayerMainClassName((OfflinePlayer)player);
+        final String playerClass = supportClass.getPlayerMainClassName(player);
         return playerClass != null && playerClass.equalsIgnoreCase(itemClass);
     }
-    
+
     public final SupportClass getSupportReqClass() {
         final AgarthaLibAPI agarthaLibAPI = AgarthaLibAPI.getInstance();
         final SupportManagerAPI supportManagerAPI = agarthaLibAPI.getPluginManagerAPI().getSupportManager();
@@ -367,53 +364,53 @@ public class RequirementManager extends HandlerManager
         final SupportClass supportClass = null;
         return supportClass;
     }
-    
+
     public final boolean isSupportReqClass() {
         return this.getSupportReqClass() != null;
     }
-    
+
     private final String getMetadataSoulBound() {
         return "SoulBound";
     }
-    
+
     private final String getKeyReqSoulBound() {
         return this.getKeyReqSoulBound(null, true);
     }
-    
+
     private final String getKeyReqSoulBound(final OfflinePlayer player, final boolean justCheck) {
         final MainConfig mainConfig = MainConfig.getInstance();
         final String bound = (player != null) ? player.getName() : null;
         final String colorSoulBound = mainConfig.getRequirementColorSoulBound();
-        return justCheck ? (String.valueOf(MainConfig.KEY_REQ_BOUND) + colorSoulBound) : (String.valueOf(MainConfig.KEY_REQ_BOUND) + colorSoulBound + bound + MainConfig.KEY_REQ_BOUND + colorSoulBound);
+        return justCheck ? (MainConfig.KEY_REQ_BOUND + colorSoulBound) : (MainConfig.KEY_REQ_BOUND + colorSoulBound + bound + MainConfig.KEY_REQ_BOUND + colorSoulBound);
     }
-    
+
     private final String getKeyReqLevel() {
         return this.getKeyReqLevel(0, true);
     }
-    
+
     private final String getKeyReqLevel(final int level, final boolean justCheck) {
         final MainConfig mainConfig = MainConfig.getInstance();
         final String colorLevel = mainConfig.getRequirementColorLevel();
-        return justCheck ? (String.valueOf(MainConfig.KEY_REQ_LEVEL) + colorLevel) : (String.valueOf(MainConfig.KEY_REQ_LEVEL) + colorLevel + level + MainConfig.KEY_REQ_LEVEL + colorLevel);
+        return justCheck ? (MainConfig.KEY_REQ_LEVEL + colorLevel) : (MainConfig.KEY_REQ_LEVEL + colorLevel + level + MainConfig.KEY_REQ_LEVEL + colorLevel);
     }
-    
+
     private final String getKeyReqPermission() {
         return this.getKeyReqPermission(null, true);
     }
-    
+
     private final String getKeyReqPermission(final String permission, final boolean justCheck) {
         final MainConfig mainConfig = MainConfig.getInstance();
         final String colorPermission = mainConfig.getRequirementColorPermission();
-        return justCheck ? (String.valueOf(MainConfig.KEY_REQ_PERMISSION) + colorPermission) : (String.valueOf(MainConfig.KEY_REQ_PERMISSION) + colorPermission + permission + MainConfig.KEY_REQ_PERMISSION + colorPermission);
+        return justCheck ? (MainConfig.KEY_REQ_PERMISSION + colorPermission) : (MainConfig.KEY_REQ_PERMISSION + colorPermission + permission + MainConfig.KEY_REQ_PERMISSION + colorPermission);
     }
-    
+
     private final String getKeyReqClass() {
         return this.getKeyReqClass(null, true);
     }
-    
+
     private final String getKeyReqClass(final String reqClass, final boolean justCheck) {
         final MainConfig mainConfig = MainConfig.getInstance();
         final String colorClass = mainConfig.getRequirementColorClass();
-        return justCheck ? (String.valueOf(MainConfig.KEY_REQ_CLASS) + colorClass) : (String.valueOf(MainConfig.KEY_REQ_CLASS) + colorClass + reqClass + MainConfig.KEY_REQ_CLASS + colorClass);
+        return justCheck ? (MainConfig.KEY_REQ_CLASS + colorClass) : (MainConfig.KEY_REQ_CLASS + colorClass + reqClass + MainConfig.KEY_REQ_CLASS + colorClass);
     }
 }

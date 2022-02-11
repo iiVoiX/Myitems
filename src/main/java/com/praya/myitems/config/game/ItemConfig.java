@@ -4,58 +4,48 @@
 
 package com.praya.myitems.config.game;
 
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.inventory.meta.ItemMeta;
-import java.util.Map;
-import api.praya.myitems.builder.socket.SocketGems;
-import com.praya.agarthalib.utility.MathUtil;
-import api.praya.myitems.builder.power.PowerSpecialEnum;
-import core.praya.agarthalib.enums.branch.ProjectileEnum;
-import api.praya.myitems.builder.power.PowerClickEnum;
-import api.praya.myitems.builder.passive.PassiveEffectEnum;
 import api.praya.myitems.builder.ability.AbilityItemWeapon;
-import java.util.List;
-import com.praya.myitems.manager.game.LoreStatsManager;
-import com.praya.myitems.manager.game.PassiveEffectManager;
-import com.praya.myitems.manager.game.SocketManager;
-import com.praya.myitems.manager.game.ElementManager;
-import com.praya.myitems.manager.game.AbilityWeaponManager;
-import com.praya.myitems.manager.game.PowerSpecialManager;
-import com.praya.myitems.manager.game.PowerShootManager;
-import com.praya.myitems.manager.game.PowerCommandManager;
-import com.praya.myitems.manager.game.PowerManager;
-import com.praya.myitems.manager.game.GameManager;
-import api.praya.myitems.builder.power.PowerEnum;
-import com.praya.agarthalib.utility.TextUtil;
-import api.praya.myitems.builder.lorestats.LoreStatsOption;
 import api.praya.myitems.builder.lorestats.LoreStatsEnum;
-import org.bukkit.configuration.file.FileConfiguration;
-import java.io.File;
+import api.praya.myitems.builder.lorestats.LoreStatsOption;
+import api.praya.myitems.builder.passive.PassiveEffectEnum;
+import api.praya.myitems.builder.power.PowerClickEnum;
+import api.praya.myitems.builder.power.PowerEnum;
+import api.praya.myitems.builder.power.PowerSpecialEnum;
+import api.praya.myitems.builder.socket.SocketGems;
+import com.praya.agarthalib.utility.EquipmentUtil;
+import com.praya.agarthalib.utility.FileUtil;
+import com.praya.agarthalib.utility.MathUtil;
+import com.praya.agarthalib.utility.TextUtil;
+import com.praya.myitems.MyItems;
+import com.praya.myitems.builder.handler.HandlerConfig;
+import com.praya.myitems.manager.game.*;
 import com.praya.myitems.manager.plugin.DataManager;
 import com.praya.myitems.manager.plugin.PluginManager;
-import com.praya.agarthalib.utility.EquipmentUtil;
-import org.bukkit.plugin.java.JavaPlugin;
-import com.praya.agarthalib.utility.FileUtil;
-import java.util.Iterator;
-import java.util.Collection;
-import com.praya.myitems.MyItems;
+import core.praya.agarthalib.enums.branch.ProjectileEnum;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.inventory.ItemStack;
-import java.util.HashMap;
-import com.praya.myitems.builder.handler.HandlerConfig;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 
-public class ItemConfig extends HandlerConfig
-{
+import java.io.File;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class ItemConfig extends HandlerConfig {
     private final HashMap<String, ItemStack> mapItem;
-    
+
     public ItemConfig(final MyItems plugin) {
         super(plugin);
         this.mapItem = new HashMap<String, ItemStack>();
     }
-    
+
     public final Collection<String> getItemIDs() {
         return this.mapItem.keySet();
     }
-    
+
     public final ItemStack getItem(final String id) {
         for (final String key : this.getItemIDs()) {
             if (key.equalsIgnoreCase(id)) {
@@ -64,25 +54,25 @@ public class ItemConfig extends HandlerConfig
         }
         return null;
     }
-    
+
     public final void setup() {
         this.moveOldFile();
         this.reset();
         this.loadConfig();
     }
-    
+
     private final void reset() {
         this.mapItem.clear();
     }
-    
+
     private final void loadConfig() {
         final PluginManager pluginManager = this.plugin.getPluginManager();
         final DataManager dataManager = pluginManager.getDataManager();
         final String path = dataManager.getPath("Path_File_Item");
-        final File file = FileUtil.getFile((JavaPlugin)this.plugin, path);
+        final File file = FileUtil.getFile(this.plugin, path);
         this.convertOldDatabase();
         if (!file.exists()) {
-            FileUtil.saveResource((JavaPlugin)this.plugin, path);
+            FileUtil.saveResource(this.plugin, path);
         }
         final FileConfiguration config = FileUtil.getFileConfiguration(file);
         for (final String key : config.getKeys(false)) {
@@ -94,7 +84,7 @@ public class ItemConfig extends HandlerConfig
             }
         }
     }
-    
+
     private final ItemStack convertToFile(final ItemStack convertItem) {
         final GameManager gameManager = this.plugin.getGameManager();
         final PowerManager powerManager = gameManager.getPowerManager();
@@ -111,7 +101,7 @@ public class ItemConfig extends HandlerConfig
             EquipmentUtil.setDisplayName(item, EquipmentUtil.getDisplayName(item).replaceAll("\ufffd", "&"));
         }
         if (EquipmentUtil.loreCheck(item)) {
-            final List<String> lores = (List<String>)EquipmentUtil.getLores(item);
+            final List<String> lores = EquipmentUtil.getLores(item);
             final HashMap<String, String> mapPlaceholder = new HashMap<String, String>();
             for (int i = 0; i < lores.size(); ++i) {
                 final int line = i + 1;
@@ -125,32 +115,28 @@ public class ItemConfig extends HandlerConfig
                         mapPlaceholder.clear();
                         mapPlaceholder.put("lorestats", String.valueOf(loreStats));
                         mapPlaceholder.put("value", String.valueOf(minValue));
-                        replacement = TextUtil.placeholder((HashMap)mapPlaceholder, replacement);
+                        replacement = TextUtil.placeholder(mapPlaceholder, replacement);
                         EquipmentUtil.setLore(item, line, replacement);
-                    }
-                    else {
+                    } else {
                         String replacement = "@MyItems, LoreStats = {lorestats}, MinValue = {minvalue}, MaxValue = {maxvalue}";
                         mapPlaceholder.clear();
                         mapPlaceholder.put("lorestats", String.valueOf(loreStats));
                         mapPlaceholder.put("minvalue", String.valueOf(minValue));
                         mapPlaceholder.put("maxvalue", String.valueOf(maxValue));
-                        replacement = TextUtil.placeholder((HashMap)mapPlaceholder, replacement);
+                        replacement = TextUtil.placeholder(mapPlaceholder, replacement);
                         EquipmentUtil.setLore(item, line, replacement);
                     }
-                }
-                else if (socketManager.isSocketEmptyLore(lore)) {
+                } else if (socketManager.isSocketEmptyLore(lore)) {
                     final String replacement2 = "@MyItems, SlotSocket = Empty";
                     EquipmentUtil.setLore(item, line, "@MyItems, SlotSocket = Empty");
-                }
-                else if (socketManager.isSocketGemsLore(lore)) {
+                } else if (socketManager.isSocketGemsLore(lore)) {
                     final String socket = socketManager.getSocket(lore);
                     String replacement3 = "@MyItems, Socket = {socket}";
                     mapPlaceholder.clear();
                     mapPlaceholder.put("socket", String.valueOf(socket));
-                    replacement3 = TextUtil.placeholder((HashMap)mapPlaceholder, replacement3);
+                    replacement3 = TextUtil.placeholder(mapPlaceholder, replacement3);
                     EquipmentUtil.setLore(item, line, replacement3);
-                }
-                else if (abilityWeaponManager.isAbilityItemWeapon(lore)) {
+                } else if (abilityWeaponManager.isAbilityItemWeapon(lore)) {
                     final AbilityItemWeapon abilityItemWeapon = abilityWeaponManager.getAbilityItemWeapon(lore);
                     final String ability = abilityItemWeapon.getAbility();
                     final int grade = abilityItemWeapon.getGrade();
@@ -160,30 +146,27 @@ public class ItemConfig extends HandlerConfig
                     mapPlaceholder.put("ability", String.valueOf(ability));
                     mapPlaceholder.put("grade", String.valueOf(grade));
                     mapPlaceholder.put("chance", String.valueOf(chance));
-                    replacement = TextUtil.placeholder((HashMap)mapPlaceholder, replacement);
+                    replacement = TextUtil.placeholder(mapPlaceholder, replacement);
                     EquipmentUtil.setLore(item, line, replacement);
-                }
-                else if (elementManager.isElement(lore)) {
+                } else if (elementManager.isElement(lore)) {
                     final String element = elementManager.getElement(lore);
                     final double value = elementManager.getElementValue(lore);
                     String replacement4 = "@MyItems, Element = {element}, Value = {value}";
                     mapPlaceholder.clear();
                     mapPlaceholder.put("element", element);
                     mapPlaceholder.put("value", String.valueOf(value));
-                    replacement4 = TextUtil.placeholder((HashMap)mapPlaceholder, replacement4);
+                    replacement4 = TextUtil.placeholder(mapPlaceholder, replacement4);
                     EquipmentUtil.setLore(item, line, replacement4);
-                }
-                else if (passiveEffectManager.isPassiveEffect(lore)) {
+                } else if (passiveEffectManager.isPassiveEffect(lore)) {
                     final PassiveEffectEnum buff = passiveEffectManager.getPassiveEffect(lore);
                     final int grade2 = passiveEffectManager.passiveEffectGrade(buff, lore);
                     String replacement5 = "@MyItems, Buff = {buff}, Grade = {grade}";
                     mapPlaceholder.clear();
                     mapPlaceholder.put("buff", String.valueOf(buff));
                     mapPlaceholder.put("grade", String.valueOf(grade2));
-                    replacement5 = TextUtil.placeholder((HashMap)mapPlaceholder, replacement5);
+                    replacement5 = TextUtil.placeholder(mapPlaceholder, replacement5);
                     EquipmentUtil.setLore(item, line, replacement5);
-                }
-                else if (powerManager.isPower(lore)) {
+                } else if (powerManager.isPower(lore)) {
                     final PowerEnum power = powerManager.getPower(lore);
                     final PowerClickEnum click = powerManager.getClick(lore);
                     final double cooldown = powerManager.getCooldown(lore);
@@ -197,11 +180,10 @@ public class ItemConfig extends HandlerConfig
                                 mapPlaceholder.put("click", String.valueOf(click));
                                 mapPlaceholder.put("type", type);
                                 mapPlaceholder.put("cooldown", String.valueOf(cooldown));
-                                replacement = TextUtil.placeholder((HashMap)mapPlaceholder, replacement);
+                                replacement = TextUtil.placeholder(mapPlaceholder, replacement);
                                 EquipmentUtil.setLore(item, line, replacement);
                             }
-                        }
-                        else if (power.equals(PowerEnum.SHOOT)) {
+                        } else if (power.equals(PowerEnum.SHOOT)) {
                             final ProjectileEnum type2 = powerShootManager.getShoot(lore);
                             if (type2 != null) {
                                 String replacement = "@MyItems, Power = {power}, Click = {click}, Type = {type}, Cooldown = {cooldown}";
@@ -210,11 +192,10 @@ public class ItemConfig extends HandlerConfig
                                 mapPlaceholder.put("click", String.valueOf(click));
                                 mapPlaceholder.put("type", String.valueOf(type2));
                                 mapPlaceholder.put("cooldown", String.valueOf(cooldown));
-                                replacement = TextUtil.placeholder((HashMap)mapPlaceholder, replacement);
+                                replacement = TextUtil.placeholder(mapPlaceholder, replacement);
                                 EquipmentUtil.setLore(item, line, replacement);
                             }
-                        }
-                        else if (power.equals(PowerEnum.SPECIAL)) {
+                        } else if (power.equals(PowerEnum.SPECIAL)) {
                             final PowerSpecialEnum type3 = powerSpecialManager.getSpecial(lore);
                             if (type3 != null) {
                                 String replacement = "@MyItems, Power = {power}, Click = {click}, Type = {type}, Cooldown = {cooldown}";
@@ -223,7 +204,7 @@ public class ItemConfig extends HandlerConfig
                                 mapPlaceholder.put("click", String.valueOf(click));
                                 mapPlaceholder.put("type", String.valueOf(type3));
                                 mapPlaceholder.put("cooldown", String.valueOf(cooldown));
-                                replacement = TextUtil.placeholder((HashMap)mapPlaceholder, replacement);
+                                replacement = TextUtil.placeholder(mapPlaceholder, replacement);
                                 EquipmentUtil.setLore(item, line, replacement);
                             }
                         }
@@ -233,7 +214,7 @@ public class ItemConfig extends HandlerConfig
         }
         return item;
     }
-    
+
     private final ItemStack convertToGame(final ItemStack convertItem) {
         final GameManager gameManager = this.plugin.getGameManager();
         final PowerManager powerManager = gameManager.getPowerManager();
@@ -247,7 +228,7 @@ public class ItemConfig extends HandlerConfig
         final LoreStatsManager statsManager = gameManager.getStatsManager();
         final ItemStack item = new ItemStack(convertItem);
         if (EquipmentUtil.loreCheck(item)) {
-            final List<String> lores = (List<String>)EquipmentUtil.getLores(item);
+            final List<String> lores = EquipmentUtil.getLores(item);
             for (int i = 0; i < lores.size(); ++i) {
                 final int line = i + 1;
                 final String lore = lores.get(i).replaceAll(" ", "");
@@ -266,13 +247,11 @@ public class ItemConfig extends HandlerConfig
                                     final String value = element[1];
                                     if (key.equalsIgnoreCase("LoreStats") || key.equalsIgnoreCase("Stats")) {
                                         loreStats = LoreStatsEnum.get(value);
-                                    }
-                                    else if (key.equalsIgnoreCase("MinValue") || key.equalsIgnoreCase("Value")) {
+                                    } else if (key.equalsIgnoreCase("MinValue") || key.equalsIgnoreCase("Value")) {
                                         if (MathUtil.isNumber(value)) {
                                             minValue = MathUtil.parseDouble(value);
                                         }
-                                    }
-                                    else if ((key.equalsIgnoreCase("MaxValue") || key.equalsIgnoreCase("Max")) && MathUtil.isNumber(value)) {
+                                    } else if ((key.equalsIgnoreCase("MaxValue") || key.equalsIgnoreCase("Max")) && MathUtil.isNumber(value)) {
                                         maxValue = MathUtil.parseDouble(value);
                                     }
                                 }
@@ -281,8 +260,7 @@ public class ItemConfig extends HandlerConfig
                                 final String replacement = (maxValue != -1.0) ? statsManager.getTextLoreStats(loreStats, minValue, maxValue) : statsManager.getTextLoreStats(loreStats, minValue);
                                 EquipmentUtil.setLore(item, line, replacement);
                             }
-                        }
-                        else if (lore.contains("SlotSocket=") || lore.contains("SlotSockets=")) {
+                        } else if (lore.contains("SlotSocket=") || lore.contains("SlotSockets=")) {
                             String slot = null;
                             for (int t2 = 0; t2 < part.length; ++t2) {
                                 final String fullElement2 = part[t2];
@@ -299,8 +277,7 @@ public class ItemConfig extends HandlerConfig
                                 final String replacement2 = socketManager.getTextSocketSlotEmpty();
                                 EquipmentUtil.setLore(item, line, replacement2);
                             }
-                        }
-                        else if (lore.contains("Socket=") || lore.contains("Sockets=")) {
+                        } else if (lore.contains("Socket=") || lore.contains("Sockets=")) {
                             SocketGems socket = null;
                             for (int t2 = 0; t2 < part.length; ++t2) {
                                 final String fullElement2 = part[t2];
@@ -321,8 +298,7 @@ public class ItemConfig extends HandlerConfig
                                 final String replacement3 = socketManager.getTextSocketGemsLore(gems, grade2);
                                 EquipmentUtil.setLore(item, line, replacement3);
                             }
-                        }
-                        else if (lore.contains("Element=") || lore.contains("Elements=")) {
+                        } else if (lore.contains("Element=") || lore.contains("Elements=")) {
                             String keyElement = null;
                             double valueElement = 1.0;
                             for (int t3 = 0; t3 < part.length; ++t3) {
@@ -333,8 +309,7 @@ public class ItemConfig extends HandlerConfig
                                     final String value3 = element3[1];
                                     if (key3.equalsIgnoreCase("Element") || key3.equalsIgnoreCase("Elements")) {
                                         keyElement = value3;
-                                    }
-                                    else if ((key3.equalsIgnoreCase("Value") || key3.equalsIgnoreCase("Values")) && MathUtil.isNumber(value3)) {
+                                    } else if ((key3.equalsIgnoreCase("Value") || key3.equalsIgnoreCase("Values")) && MathUtil.isNumber(value3)) {
                                         valueElement = MathUtil.parseDouble(value3);
                                     }
                                 }
@@ -343,8 +318,7 @@ public class ItemConfig extends HandlerConfig
                                 final String replacement3 = elementManager.getTextElement(keyElement, valueElement);
                                 EquipmentUtil.setLore(item, line, replacement3);
                             }
-                        }
-                        else if (lore.contains("Buff=") || lore.contains("Buffs=")) {
+                        } else if (lore.contains("Buff=") || lore.contains("Buffs=")) {
                             PassiveEffectEnum effect = null;
                             int grade3 = -1;
                             for (int t4 = 0; t4 < part.length; ++t4) {
@@ -355,8 +329,7 @@ public class ItemConfig extends HandlerConfig
                                     final String value4 = element4[1];
                                     if (key4.equalsIgnoreCase("Buff") || key4.equalsIgnoreCase("Buffs")) {
                                         effect = PassiveEffectEnum.get(value4);
-                                    }
-                                    else if ((key4.equalsIgnoreCase("Grade") || key4.equalsIgnoreCase("Grades")) && MathUtil.isNumber(value4)) {
+                                    } else if ((key4.equalsIgnoreCase("Grade") || key4.equalsIgnoreCase("Grades")) && MathUtil.isNumber(value4)) {
                                         grade3 = MathUtil.parseInteger(value4);
                                     }
                                 }
@@ -365,8 +338,7 @@ public class ItemConfig extends HandlerConfig
                                 final String replacement4 = passiveEffectManager.getTextPassiveEffect(effect, grade3);
                                 EquipmentUtil.setLore(item, line, replacement4);
                             }
-                        }
-                        else if (lore.contains("Ability=")) {
+                        } else if (lore.contains("Ability=")) {
                             String ability = null;
                             int grade3 = -1;
                             double chance = 0.0;
@@ -378,13 +350,11 @@ public class ItemConfig extends HandlerConfig
                                     final String value5 = element5[1];
                                     if (key5.equalsIgnoreCase("Ability")) {
                                         ability = value5;
-                                    }
-                                    else if (key5.equalsIgnoreCase("Grade")) {
+                                    } else if (key5.equalsIgnoreCase("Grade")) {
                                         if (MathUtil.isNumber(value5)) {
                                             grade3 = MathUtil.parseInteger(value5);
                                         }
-                                    }
-                                    else if (key5.equalsIgnoreCase("chance") && MathUtil.isNumber(value5)) {
+                                    } else if (key5.equalsIgnoreCase("chance") && MathUtil.isNumber(value5)) {
                                         chance = MathUtil.parseDouble(value5);
                                     }
                                 }
@@ -393,8 +363,7 @@ public class ItemConfig extends HandlerConfig
                                 final String replacement5 = abilityWeaponManager.getTextAbility(ability, grade3, chance);
                                 EquipmentUtil.setLore(item, line, replacement5);
                             }
-                        }
-                        else if (lore.contains("Power=")) {
+                        } else if (lore.contains("Power=")) {
                             PowerEnum power = null;
                             PowerClickEnum click = null;
                             double cooldown = 0.0;
@@ -407,16 +376,13 @@ public class ItemConfig extends HandlerConfig
                                     final String value = element[1];
                                     if (key.equalsIgnoreCase("Power")) {
                                         power = PowerEnum.get(value);
-                                    }
-                                    else if (key.equalsIgnoreCase("Click")) {
+                                    } else if (key.equalsIgnoreCase("Click")) {
                                         click = PowerClickEnum.get(value);
-                                    }
-                                    else if (key.equalsIgnoreCase("Cooldown")) {
+                                    } else if (key.equalsIgnoreCase("Cooldown")) {
                                         if (MathUtil.isNumber(value)) {
                                             cooldown = MathUtil.parseDouble(value);
                                         }
-                                    }
-                                    else if (key.equalsIgnoreCase("Type")) {
+                                    } else if (key.equalsIgnoreCase("Type")) {
                                         type = value;
                                     }
                                 }
@@ -428,15 +394,13 @@ public class ItemConfig extends HandlerConfig
                                         final String replacement6 = powerCommandManager.getTextPowerCommand(click, keyCommand, cooldown);
                                         EquipmentUtil.setLore(item, line, replacement6);
                                     }
-                                }
-                                else if (power.equals(PowerEnum.SHOOT)) {
+                                } else if (power.equals(PowerEnum.SHOOT)) {
                                     final ProjectileEnum projectile = ProjectileEnum.getProjectileEnum(type);
                                     if (projectile != null) {
                                         final String replacement6 = powerShootManager.getTextPowerShoot(click, projectile, cooldown);
                                         EquipmentUtil.setLore(item, line, replacement6);
                                     }
-                                }
-                                else if (power.equals(PowerEnum.SPECIAL)) {
+                                } else if (power.equals(PowerEnum.SPECIAL)) {
                                     final PowerSpecialEnum special = PowerSpecialEnum.get(type);
                                     if (special != null) {
                                         final String replacement6 = powerSpecialManager.getTextPowerSpecial(click, special, cooldown);
@@ -451,33 +415,33 @@ public class ItemConfig extends HandlerConfig
         }
         return item;
     }
-    
+
     public final void saveItem(final ItemStack item, final String nameid) {
         final PluginManager pluginManager = this.plugin.getPluginManager();
         final DataManager dataManager = pluginManager.getDataManager();
         final String path = dataManager.getPath("Path_File_Item");
         final ItemStack fileItem = this.convertToFile(item);
         this.mapItem.put(nameid, item);
-        FileUtil.addObject((JavaPlugin)this.plugin, path, nameid, (Object)fileItem);
+        FileUtil.addObject(this.plugin, path, nameid, fileItem);
     }
-    
+
     public final void removeItem(final String nameid) {
         final PluginManager pluginManager = this.plugin.getPluginManager();
         final DataManager dataManager = pluginManager.getDataManager();
         final String path = dataManager.getPath("Path_File_Item");
         this.mapItem.remove(nameid);
-        FileUtil.removeObject((JavaPlugin)this.plugin, path, nameid);
+        FileUtil.removeObject(this.plugin, path, nameid);
     }
-    
+
     public final void convertOldDatabase() {
-        final File dirDatabase = FileUtil.getFile((JavaPlugin)this.plugin, "database");
+        final File dirDatabase = FileUtil.getFile(this.plugin, "database");
         if (dirDatabase.exists()) {
-            final File oldItemsFile = FileUtil.getFile((JavaPlugin)this.plugin, "database/items.dat");
+            final File oldItemsFile = FileUtil.getFile(this.plugin, "database/items.dat");
             if (oldItemsFile.exists()) {
-                final HashMap<String, Object> oldItems = (HashMap<String, Object>)FileUtil.loadObjectSilent(oldItemsFile);
+                final HashMap<String, Object> oldItems = (HashMap<String, Object>) FileUtil.loadObjectSilent(oldItemsFile);
                 for (final String key : oldItems.keySet()) {
                     final Object rawItem = oldItems.get(key);
-                    final ItemStack item = this.deserializeItemStack((HashMap<Map<String, Object>, Map<String, Object>>)rawItem);
+                    final ItemStack item = this.deserializeItemStack((HashMap<Map<String, Object>, Map<String, Object>>) rawItem);
                     this.convertToFile(item);
                     this.saveItem(item, key);
                 }
@@ -486,24 +450,24 @@ public class ItemConfig extends HandlerConfig
             }
         }
     }
-    
+
     private ItemStack deserializeItemStack(final HashMap<Map<String, Object>, Map<String, Object>> serializedItemStackMap) {
         final Map.Entry<Map<String, Object>, Map<String, Object>> serializedItemStack = serializedItemStackMap.entrySet().iterator().next();
-        final ItemStack itemStack = ItemStack.deserialize((Map)serializedItemStack.getKey());
+        final ItemStack itemStack = ItemStack.deserialize(serializedItemStack.getKey());
         if (serializedItemStack.getValue() != null) {
-            final ItemMeta itemMeta = (ItemMeta)ConfigurationSerialization.deserializeObject((Map)serializedItemStack.getValue(), ConfigurationSerialization.getClassByAlias("ItemMeta"));
+            final ItemMeta itemMeta = (ItemMeta) ConfigurationSerialization.deserializeObject(serializedItemStack.getValue(), ConfigurationSerialization.getClassByAlias("ItemMeta"));
             itemStack.setItemMeta(itemMeta);
         }
         return itemStack;
     }
-    
+
     private final void moveOldFile() {
         final PluginManager pluginManager = this.plugin.getPluginManager();
         final DataManager dataManager = pluginManager.getDataManager();
         final String pathSource = "item.yml";
         final String pathTarget = dataManager.getPath("Path_File_Item");
-        final File fileSource = FileUtil.getFile((JavaPlugin)this.plugin, "item.yml");
-        final File fileTarget = FileUtil.getFile((JavaPlugin)this.plugin, pathTarget);
+        final File fileSource = FileUtil.getFile(this.plugin, "item.yml");
+        final File fileTarget = FileUtil.getFile(this.plugin, pathTarget);
         if (fileSource.exists()) {
             FileUtil.moveFileSilent(fileSource, fileTarget);
         }

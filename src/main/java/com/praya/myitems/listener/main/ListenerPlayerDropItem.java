@@ -4,35 +4,35 @@
 
 package com.praya.myitems.listener.main;
 
-import org.bukkit.event.EventPriority;
-import com.praya.myitems.utility.main.TriggerSupportUtil;
-import org.bukkit.event.EventHandler;
-import org.bukkit.entity.Item;
-import com.praya.myitems.manager.game.GameManager;
-import org.bukkit.plugin.Plugin;
 import api.praya.myitems.builder.passive.PassiveEffectEnum;
-import org.bukkit.entity.LivingEntity;
-import java.util.Collection;
-import com.praya.myitems.manager.game.PassiveEffectManager;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import com.praya.myitems.manager.game.ItemSetManager;
-import org.bukkit.scheduler.BukkitRunnable;
 import com.praya.agarthalib.utility.EquipmentUtil;
-import core.praya.agarthalib.enums.main.Slot;
-import core.praya.agarthalib.bridge.unity.Bridge;
-import com.praya.myitems.config.plugin.MainConfig;
-import org.bukkit.event.player.PlayerDropItemEvent;
 import com.praya.myitems.MyItems;
-import org.bukkit.event.Listener;
 import com.praya.myitems.builder.handler.HandlerEvent;
+import com.praya.myitems.config.plugin.MainConfig;
+import com.praya.myitems.manager.game.GameManager;
+import com.praya.myitems.manager.game.ItemSetManager;
+import com.praya.myitems.manager.game.PassiveEffectManager;
+import com.praya.myitems.utility.main.TriggerSupportUtil;
+import core.praya.agarthalib.bridge.unity.Bridge;
+import core.praya.agarthalib.enums.main.Slot;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
-public class ListenerPlayerDropItem extends HandlerEvent implements Listener
-{
+import java.util.Collection;
+
+public class ListenerPlayerDropItem extends HandlerEvent implements Listener {
     public ListenerPlayerDropItem(final MyItems plugin) {
         super(plugin);
     }
-    
+
     @EventHandler
     public void playerDropItemEvent(final PlayerDropItemEvent event) {
         final GameManager gameManager = this.plugin.getGameManager();
@@ -48,14 +48,14 @@ public class ListenerPlayerDropItem extends HandlerEvent implements Listener
             new BukkitRunnable() {
                 public void run() {
                     if (itemSetManager.isItemSet(item)) {
-                        itemSetManager.updateItemSet((LivingEntity)player);
+                        itemSetManager.updateItemSet(player);
                     }
                     passiveEffectManager.reloadPassiveEffect(player, passiveEffects, enableGradeCalculation);
                 }
-            }.runTaskLater((Plugin)this.plugin, 1L);
+            }.runTaskLater(this.plugin, 1L);
         }
     }
-    
+
     @EventHandler(priority = EventPriority.MONITOR)
     public void triggerSupport(final PlayerDropItemEvent event) {
         if (!event.isCancelled()) {
@@ -64,7 +64,7 @@ public class ListenerPlayerDropItem extends HandlerEvent implements Listener
                 public void run() {
                     TriggerSupportUtil.updateSupport(player);
                 }
-            }.runTaskLater((Plugin)this.plugin, 2L);
+            }.runTaskLater(this.plugin, 2L);
         }
     }
 }

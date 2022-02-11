@@ -4,35 +4,35 @@
 
 package com.praya.myitems.listener.main;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.LivingEntity;
-import com.praya.myitems.manager.game.LoreStatsManager;
-import com.praya.myitems.manager.game.GameManager;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
-import api.praya.myitems.builder.lorestats.LoreStatsOption;
-import com.praya.agarthalib.utility.MathUtil;
 import api.praya.myitems.builder.lorestats.LoreStatsEnum;
+import api.praya.myitems.builder.lorestats.LoreStatsOption;
+import com.praya.agarthalib.utility.EntityUtil;
 import com.praya.agarthalib.utility.EquipmentUtil;
+import com.praya.agarthalib.utility.MathUtil;
+import com.praya.myitems.MyItems;
+import com.praya.myitems.builder.handler.HandlerEvent;
+import com.praya.myitems.config.plugin.MainConfig;
+import com.praya.myitems.manager.game.GameManager;
+import com.praya.myitems.manager.game.LoreStatsManager;
 import core.praya.agarthalib.bridge.unity.Bridge;
 import org.bukkit.entity.Entity;
-import com.praya.agarthalib.utility.EntityUtil;
-import com.praya.myitems.config.plugin.MainConfig;
-import org.bukkit.event.entity.EntityDeathEvent;
-import com.praya.myitems.MyItems;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import com.praya.myitems.builder.handler.HandlerEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
-public class ListenerEntityDeath extends HandlerEvent implements Listener
-{
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class ListenerEntityDeath extends HandlerEvent implements Listener {
     public ListenerEntityDeath(final MyItems plugin) {
         super(plugin);
     }
-    
+
     @EventHandler
     public void onDeath(final EntityDeathEvent event) {
         final GameManager gameManager = this.plugin.getGameManager();
@@ -41,7 +41,7 @@ public class ListenerEntityDeath extends HandlerEvent implements Listener
         final MainConfig mainConfig = MainConfig.getInstance();
         if (victims.getKiller() != null) {
             final Player player = victims.getKiller();
-            final double expGain = EntityUtil.isPlayer((Entity)victims) ? mainConfig.getDropExpPlayer() : mainConfig.getDropExpMobs();
+            final double expGain = EntityUtil.isPlayer(victims) ? mainConfig.getDropExpPlayer() : mainConfig.getDropExpMobs();
             for (int itemCode = 0; itemCode < 6; ++itemCode) {
                 final ItemStack item = Bridge.getBridgeEquipment().getEquipment(player, itemCode);
                 if (EquipmentUtil.loreCheck(item)) {
@@ -50,11 +50,9 @@ public class ListenerEntityDeath extends HandlerEvent implements Listener
                         double scaleExp;
                         if (itemCode == 0) {
                             scaleExp = 1.0;
-                        }
-                        else if (itemCode == 1) {
+                        } else if (itemCode == 1) {
                             scaleExp = mainConfig.getModifierScaleExpOffHand();
-                        }
-                        else {
+                        } else {
                             scaleExp = mainConfig.getModifierScaleExpArmor();
                         }
                         final String loreLevel = EquipmentUtil.getLores(item).get(line - 1);
@@ -64,16 +62,15 @@ public class ListenerEntityDeath extends HandlerEvent implements Listener
                         final String colorExpUp = mainConfig.getStatsColorExpUp();
                         final double exp = MathUtil.parseDouble(expLores[1].replaceAll(colorExpCurrent, ""));
                         final double up = MathUtil.parseDouble(upLores[1].replaceAll(colorExpUp, ""));
-                        final int level = (int)statsManager.getLoreValue(item, LoreStatsEnum.LEVEL, null);
+                        final int level = (int) statsManager.getLoreValue(item, LoreStatsEnum.LEVEL, null);
                         final int maxLevel = mainConfig.getStatsMaxLevelValue();
                         if (exp + expGain * scaleExp < up) {
                             if (level < maxLevel) {
                                 final double newExp = MathUtil.roundNumber(exp + expGain * scaleExp, 1);
-                                final String newExpLore = String.valueOf(expLores[0]) + MainConfig.KEY_EXP_CURRENT + colorExpCurrent + newExp + MainConfig.KEY_EXP_CURRENT + expLores[2];
+                                final String newExpLore = expLores[0] + MainConfig.KEY_EXP_CURRENT + colorExpCurrent + newExp + MainConfig.KEY_EXP_CURRENT + expLores[2];
                                 EquipmentUtil.setLore(item, line, newExpLore);
                             }
-                        }
-                        else {
+                        } else {
                             final ItemMeta meta = item.getItemMeta();
                             final double scaleUp = mainConfig.getStatsScaleUpValue();
                             final double calculation = (1.0 + scaleUp * level) / (1.0 + scaleUp * (level - 1));
@@ -82,7 +79,7 @@ public class ListenerEntityDeath extends HandlerEvent implements Listener
                                 nextExp = 0.0;
                             }
                             final String newLoreLevel = statsManager.getTextLoreStats(LoreStatsEnum.LEVEL, level + 1, nextExp);
-                            final List<String> lores = (List<String>)meta.getLore();
+                            final List<String> lores = meta.getLore();
                             final HashMap<Integer, String> mapLore = new HashMap<Integer, String>();
                             for (int i = 0; i < meta.getLore().size(); ++i) {
                                 mapLore.put(i, lores.get(i));
@@ -99,8 +96,7 @@ public class ListenerEntityDeath extends HandlerEvent implements Listener
                                     final String newLoreDamage = statsManager.getTextLoreStats(LoreStatsEnum.DAMAGE, minDamage, maxDamage);
                                     mapLore.put(lineAdditional - 1, newLoreDamage);
                                 }
-                            }
-                            else {
+                            } else {
                                 final int lineAdditional = statsManager.getLineLoreStats(item, LoreStatsEnum.DEFENSE);
                                 if (lineAdditional != -1) {
                                     double defense = statsManager.getLoreValue(item, LoreStatsEnum.DEFENSE, null);
@@ -113,7 +109,7 @@ public class ListenerEntityDeath extends HandlerEvent implements Listener
                             for (int j = 0; j < mapLore.size(); ++j) {
                                 newLores.add(mapLore.get(j));
                             }
-                            meta.setLore((List)newLores);
+                            meta.setLore(newLores);
                             item.setItemMeta(meta);
                         }
                     }

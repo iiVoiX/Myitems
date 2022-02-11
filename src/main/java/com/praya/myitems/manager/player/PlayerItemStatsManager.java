@@ -4,35 +4,35 @@
 
 package com.praya.myitems.manager.player;
 
-import api.praya.myitems.builder.lorestats.LoreStatsArmor;
-import api.praya.myitems.builder.item.ItemStatsArmor;
 import api.praya.myitems.builder.element.ElementBoostStats;
-import api.praya.myitems.builder.socket.SocketGemsProperties;
-import api.praya.myitems.builder.lorestats.LoreStatsWeapon;
-import java.util.HashMap;
-import org.bukkit.inventory.ItemStack;
-import com.praya.myitems.manager.game.ElementManager;
-import com.praya.myitems.manager.game.SocketManager;
-import com.praya.myitems.manager.game.LoreStatsManager;
-import com.praya.myitems.manager.game.GameManager;
-import api.praya.myitems.builder.lorestats.LoreStatsOption;
-import org.bukkit.entity.LivingEntity;
-import core.praya.agarthalib.enums.main.SlotType;
-import api.praya.myitems.builder.lorestats.LoreStatsEnum;
-import core.praya.agarthalib.enums.main.Slot;
-import core.praya.agarthalib.bridge.unity.Bridge;
-import com.praya.myitems.config.plugin.MainConfig;
+import api.praya.myitems.builder.item.ItemStatsArmor;
 import api.praya.myitems.builder.item.ItemStatsWeapon;
-import org.bukkit.entity.Player;
+import api.praya.myitems.builder.lorestats.LoreStatsArmor;
+import api.praya.myitems.builder.lorestats.LoreStatsEnum;
+import api.praya.myitems.builder.lorestats.LoreStatsOption;
+import api.praya.myitems.builder.lorestats.LoreStatsWeapon;
+import api.praya.myitems.builder.socket.SocketGemsProperties;
 import com.praya.myitems.MyItems;
 import com.praya.myitems.builder.handler.HandlerManager;
+import com.praya.myitems.config.plugin.MainConfig;
+import com.praya.myitems.manager.game.ElementManager;
+import com.praya.myitems.manager.game.GameManager;
+import com.praya.myitems.manager.game.LoreStatsManager;
+import com.praya.myitems.manager.game.SocketManager;
+import core.praya.agarthalib.bridge.unity.Bridge;
+import core.praya.agarthalib.enums.main.Slot;
+import core.praya.agarthalib.enums.main.SlotType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
-public class PlayerItemStatsManager extends HandlerManager
-{
+import java.util.HashMap;
+
+public class PlayerItemStatsManager extends HandlerManager {
     protected PlayerItemStatsManager(final MyItems plugin) {
         super(plugin);
     }
-    
+
     public final ItemStatsWeapon getItemStatsWeapon(final Player player) {
         final GameManager gameManager = this.plugin.getGameManager();
         final LoreStatsManager statsManager = gameManager.getStatsManager();
@@ -45,9 +45,9 @@ public class PlayerItemStatsManager extends HandlerManager
         final boolean enableOffHand = mainConfig.isAbilityWeaponEnableOffHand();
         final boolean hasStatsCriticalChance = statsManager.hasLoreStats(itemEquipmentMainHand, LoreStatsEnum.CRITICAL_CHANCE) || (enableOffHand && statsManager.hasLoreStats(itemEquipmentOffHand, LoreStatsEnum.CRITICAL_CHANCE));
         final boolean hasStatsCriticalDamage = statsManager.hasLoreStats(itemEquipmentMainHand, LoreStatsEnum.CRITICAL_DAMAGE) || (enableOffHand && statsManager.hasLoreStats(itemEquipmentOffHand, LoreStatsEnum.CRITICAL_DAMAGE));
-        final HashMap<String, Double> mapElementWeapon = elementManager.getMapElement((LivingEntity)player, SlotType.WEAPON, false);
-        final LoreStatsWeapon statsWeapon = statsManager.getLoreStatsWeapon((LivingEntity)player, false, false);
-        final SocketGemsProperties socket = socketManager.getSocketProperties((LivingEntity)player, false);
+        final HashMap<String, Double> mapElementWeapon = elementManager.getMapElement(player, SlotType.WEAPON, false);
+        final LoreStatsWeapon statsWeapon = statsManager.getLoreStatsWeapon(player, false, false);
+        final SocketGemsProperties socket = socketManager.getSocketProperties(player, false);
         final ElementBoostStats elementWeapon = elementManager.getElementBoostStats(mapElementWeapon);
         final double scaleOffHandValue = mainConfig.getStatsScaleOffHandValue();
         double statsDamage = 0.0;
@@ -55,10 +55,10 @@ public class PlayerItemStatsManager extends HandlerManager
         Slot[] values;
         for (int length = (values = Slot.values()).length, i = 0; i < length; ++i) {
             final Slot slot = values[i];
-            if (slot.getType().equals((Object)SlotType.WEAPON) || enableItemUniversal) {
+            if (slot.getType().equals(SlotType.WEAPON) || enableItemUniversal) {
                 final ItemStack item = Bridge.getBridgeEquipment().getEquipment(player, slot);
                 if (item != null) {
-                    final double scaleValue = slot.equals((Object)Slot.OFFHAND) ? (enableOffHand ? scaleOffHandValue : 0.0) : 1.0;
+                    final double scaleValue = slot.equals(Slot.OFFHAND) ? (enableOffHand ? scaleOffHandValue : 0.0) : 1.0;
                     final double statsItemDamageMin = statsManager.getLoreValue(item, LoreStatsEnum.DAMAGE, LoreStatsOption.MIN) * scaleValue;
                     final double statsItemDamageMax = statsManager.getLoreValue(item, LoreStatsEnum.DAMAGE, LoreStatsOption.MAX) * scaleValue;
                     final double statsItemDamageDiff = statsItemDamageMax - statsItemDamageMin;
@@ -91,13 +91,13 @@ public class PlayerItemStatsManager extends HandlerManager
         final double totalHitRate = 100.0 + statsWeapon.getHitRate() + socket.getHitRate();
         return new ItemStatsWeapon(totalDamageMin, totalDamageMax, totalPenetration, totalPvPDamage, totalPvEDamage, totalAttackAoERadius, totalAttackAoEDamage, totalCriticalChance, totalCriticalDamage, totalHitRate, socketDamage, elementDamage);
     }
-    
+
     public final ItemStatsArmor getItemStatsArmor(final Player player) {
         final GameManager gameManager = this.plugin.getGameManager();
         final LoreStatsManager statsManager = gameManager.getStatsManager();
         final SocketManager socketManager = gameManager.getSocketManager();
-        final LoreStatsArmor statsArmor = statsManager.getLoreStatsArmor((LivingEntity)player, false);
-        final SocketGemsProperties socket = socketManager.getSocketProperties((LivingEntity)player, false);
+        final LoreStatsArmor statsArmor = statsManager.getLoreStatsArmor(player, false);
+        final SocketGemsProperties socket = socketManager.getSocketProperties(player, false);
         final double statsDefense = statsArmor.getDefense();
         final double socketDefense = socket.getAdditionalDefense() + statsDefense * socket.getPercentDefense() / 100.0;
         final double attributeDefense = statsDefense + socketDefense;

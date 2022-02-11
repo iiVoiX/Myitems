@@ -4,62 +4,48 @@
 
 package com.praya.myitems.command;
 
-import org.bukkit.OfflinePlayer;
 import api.praya.myitems.builder.ability.AbilityWeapon;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.entity.Player;
-import core.praya.agarthalib.builder.message.MessageBuild;
-import com.praya.myitems.manager.plugin.LanguageManager;
-import com.praya.myitems.manager.register.RegisterAbilityWeaponManager;
-import com.praya.myitems.manager.game.LoreStatsManager;
-import com.praya.myitems.manager.game.PassiveEffectManager;
-import com.praya.myitems.manager.game.RequirementManager;
-import com.praya.myitems.manager.plugin.CommandManager;
-import com.praya.myitems.manager.game.ElementManager;
-import com.praya.myitems.manager.game.AbilityWeaponManager;
-import com.praya.myitems.manager.game.PowerSpecialManager;
-import com.praya.myitems.manager.game.PowerShootManager;
-import com.praya.myitems.manager.game.PowerCommandManager;
-import com.praya.myitems.manager.game.PowerManager;
-import com.praya.myitems.manager.register.RegisterManager;
-import com.praya.myitems.manager.game.GameManager;
-import com.praya.myitems.manager.plugin.PluginManager;
-import api.praya.myitems.requirement.RequirementEnum;
-import api.praya.myitems.builder.power.PowerSpecialEnum;
-import com.praya.myitems.utility.main.ProjectileUtil;
-import core.praya.agarthalib.enums.branch.ProjectileEnum;
+import api.praya.myitems.builder.lorestats.LoreStatsEnum;
+import api.praya.myitems.builder.passive.PassiveEffectEnum;
+import api.praya.myitems.builder.passive.PassiveTypeEnum;
 import api.praya.myitems.builder.power.PowerClickEnum;
 import api.praya.myitems.builder.power.PowerEnum;
-import core.praya.agarthalib.enums.main.TagsAttribute;
-import com.praya.agarthalib.utility.ServerUtil;
-import core.praya.agarthalib.enums.main.VersionNMS;
-import core.praya.agarthalib.enums.main.RomanNumber;
-import api.praya.myitems.builder.passive.PassiveTypeEnum;
-import api.praya.myitems.builder.passive.PassiveEffectEnum;
-import com.praya.myitems.utility.main.TriggerSupportUtil;
-import java.util.HashMap;
-import com.praya.agarthalib.utility.MathUtil;
-import com.praya.agarthalib.utility.EquipmentUtil;
-import api.praya.myitems.builder.lorestats.LoreStatsEnum;
-import core.praya.agarthalib.enums.main.Slot;
-import core.praya.agarthalib.bridge.unity.Bridge;
-import com.praya.agarthalib.utility.PlayerUtil;
-import com.praya.agarthalib.utility.SenderUtil;
-import core.praya.agarthalib.enums.branch.SoundEnum;
-import com.praya.agarthalib.utility.TextUtil;
-import com.praya.myitems.config.plugin.MainConfig;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
+import api.praya.myitems.builder.power.PowerSpecialEnum;
+import api.praya.myitems.requirement.RequirementEnum;
+import com.praya.agarthalib.utility.*;
 import com.praya.myitems.MyItems;
-import org.bukkit.command.CommandExecutor;
 import com.praya.myitems.builder.handler.HandlerCommand;
+import com.praya.myitems.config.plugin.MainConfig;
+import com.praya.myitems.manager.game.*;
+import com.praya.myitems.manager.plugin.CommandManager;
+import com.praya.myitems.manager.plugin.LanguageManager;
+import com.praya.myitems.manager.plugin.PluginManager;
+import com.praya.myitems.manager.register.RegisterAbilityWeaponManager;
+import com.praya.myitems.manager.register.RegisterManager;
+import com.praya.myitems.utility.main.ProjectileUtil;
+import com.praya.myitems.utility.main.TriggerSupportUtil;
+import core.praya.agarthalib.bridge.unity.Bridge;
+import core.praya.agarthalib.builder.message.MessageBuild;
+import core.praya.agarthalib.enums.branch.ProjectileEnum;
+import core.praya.agarthalib.enums.branch.SoundEnum;
+import core.praya.agarthalib.enums.main.RomanNumber;
+import core.praya.agarthalib.enums.main.Slot;
+import core.praya.agarthalib.enums.main.TagsAttribute;
+import core.praya.agarthalib.enums.main.VersionNMS;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
-public class CommandAttributes extends HandlerCommand implements CommandExecutor
-{
+import java.util.HashMap;
+
+public class CommandAttributes extends HandlerCommand implements CommandExecutor {
     public CommandAttributes(final MyItems plugin) {
         super(plugin);
     }
-    
+
     public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
         final PluginManager pluginManager = this.plugin.getPluginManager();
         final GameManager gameManager = this.plugin.getGameManager();
@@ -131,8 +117,7 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                 }
                 value1 = MathUtil.parseDouble(valueBuild[0]);
                 value2 = MathUtil.parseDouble(valueBuild[1]);
-            }
-            else {
+            } else {
                 if (!MathUtil.isNumber(textValue)) {
                     final MessageBuild message5 = lang.getMessage(sender, "Argument_Invalid_Value");
                     message5.sendMessage(sender);
@@ -142,8 +127,7 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                 value1 = MathUtil.parseDouble(args[2]);
                 if (loreStats.equals(LoreStatsEnum.LEVEL)) {
                     value2 = 0.0;
-                }
-                else {
+                } else {
                     value2 = value1;
                 }
             }
@@ -169,14 +153,12 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                         EquipmentUtil.setLore(item, lastLine, "");
                     }
                 }
-            }
-            else if (EquipmentUtil.hasLore(item)) {
+            } else if (EquipmentUtil.hasLore(item)) {
                 line = statsManager.getLineLoreStats(item, loreStats);
                 if (line == -1) {
                     line = EquipmentUtil.getLores(item).size() + 1;
                 }
-            }
-            else {
+            } else {
                 line = 1;
             }
             final String lore = statsManager.getTextLoreStats(loreStats, value1, value2);
@@ -186,12 +168,11 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
             mapPlaceholder.put("value", statsManager.statsValue(loreStats, value1, value2));
             EquipmentUtil.setLore(item, line, lore);
             TriggerSupportUtil.updateSupport(player);
-            message4.sendMessage(sender, (HashMap)mapPlaceholder);
+            message4.sendMessage(sender, mapPlaceholder);
             SenderUtil.playSound(sender, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
             player.updateInventory();
             return true;
-        }
-        else if (commandManager.checkCommand(subCommand, "Attribute_Element")) {
+        } else if (commandManager.checkCommand(subCommand, "Attribute_Element")) {
             if (!commandManager.checkPermission(sender, "Attribute_Element")) {
                 final String permission = commandManager.getPermission("Attribute_Element");
                 final MessageBuild message = lang.getMessage(sender, "Permission_Lack");
@@ -257,14 +238,12 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                         EquipmentUtil.setLore(item, lastLine2, "");
                     }
                 }
-            }
-            else if (EquipmentUtil.hasLore(item)) {
+            } else if (EquipmentUtil.hasLore(item)) {
                 line2 = elementManager.getLineElement(item, element);
                 if (line2 == -1) {
                     line2 = EquipmentUtil.getLores(item).size() + 1;
                 }
-            }
-            else {
+            } else {
                 line2 = 1;
             }
             final String lore2 = elementManager.getTextElement(element, value3);
@@ -273,12 +252,11 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
             mapPlaceholder2.put("element", element);
             mapPlaceholder2.put("value", String.valueOf(value3));
             EquipmentUtil.setLore(item, line2, lore2);
-            message7.sendMessage(sender, (HashMap)mapPlaceholder2);
+            message7.sendMessage(sender, mapPlaceholder2);
             SenderUtil.playSound(sender, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
             player.updateInventory();
             return true;
-        }
-        else if (commandManager.checkCommand(subCommand, "Attribute_Buff")) {
+        } else if (commandManager.checkCommand(subCommand, "Attribute_Buff")) {
             if (!commandManager.checkPermission(sender, "Attribute_Buff")) {
                 final String permission = commandManager.getPermission("Attribute_Buff");
                 final MessageBuild message = lang.getMessage(sender, "Permission_Lack");
@@ -341,14 +319,12 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                                 EquipmentUtil.setLore(item, lastLine3, "");
                             }
                         }
-                    }
-                    else if (EquipmentUtil.hasLore(item)) {
+                    } else if (EquipmentUtil.hasLore(item)) {
                         line3 = passiveEffectManager.getLinePassiveEffect(item, effect);
                         if (line3 == -1) {
                             line3 = EquipmentUtil.getLores(item).size() + 1;
                         }
-                    }
-                    else {
+                    } else {
                         line3 = 1;
                     }
                     final String lore3 = passiveEffectManager.getTextPassiveEffect(effect, grade);
@@ -358,7 +334,7 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                     mapPlaceholder3.put("buffs", effect.getText());
                     mapPlaceholder3.put("grade", RomanNumber.getRomanNumber(grade));
                     EquipmentUtil.setLore(item, line3, lore3);
-                    message6.sendMessage(sender, (HashMap)mapPlaceholder3);
+                    message6.sendMessage(sender, mapPlaceholder3);
                     SenderUtil.playSound(sender, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
                     player.updateInventory();
                     return true;
@@ -368,8 +344,7 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
             message3.sendMessage(sender, "buff", args[1]);
             SenderUtil.playSound(sender, SoundEnum.ENTITY_BLAZE_DEATH);
             return true;
-        }
-        else if (commandManager.checkCommand(subCommand, "Attribute_Debuff")) {
+        } else if (commandManager.checkCommand(subCommand, "Attribute_Debuff")) {
             if (!commandManager.checkPermission(sender, "Attribute_Debuff")) {
                 final String permission = commandManager.getPermission("Attribute_Debuff");
                 final MessageBuild message = lang.getMessage(sender, "Permission_Lack");
@@ -432,14 +407,12 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                                 EquipmentUtil.setLore(item, lastLine3, "");
                             }
                         }
-                    }
-                    else if (EquipmentUtil.hasLore(item)) {
+                    } else if (EquipmentUtil.hasLore(item)) {
                         line3 = passiveEffectManager.getLinePassiveEffect(item, effect);
                         if (line3 == -1) {
                             line3 = EquipmentUtil.getLores(item).size() + 1;
                         }
-                    }
-                    else {
+                    } else {
                         line3 = 1;
                     }
                     final String lore3 = passiveEffectManager.getTextPassiveEffect(effect, grade);
@@ -449,7 +422,7 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                     mapPlaceholder3.put("debuffs", effect.getText());
                     mapPlaceholder3.put("grade", RomanNumber.getRomanNumber(grade));
                     EquipmentUtil.setLore(item, line3, lore3);
-                    message6.sendMessage(sender, (HashMap)mapPlaceholder3);
+                    message6.sendMessage(sender, mapPlaceholder3);
                     SenderUtil.playSound(sender, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
                     player.updateInventory();
                     return true;
@@ -459,8 +432,7 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
             message3.sendMessage(sender, "debuff", args[1]);
             SenderUtil.playSound(sender, SoundEnum.ENTITY_BLAZE_DEATH);
             return true;
-        }
-        else if (commandManager.checkCommand(subCommand, "Attribute_NBT")) {
+        } else if (commandManager.checkCommand(subCommand, "Attribute_NBT")) {
             if (!ServerUtil.isCompatible(VersionNMS.V1_8_R3)) {
                 final MessageBuild message2 = lang.getMessage(sender, "MyItems_Not_Compatible");
                 message2.sendMessage(sender);
@@ -501,7 +473,7 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                 final HashMap<String, String> mapPlaceholder4 = new HashMap<String, String>();
                 mapPlaceholder4.put("NBT", args[1]);
                 mapPlaceholder4.put("Tags", args[1]);
-                message3.sendMessage(sender, (HashMap)mapPlaceholder4);
+                message3.sendMessage(sender, mapPlaceholder4);
                 SenderUtil.playSound(sender, SoundEnum.ENTITY_BLAZE_DEATH);
                 return true;
             }
@@ -520,8 +492,7 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                 if (slot == null) {
                     slot = Slot.getDefault(item.getType());
                 }
-            }
-            else {
+            } else {
                 slot = Slot.getDefault(item.getType());
             }
             final MessageBuild message6 = lang.getMessage(sender, "MyItems_Attribute_NBT_Success");
@@ -529,12 +500,11 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
             mapPlaceholder3.put("NBT", TextUtil.firstSolidCharacter(String.valueOf(tags)));
             mapPlaceholder3.put("Value", String.valueOf(value3));
             Bridge.getBridgeTagsNBT().addNBT(item, tags, value3, slot);
-            message6.sendMessage(sender, (HashMap)mapPlaceholder3);
+            message6.sendMessage(sender, mapPlaceholder3);
             SenderUtil.playSound(sender, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
             player.updateInventory();
             return true;
-        }
-        else if (commandManager.checkCommand(subCommand, "Attribute_Ability")) {
+        } else if (commandManager.checkCommand(subCommand, "Attribute_Ability")) {
             if (!commandManager.checkPermission(sender, "Attribute_Ability")) {
                 final String permission = commandManager.getPermission("Attribute_Ability");
                 final MessageBuild message = lang.getMessage(sender, "Permission_Lack");
@@ -584,8 +554,7 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                 chance = MathUtil.parseDouble(textChance);
                 chance = MathUtil.roundNumber(chance);
                 chance = MathUtil.limitDouble(chance, 0.0, 100.0);
-            }
-            else {
+            } else {
                 chance = 100.0;
             }
             if (!MathUtil.isNumber(textGrade2)) {
@@ -616,15 +585,13 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                 if (EquipmentUtil.hasLore(item2)) {
                     final Integer abilityLine = abilityWeaponManager.getLineAbilityItemWeapon(item2, ability);
                     if (abilityLine != null && abilityLine != line) {
-                        EquipmentUtil.setLore(item2, (int)abilityLine, "");
+                        EquipmentUtil.setLore(item2, abilityLine, "");
                     }
                 }
-            }
-            else if (EquipmentUtil.hasLore(item2)) {
+            } else if (EquipmentUtil.hasLore(item2)) {
                 final Integer abilityLine2 = abilityWeaponManager.getLineAbilityItemWeapon(item2, ability);
                 line = ((abilityLine2 != null) ? abilityLine2 : (EquipmentUtil.getLores(item2).size() + 1));
-            }
-            else {
+            } else {
                 line = 1;
             }
             final String lore = abilityWeaponManager.getTextAbility(ability, grade2, chance);
@@ -633,12 +600,11 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
             mapPlaceholder.put("ability", abilityWeapon.getKeyLore());
             mapPlaceholder.put("grade", RomanNumber.getRomanNumber(grade2));
             EquipmentUtil.setLore(item2, line, lore);
-            message4.sendMessage(sender, (HashMap)mapPlaceholder);
+            message4.sendMessage(sender, mapPlaceholder);
             SenderUtil.playSound(sender, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
             player2.updateInventory();
             return true;
-        }
-        else if (commandManager.checkCommand(subCommand, "Attribute_Power")) {
+        } else if (commandManager.checkCommand(subCommand, "Attribute_Power")) {
             if (!commandManager.checkPermission(sender, "Attribute_Power")) {
                 final String permission = commandManager.getPermission("Attribute_Power");
                 final MessageBuild message = lang.getMessage(sender, "Permission_Lack");
@@ -692,8 +658,7 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                 }
                 cooldown = MathUtil.parseDouble(textCooldown);
                 cooldown = MathUtil.limitDouble(cooldown, 0.0, cooldown);
-            }
-            else {
+            } else {
                 cooldown = 0.0;
             }
             int line2;
@@ -718,14 +683,12 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                         EquipmentUtil.setLore(item, lastLine2, "");
                     }
                 }
-            }
-            else if (EquipmentUtil.hasLore(item)) {
+            } else if (EquipmentUtil.hasLore(item)) {
                 line2 = powerManager.getLineClick(item, click);
                 if (line2 == -1) {
                     line2 = EquipmentUtil.getLores(item).size() + 1;
                 }
-            }
-            else {
+            } else {
                 line2 = 1;
             }
             if (power.equals(PowerEnum.COMMAND)) {
@@ -744,8 +707,7 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                 SenderUtil.playSound(sender, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
                 player.updateInventory();
                 return true;
-            }
-            else if (power.equals(PowerEnum.SHOOT)) {
+            } else if (power.equals(PowerEnum.SHOOT)) {
                 final String powerShoot = args[3];
                 final ProjectileEnum projectile = ProjectileEnum.getProjectileEnum(powerShoot);
                 if (projectile == null) {
@@ -761,8 +723,7 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                 SenderUtil.playSound(sender, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
                 player.updateInventory();
                 return true;
-            }
-            else {
+            } else {
                 if (!power.equals(PowerEnum.SPECIAL)) {
                     final MessageBuild message6 = lang.getMessage(sender, "Argument_Invalid_Command");
                     message6.sendMessage(sender);
@@ -785,8 +746,7 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                 player.updateInventory();
                 return true;
             }
-        }
-        else {
+        } else {
             if (!commandManager.checkCommand(subCommand, "Attribute_Requirement")) {
                 final MessageBuild message2 = lang.getMessage(sender, "Argument_Invalid_Command");
                 message2.sendMessage(sender);
@@ -837,16 +797,14 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                     if (EquipmentUtil.hasLore(item)) {
                         final Integer lastLine4 = requirementManager.getLineRequirementSoulUnbound(item);
                         if (lastLine4 != null && lastLine4 != line4) {
-                            EquipmentUtil.setLore(item, (int)lastLine4, "");
+                            EquipmentUtil.setLore(item, lastLine4, "");
                         }
                     }
-                }
-                else if (EquipmentUtil.hasLore(item)) {
+                } else if (EquipmentUtil.hasLore(item)) {
                     final Integer lineReq = requirementManager.getLineRequirementSoulUnbound(item);
                     final int loreSize = EquipmentUtil.getLores(item).size();
                     line4 = ((lineReq != null) ? lineReq : (loreSize + 1));
-                }
-                else {
+                } else {
                     line4 = 1;
                 }
                 final MessageBuild message10 = lang.getMessage(sender, "MyItems_Attribute_Requirement_Unbound_Success");
@@ -860,16 +818,15 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                 OfflinePlayer bound;
                 if (args.length > 2) {
                     final String textBound = args[2];
-                    bound = (OfflinePlayer)(PlayerUtil.isOnline(textBound) ? PlayerUtil.getOnlinePlayer(textBound) : PlayerUtil.getPlayer(textBound));
+                    bound = PlayerUtil.isOnline(textBound) ? PlayerUtil.getOnlinePlayer(textBound) : PlayerUtil.getPlayer(textBound);
                     if (bound == null) {
                         final MessageBuild message8 = lang.getMessage(sender, "Player_Not_Exists");
                         message8.sendMessage(sender, "Player", textBound);
                         SenderUtil.playSound(sender, SoundEnum.ENTITY_BLAZE_DEATH);
                         return true;
                     }
-                }
-                else {
-                    bound = (OfflinePlayer)player;
+                } else {
+                    bound = player;
                 }
                 int line4;
                 if (args.length > 3) {
@@ -890,16 +847,14 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                     if (EquipmentUtil.hasLore(item)) {
                         final Integer lastLine4 = requirementManager.getLineRequirementSoulBound(item);
                         if (lastLine4 != null && lastLine4 != line4) {
-                            EquipmentUtil.setLore(item, (int)lastLine4, "");
+                            EquipmentUtil.setLore(item, lastLine4, "");
                         }
                     }
-                }
-                else if (EquipmentUtil.hasLore(item)) {
+                } else if (EquipmentUtil.hasLore(item)) {
                     final Integer lineReq = requirementManager.getLineRequirementSoulBound(item);
                     final int loreSize = EquipmentUtil.getLores(item).size();
                     line4 = ((lineReq != null) ? lineReq : (loreSize + 1));
-                }
-                else {
+                } else {
                     line4 = 1;
                 }
                 final String lore4 = requirementManager.getTextSoulBound(bound);
@@ -909,7 +864,7 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                 mapPlaceholder5.put("line", String.valueOf(line4));
                 requirementManager.setMetadataSoulbound(bound, item);
                 EquipmentUtil.setLore(item, line4, lore4);
-                message8.sendMessage(sender, (HashMap)mapPlaceholder5);
+                message8.sendMessage(sender, mapPlaceholder5);
                 SenderUtil.playSound(sender, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
                 player.updateInventory();
                 return true;
@@ -942,16 +897,14 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                     if (EquipmentUtil.hasLore(item)) {
                         final Integer lastLine4 = requirementManager.getLineRequirementPermission(item);
                         if (lastLine4 != null && lastLine4 != line4) {
-                            EquipmentUtil.setLore(item, (int)lastLine4, "");
+                            EquipmentUtil.setLore(item, lastLine4, "");
                         }
                     }
-                }
-                else if (EquipmentUtil.hasLore(item)) {
+                } else if (EquipmentUtil.hasLore(item)) {
                     final Integer lineReq = requirementManager.getLineRequirementPermission(item);
                     final int loreSize = EquipmentUtil.getLores(item).size();
                     line4 = ((lineReq != null) ? lineReq : (loreSize + 1));
-                }
-                else {
+                } else {
                     line4 = 1;
                 }
                 final String lore4 = requirementManager.getTextPermission(permission2);
@@ -960,12 +913,11 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                 mapPlaceholder5.put("permission", permission2);
                 mapPlaceholder5.put("line", String.valueOf(line4));
                 EquipmentUtil.setLore(item, line4, lore4);
-                message8.sendMessage(sender, (HashMap)mapPlaceholder5);
+                message8.sendMessage(sender, mapPlaceholder5);
                 SenderUtil.playSound(sender, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
                 player.updateInventory();
                 return true;
-            }
-            else if (requirementEnum.equals(RequirementEnum.REQUIREMENT_LEVEL)) {
+            } else if (requirementEnum.equals(RequirementEnum.REQUIREMENT_LEVEL)) {
                 if (args.length < 3) {
                     final String tooltip2 = TextUtil.getJsonTooltip(lang.getText(sender, "Tooltip_Attribute_Req_Level"));
                     final MessageBuild message9 = lang.getMessage(sender, "Argument_Attribute_Level_Permission");
@@ -996,16 +948,14 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                         if (EquipmentUtil.hasLore(item)) {
                             final Integer lastLine5 = requirementManager.getLineRequirementLevel(item);
                             if (lastLine5 != null && lastLine5 != line3) {
-                                EquipmentUtil.setLore(item, (int)lastLine5, "");
+                                EquipmentUtil.setLore(item, lastLine5, "");
                             }
                         }
-                    }
-                    else if (EquipmentUtil.hasLore(item)) {
+                    } else if (EquipmentUtil.hasLore(item)) {
                         final Integer lineReq2 = requirementManager.getLineRequirementLevel(item);
                         final int loreSize2 = EquipmentUtil.getLores(item).size();
                         line3 = ((lineReq2 != null) ? lineReq2 : (loreSize2 + 1));
-                    }
-                    else {
+                    } else {
                         line3 = 1;
                     }
                     final String lore3 = requirementManager.getTextLevel(level);
@@ -1014,7 +964,7 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                     mapPlaceholder3.put("level", String.valueOf(level));
                     mapPlaceholder3.put("line", String.valueOf(line3));
                     EquipmentUtil.setLore(item, line3, lore3);
-                    message6.sendMessage(sender, (HashMap)mapPlaceholder3);
+                    message6.sendMessage(sender, mapPlaceholder3);
                     SenderUtil.playSound(sender, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
                     player.updateInventory();
                     return true;
@@ -1023,8 +973,7 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                 message8.sendMessage(sender);
                 SenderUtil.playSound(sender, SoundEnum.ENTITY_BLAZE_DEATH);
                 return true;
-            }
-            else {
+            } else {
                 if (!requirementEnum.equals(RequirementEnum.REQUIREMENT_CLASS)) {
                     final String tooltip2 = TextUtil.getJsonTooltip(lang.getText(sender, "Tooltip_Attribute_Req"));
                     final MessageBuild message9 = lang.getMessage(sender, "Argument_Attribute_Requirement");
@@ -1065,16 +1014,14 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                     if (EquipmentUtil.hasLore(item)) {
                         final Integer lastLine4 = requirementManager.getLineRequirementClass(item);
                         if (lastLine4 != null && lastLine4 != line4) {
-                            EquipmentUtil.setLore(item, (int)lastLine4, "");
+                            EquipmentUtil.setLore(item, lastLine4, "");
                         }
                     }
-                }
-                else if (EquipmentUtil.hasLore(item)) {
+                } else if (EquipmentUtil.hasLore(item)) {
                     final Integer lineReq = requirementManager.getLineRequirementClass(item);
                     final int loreSize = EquipmentUtil.getLores(item).size();
                     line4 = ((lineReq != null) ? lineReq : (loreSize + 1));
-                }
-                else {
+                } else {
                     line4 = 1;
                 }
                 final String lore4 = requirementManager.getTextClass(textClass);
@@ -1083,7 +1030,7 @@ public class CommandAttributes extends HandlerCommand implements CommandExecutor
                 mapPlaceholder5.put("class", textClass);
                 mapPlaceholder5.put("line", String.valueOf(line4));
                 EquipmentUtil.setLore(item, line4, lore4);
-                message8.sendMessage(sender, (HashMap)mapPlaceholder5);
+                message8.sendMessage(sender, mapPlaceholder5);
                 SenderUtil.playSound(sender, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
                 player.updateInventory();
                 return true;

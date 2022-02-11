@@ -4,24 +4,23 @@
 
 package com.praya.myitems.listener.main;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.inventory.ItemStack;
-import core.praya.agarthalib.bridge.unity.BridgeTagsNBT;
-import com.praya.myitems.manager.game.LoreStatsManager;
-import com.praya.myitems.manager.game.GameManager;
 import api.praya.myitems.builder.lorestats.LoreStatsEnum;
-import core.praya.agarthalib.bridge.unity.Bridge;
-import org.bukkit.event.player.PlayerItemDamageEvent;
 import com.praya.myitems.MyItems;
-import org.bukkit.event.Listener;
 import com.praya.myitems.builder.handler.HandlerEvent;
+import com.praya.myitems.manager.game.GameManager;
+import com.praya.myitems.manager.game.LoreStatsManager;
+import core.praya.agarthalib.bridge.unity.Bridge;
+import core.praya.agarthalib.bridge.unity.BridgeTagsNBT;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerItemDamageEvent;
+import org.bukkit.inventory.ItemStack;
 
-public class ListenerPlayerItemDamage extends HandlerEvent implements Listener
-{
+public class ListenerPlayerItemDamage extends HandlerEvent implements Listener {
     public ListenerPlayerItemDamage(final MyItems plugin) {
         super(plugin);
     }
-    
+
     @EventHandler
     public void itemDamageEvent(final PlayerItemDamageEvent event) {
         final GameManager gameManager = this.plugin.getGameManager();

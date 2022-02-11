@@ -4,48 +4,96 @@
 
 package com.praya.myitems.command;
 
-import java.util.Collection;
-import com.praya.agarthalib.utility.SortUtil;
-import java.util.ArrayList;
-import org.bukkit.plugin.java.JavaPlugin;
-import java.util.List;
 import api.praya.myitems.builder.socket.SocketGems;
 import api.praya.myitems.builder.socket.SocketGemsTree;
-import org.bukkit.World;
-import org.bukkit.inventory.ItemStack;
-import core.praya.agarthalib.builder.message.MessageBuild;
-import com.praya.myitems.manager.plugin.LanguageManager;
-import com.praya.myitems.manager.plugin.CommandManager;
-import com.praya.myitems.manager.game.SocketManager;
-import com.praya.myitems.manager.game.GameManager;
-import com.praya.myitems.manager.plugin.PluginManager;
-import org.bukkit.entity.LivingEntity;
-import core.praya.agarthalib.enums.main.RomanNumber;
-import org.bukkit.Location;
-import com.praya.agarthalib.utility.WorldUtil;
-import org.bukkit.entity.Player;
-import java.util.HashMap;
-import com.praya.agarthalib.utility.MathUtil;
-import com.praya.agarthalib.utility.EquipmentUtil;
-import core.praya.agarthalib.enums.main.Slot;
-import core.praya.agarthalib.bridge.unity.Bridge;
-import com.praya.agarthalib.utility.PlayerUtil;
-import com.praya.agarthalib.utility.SenderUtil;
-import core.praya.agarthalib.enums.branch.SoundEnum;
-import com.praya.agarthalib.utility.TextUtil;
-import com.praya.myitems.config.plugin.MainConfig;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
+import com.praya.agarthalib.utility.*;
 import com.praya.myitems.MyItems;
-import org.bukkit.command.CommandExecutor;
 import com.praya.myitems.builder.handler.HandlerCommand;
+import com.praya.myitems.config.plugin.MainConfig;
+import com.praya.myitems.manager.game.GameManager;
+import com.praya.myitems.manager.game.SocketManager;
+import com.praya.myitems.manager.plugin.CommandManager;
+import com.praya.myitems.manager.plugin.LanguageManager;
+import com.praya.myitems.manager.plugin.PluginManager;
+import core.praya.agarthalib.bridge.unity.Bridge;
+import core.praya.agarthalib.builder.message.MessageBuild;
+import core.praya.agarthalib.enums.branch.SoundEnum;
+import core.praya.agarthalib.enums.main.RomanNumber;
+import core.praya.agarthalib.enums.main.Slot;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 
-public class CommandSocket extends HandlerCommand implements CommandExecutor
-{
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+
+public class CommandSocket extends HandlerCommand implements CommandExecutor {
     public CommandSocket(final MyItems plugin) {
         super(plugin);
     }
-    
+
+    private static final List<String> list(final CommandSender sender, final Command command, final String label, final String[] args) {
+        final MyItems plugin = (MyItems) JavaPlugin.getPlugin((Class) MyItems.class);
+        final SocketManager socketManager = plugin.getGameManager().getSocketManager();
+        final PluginManager pluginManager = plugin.getPluginManager();
+        final CommandManager commandManager = pluginManager.getCommandManager();
+        final LanguageManager lang = pluginManager.getLanguageManager();
+        final List<String> list = new ArrayList<String>();
+        if (!commandManager.checkPermission(sender, "Socket_List")) {
+            final String permission = commandManager.getPermission("Socket_List");
+            final MessageBuild message = lang.getMessage(sender, "Permission_Lack");
+            message.sendMessage(sender, "permission", permission);
+            SenderUtil.playSound(sender, SoundEnum.ENTITY_BLAZE_DEATH);
+            return list;
+        }
+        if (socketManager.getSocketIDs().isEmpty()) {
+            final MessageBuild message2 = lang.getMessage(sender, "Item_Database_Empty");
+            message2.sendMessage(sender);
+            SenderUtil.playSound(sender, SoundEnum.BLOCK_WOOD_BUTTON_CLICK_ON);
+            return list;
+        }
+        final List<String> keyList = (List<String>) SortUtil.toList(socketManager.getSocketIDs());
+        final int size = keyList.size();
+        final int maxRow = 5;
+        final int maxPage = MathUtil.isDividedBy(size, 5.0) ? (size / 5) : (size / 5 + 1);
+        int page = 1;
+        if (args.length > 0) {
+            final String textPage = args[0];
+            if (MathUtil.isNumber(textPage)) {
+                page = MathUtil.parseInteger(textPage);
+                page = MathUtil.limitInteger(page, 1, maxPage);
+            }
+        }
+        final HashMap<String, String> map = new HashMap<String, String>();
+        String listHeaderMessage = lang.getText(sender, "List_Header");
+        map.put("page", String.valueOf(page));
+        map.put("maxpage", String.valueOf(maxPage));
+        listHeaderMessage = TextUtil.placeholder(map, listHeaderMessage);
+        SenderUtil.sendMessage(sender, listHeaderMessage);
+        for (int addNum = (page - 1) * 5, t = 0; t < 5 && t + addNum < size; ++t) {
+            final int index = t + addNum;
+            final String key = keyList.get(index);
+            final HashMap<String, String> subMap = new HashMap<String, String>();
+            String listItemMessage = lang.getText(sender, "List_Container");
+            subMap.put("index", String.valueOf(index + 1));
+            subMap.put("container", key);
+            subMap.put("maxpage", String.valueOf(page));
+            listItemMessage = TextUtil.placeholder(subMap, listItemMessage);
+            list.add(key);
+            SenderUtil.sendMessage(sender, listItemMessage);
+        }
+        SenderUtil.playSound(sender, SoundEnum.BLOCK_WOOD_BUTTON_CLICK_ON);
+        return list;
+    }
+
     public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
         final PluginManager pluginManager = this.plugin.getPluginManager();
         final GameManager gameManager = this.plugin.getGameManager();
@@ -94,8 +142,7 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
             if (slotType.equalsIgnoreCase("Empty") || slotType.equalsIgnoreCase("Unlock")) {
                 lore = socketManager.getTextSocketSlotEmpty();
                 type = lang.getText(sender, "Socket_Slot_Type_Empty");
-            }
-            else {
+            } else {
                 if (!slotType.equalsIgnoreCase("Locked") && !slotType.equalsIgnoreCase("Lock")) {
                     final String tooltip2 = TextUtil.getJsonTooltip(lang.getText(sender, "Tooltip_Socket_Add"));
                     final MessageBuild message4 = lang.getMessage(sender, "Argument_Socket_Add");
@@ -131,11 +178,10 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
             mapPlaceholder.put("type", type);
             EquipmentUtil.setLore(item, line, lore);
             SenderUtil.playSound(sender, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
-            message5.sendMessage(sender, (HashMap)mapPlaceholder);
+            message5.sendMessage(sender, mapPlaceholder);
             player.updateInventory();
             return true;
-        }
-        else if (commandManager.checkCommand(subCommand, "Socket_Drop")) {
+        } else if (commandManager.checkCommand(subCommand, "Socket_Drop")) {
             if (!commandManager.checkPermission(sender, "Socket_Drop")) {
                 final String permission = commandManager.getPermission("Socket_Drop");
                 final MessageBuild message = lang.getMessage(sender, "Permission_Lack");
@@ -170,8 +216,7 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
                 ItemStack itemRod;
                 if (textRod.equalsIgnoreCase("Unlock")) {
                     itemRod = mainConfig.getSocketItemRodUnlock();
-                }
-                else {
+                } else {
                     if (!textRod.equalsIgnoreCase("Remove")) {
                         final String tooltip4 = TextUtil.getJsonTooltip(lang.getText(sender, "Tooltip_Socket_Drop_Rod"));
                         final MessageBuild message7 = lang.getMessage(sender, "Argument_Socket_Drop_Rod");
@@ -185,15 +230,13 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
                 if (args.length > 3) {
                     final String textWorld = args[3];
                     if (textWorld.equalsIgnoreCase("~") && sender instanceof Player) {
-                        final Player player2 = (Player)sender;
+                        final Player player2 = (Player) sender;
                         world = player2.getWorld();
-                    }
-                    else {
+                    } else {
                         world = WorldUtil.getWorld(textWorld);
                     }
-                }
-                else {
-                    final Player player3 = (Player)sender;
+                } else {
+                    final Player player3 = (Player) sender;
                     world = player3.getWorld();
                 }
                 if (world == null) {
@@ -212,16 +255,14 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
                             SenderUtil.playSound(sender, SoundEnum.ENTITY_BLAZE_DEATH);
                             return true;
                         }
-                        final Player player4 = (Player)sender;
+                        final Player player4 = (Player) sender;
                         final Location location = player4.getLocation();
                         x = location.getX();
-                    }
-                    else {
+                    } else {
                         x = MathUtil.parseDouble(textX);
                     }
-                }
-                else {
-                    final Player player5 = (Player)sender;
+                } else {
+                    final Player player5 = (Player) sender;
                     final Location location2 = player5.getLocation();
                     x = location2.getX();
                 }
@@ -235,16 +276,14 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
                             SenderUtil.playSound(sender, SoundEnum.ENTITY_BLAZE_DEATH);
                             return true;
                         }
-                        final Player player4 = (Player)sender;
+                        final Player player4 = (Player) sender;
                         final Location location = player4.getLocation();
                         y = location.getY();
-                    }
-                    else {
+                    } else {
                         y = MathUtil.parseDouble(textY);
                     }
-                }
-                else {
-                    final Player player5 = (Player)sender;
+                } else {
+                    final Player player5 = (Player) sender;
                     final Location location2 = player5.getLocation();
                     y = location2.getY();
                 }
@@ -258,16 +297,14 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
                             SenderUtil.playSound(sender, SoundEnum.ENTITY_BLAZE_DEATH);
                             return true;
                         }
-                        final Player player4 = (Player)sender;
+                        final Player player4 = (Player) sender;
                         final Location location = player4.getLocation();
                         z = location.getZ();
-                    }
-                    else {
+                    } else {
                         z = MathUtil.parseDouble(textZ);
                     }
-                }
-                else {
-                    final Player player5 = (Player)sender;
+                } else {
+                    final Player player5 = (Player) sender;
                     final Location location2 = player5.getLocation();
                     z = location2.getZ();
                 }
@@ -281,8 +318,7 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
                         return true;
                     }
                     amount = MathUtil.parseInteger(textAmount);
-                }
-                else {
+                } else {
                     amount = 1;
                 }
                 final Location location3 = new Location(world, x, y, z);
@@ -295,14 +331,13 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
                     mapPlaceholder2.put("x", String.valueOf(x));
                     mapPlaceholder2.put("y", String.valueOf(y));
                     mapPlaceholder2.put("z", String.valueOf(z));
-                    message9.sendMessage(sender, (HashMap)mapPlaceholder2);
+                    message9.sendMessage(sender, mapPlaceholder2);
                     SenderUtil.playSound(sender, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
                 }
                 itemRod.setAmount(amount);
                 world.dropItem(location3, itemRod);
                 return true;
-            }
-            else {
+            } else {
                 if (!commandManager.checkCommand(dropType, "Socket_Drop_Gems")) {
                     final String tooltip3 = TextUtil.getJsonTooltip(lang.getText(sender, "Tooltip_Socket_Drop"));
                     final MessageBuild message6 = lang.getMessage(sender, "Argument_Socket_Drop");
@@ -350,15 +385,13 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
                 if (args.length > 4) {
                     final String textWorld2 = args[4];
                     if (textWorld2.equalsIgnoreCase("~") && sender instanceof Player) {
-                        final Player player6 = (Player)sender;
+                        final Player player6 = (Player) sender;
                         world = player6.getWorld();
-                    }
-                    else {
+                    } else {
                         world = WorldUtil.getWorld(textWorld2);
                     }
-                }
-                else {
-                    final Player player2 = (Player)sender;
+                } else {
+                    final Player player2 = (Player) sender;
                     world = player2.getWorld();
                 }
                 if (world == null) {
@@ -377,16 +410,14 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
                             SenderUtil.playSound(sender, SoundEnum.ENTITY_BLAZE_DEATH);
                             return true;
                         }
-                        final Player player7 = (Player)sender;
+                        final Player player7 = (Player) sender;
                         final Location location4 = player7.getLocation();
                         x2 = location4.getX();
-                    }
-                    else {
+                    } else {
                         x2 = MathUtil.parseDouble(textX2);
                     }
-                }
-                else {
-                    final Player player4 = (Player)sender;
+                } else {
+                    final Player player4 = (Player) sender;
                     final Location location = player4.getLocation();
                     x2 = location.getX();
                 }
@@ -400,16 +431,14 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
                             SenderUtil.playSound(sender, SoundEnum.ENTITY_BLAZE_DEATH);
                             return true;
                         }
-                        final Player player7 = (Player)sender;
+                        final Player player7 = (Player) sender;
                         final Location location4 = player7.getLocation();
                         y2 = location4.getY();
-                    }
-                    else {
+                    } else {
                         y2 = MathUtil.parseDouble(textY2);
                     }
-                }
-                else {
-                    final Player player4 = (Player)sender;
+                } else {
+                    final Player player4 = (Player) sender;
                     final Location location = player4.getLocation();
                     y2 = location.getY();
                 }
@@ -423,16 +452,14 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
                             SenderUtil.playSound(sender, SoundEnum.ENTITY_BLAZE_DEATH);
                             return true;
                         }
-                        final Player player7 = (Player)sender;
+                        final Player player7 = (Player) sender;
                         final Location location4 = player7.getLocation();
                         z2 = location4.getZ();
-                    }
-                    else {
+                    } else {
                         z2 = MathUtil.parseDouble(textZ2);
                     }
-                }
-                else {
-                    final Player player4 = (Player)sender;
+                } else {
+                    final Player player4 = (Player) sender;
                     final Location location = player4.getLocation();
                     z2 = location.getZ();
                 }
@@ -446,8 +473,7 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
                         return true;
                     }
                     amount2 = MathUtil.parseInteger(textAmount2);
-                }
-                else {
+                } else {
                     amount2 = 1;
                 }
                 final SocketGems socketGems = socketTree.getSocketBuild(grade);
@@ -463,15 +489,14 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
                     mapPlaceholder3.put("x", String.valueOf(x2));
                     mapPlaceholder3.put("y", String.valueOf(y2));
                     mapPlaceholder3.put("z", String.valueOf(z2));
-                    message11.sendMessage(sender, (HashMap)mapPlaceholder3);
+                    message11.sendMessage(sender, mapPlaceholder3);
                     SenderUtil.playSound(sender, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
                 }
                 item2.setAmount(amount2);
                 world.dropItem(location4, item2);
                 return true;
             }
-        }
-        else if (commandManager.checkCommand(subCommand, "Socket_Load")) {
+        } else if (commandManager.checkCommand(subCommand, "Socket_Load")) {
             if (!commandManager.checkPermission(sender, "Socket_Load")) {
                 final String permission = commandManager.getPermission("Socket_Load");
                 final MessageBuild message = lang.getMessage(sender, "Permission_Lack");
@@ -526,8 +551,7 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
                     }
                     final int maxGrade2 = socketTree.getMaxGrade();
                     grade2 = MathUtil.limitInteger(MathUtil.parseInteger(textGrade2), 1, maxGrade2);
-                }
-                else {
+                } else {
                     grade2 = 1;
                 }
                 Player target;
@@ -540,8 +564,7 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
                         return true;
                     }
                     target = PlayerUtil.getOnlinePlayer(nameTarget);
-                }
-                else {
+                } else {
                     target = PlayerUtil.parse(sender);
                 }
                 int amount3;
@@ -554,8 +577,7 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
                         return true;
                     }
                     amount3 = Math.max(1, MathUtil.parseInteger(textAmount3));
-                }
-                else {
+                } else {
                     amount3 = 1;
                 }
                 final ItemStack item3 = socketTree.getSocketBuild(grade2).getItem();
@@ -567,12 +589,12 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
                     mapPlaceholder.put("grade", String.valueOf(RomanNumber.getRomanNumber(grade2)));
                     EquipmentUtil.setAmount(item3, amount3);
                     PlayerUtil.addItem(target, item3);
-                    message5.sendMessage(sender, (HashMap)mapPlaceholder);
+                    message5.sendMessage(sender, mapPlaceholder);
                     SenderUtil.playSound(sender, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
                     return true;
                 }
                 final MessageBuild messageToSender = lang.getMessage(sender, "MyItems_Socket_Load_Gems_Success_To_Sender");
-                final MessageBuild messageToTarget = lang.getMessage((LivingEntity)target, "MyItems_Socket_Load_Gems_Success_To_Target");
+                final MessageBuild messageToTarget = lang.getMessage(target, "MyItems_Socket_Load_Gems_Success_To_Target");
                 final HashMap<String, String> mapPlaceholder4 = new HashMap<String, String>();
                 mapPlaceholder4.put("nameID", socketTree.getGems());
                 mapPlaceholder4.put("grade", String.valueOf(RomanNumber.getRomanNumber(grade2)));
@@ -581,13 +603,12 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
                 mapPlaceholder4.put("sender", sender.getName());
                 EquipmentUtil.setAmount(item3, amount3);
                 PlayerUtil.addItem(target, item3);
-                messageToSender.sendMessage(sender, (HashMap)mapPlaceholder4);
-                messageToTarget.sendMessage((CommandSender)target, (HashMap)mapPlaceholder4);
+                messageToSender.sendMessage(sender, mapPlaceholder4);
+                messageToTarget.sendMessage(target, mapPlaceholder4);
                 SenderUtil.playSound(sender, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
-                SenderUtil.playSound((CommandSender)target, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
+                SenderUtil.playSound(target, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
                 return true;
-            }
-            else {
+            } else {
                 if (!commandManager.checkCommand(loadType, "Socket_Load_Rod")) {
                     final String tooltip3 = TextUtil.getJsonTooltip(lang.getText(sender, "Tooltip_Socket_Load"));
                     final MessageBuild message6 = lang.getMessage(sender, "Argument_Socket_Load");
@@ -613,8 +634,7 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
                 ItemStack rod;
                 if (textRod.equalsIgnoreCase("Unlock")) {
                     rod = mainConfig.getSocketItemRodUnlock();
-                }
-                else {
+                } else {
                     if (!textRod.equalsIgnoreCase("Remove")) {
                         final String tooltip5 = TextUtil.getJsonTooltip(lang.getText(sender, "Tooltip_Socket_Load_Rod"));
                         final MessageBuild message5 = lang.getMessage(sender, "Argument_Socket_Load_Rod");
@@ -634,8 +654,7 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
                         return true;
                     }
                     target2 = PlayerUtil.getOnlinePlayer(nameTarget);
-                }
-                else {
+                } else {
                     target2 = PlayerUtil.parse(sender);
                 }
                 int amount3;
@@ -649,8 +668,7 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
                     }
                     final int rawAmount = MathUtil.parseInteger(textAmount3);
                     amount3 = MathUtil.limitInteger(rawAmount, 1, rawAmount);
-                }
-                else {
+                } else {
                     amount3 = 1;
                 }
                 if (target2.equals(sender)) {
@@ -660,7 +678,7 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
                     mapPlaceholder5.put("amount", String.valueOf(amount3));
                     EquipmentUtil.setAmount(rod, amount3);
                     PlayerUtil.addItem(target2, rod);
-                    message7.sendMessage(sender, (HashMap)mapPlaceholder5);
+                    message7.sendMessage(sender, mapPlaceholder5);
                     SenderUtil.playSound(sender, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
                     return true;
                 }
@@ -671,14 +689,13 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
                 mapPlaceholder.put("amount", String.valueOf(amount3));
                 EquipmentUtil.setAmount(rod, amount3);
                 PlayerUtil.addItem(target2, rod);
-                messageToSender2.sendMessage(sender, (HashMap)mapPlaceholder);
-                messageToTarget2.sendMessage((CommandSender)target2, (HashMap)mapPlaceholder);
+                messageToSender2.sendMessage(sender, mapPlaceholder);
+                messageToTarget2.sendMessage(target2, mapPlaceholder);
                 SenderUtil.playSound(sender, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
-                SenderUtil.playSound((CommandSender)target2, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
+                SenderUtil.playSound(target2, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
                 return true;
             }
-        }
-        else {
+        } else {
             if (commandManager.checkCommand(subCommand, "Socket_List")) {
                 final String[] fullArgs2 = TextUtil.pressList(args, 2);
                 list(sender, command, label, fullArgs2);
@@ -689,59 +706,5 @@ public class CommandSocket extends HandlerCommand implements CommandExecutor
             SenderUtil.playSound(sender, SoundEnum.ENTITY_BLAZE_DEATH);
             return true;
         }
-    }
-    
-    private static final List<String> list(final CommandSender sender, final Command command, final String label, final String[] args) {
-        final MyItems plugin = (MyItems)JavaPlugin.getPlugin((Class)MyItems.class);
-        final SocketManager socketManager = plugin.getGameManager().getSocketManager();
-        final PluginManager pluginManager = plugin.getPluginManager();
-        final CommandManager commandManager = pluginManager.getCommandManager();
-        final LanguageManager lang = pluginManager.getLanguageManager();
-        final List<String> list = new ArrayList<String>();
-        if (!commandManager.checkPermission(sender, "Socket_List")) {
-            final String permission = commandManager.getPermission("Socket_List");
-            final MessageBuild message = lang.getMessage(sender, "Permission_Lack");
-            message.sendMessage(sender, "permission", permission);
-            SenderUtil.playSound(sender, SoundEnum.ENTITY_BLAZE_DEATH);
-            return list;
-        }
-        if (socketManager.getSocketIDs().isEmpty()) {
-            final MessageBuild message2 = lang.getMessage(sender, "Item_Database_Empty");
-            message2.sendMessage(sender);
-            SenderUtil.playSound(sender, SoundEnum.BLOCK_WOOD_BUTTON_CLICK_ON);
-            return list;
-        }
-        final List<String> keyList = (List<String>)SortUtil.toList((Collection)socketManager.getSocketIDs());
-        final int size = keyList.size();
-        final int maxRow = 5;
-        final int maxPage = MathUtil.isDividedBy((double)size, 5.0) ? (size / 5) : (size / 5 + 1);
-        int page = 1;
-        if (args.length > 0) {
-            final String textPage = args[0];
-            if (MathUtil.isNumber(textPage)) {
-                page = MathUtil.parseInteger(textPage);
-                page = MathUtil.limitInteger(page, 1, maxPage);
-            }
-        }
-        final HashMap<String, String> map = new HashMap<String, String>();
-        String listHeaderMessage = lang.getText(sender, "List_Header");
-        map.put("page", String.valueOf(page));
-        map.put("maxpage", String.valueOf(maxPage));
-        listHeaderMessage = TextUtil.placeholder((HashMap)map, listHeaderMessage);
-        SenderUtil.sendMessage(sender, listHeaderMessage);
-        for (int addNum = (page - 1) * 5, t = 0; t < 5 && t + addNum < size; ++t) {
-            final int index = t + addNum;
-            final String key = keyList.get(index);
-            final HashMap<String, String> subMap = new HashMap<String, String>();
-            String listItemMessage = lang.getText(sender, "List_Container");
-            subMap.put("index", String.valueOf(index + 1));
-            subMap.put("container", key);
-            subMap.put("maxpage", String.valueOf(page));
-            listItemMessage = TextUtil.placeholder((HashMap)subMap, listItemMessage);
-            list.add(key);
-            SenderUtil.sendMessage(sender, listItemMessage);
-        }
-        SenderUtil.playSound(sender, SoundEnum.BLOCK_WOOD_BUTTON_CLICK_ON);
-        return list;
     }
 }

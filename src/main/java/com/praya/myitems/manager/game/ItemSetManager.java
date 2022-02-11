@@ -4,71 +4,57 @@
 
 package com.praya.myitems.manager.game;
 
-import org.bukkit.inventory.InventoryView;
-import java.util.ListIterator;
-import org.bukkit.inventory.PlayerInventory;
-import java.util.Set;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.GameMode;
-import com.praya.agarthalib.utility.TextUtil;
-import java.util.Collections;
-import org.bukkit.entity.Player;
-import java.util.HashSet;
-import org.bukkit.inventory.Inventory;
 import api.praya.myitems.builder.ability.AbilityItemWeapon;
-import api.praya.myitems.builder.item.ItemSetBonusEffectAbilityWeapon;
-import api.praya.myitems.builder.item.ItemSetBonusEffect;
-import api.praya.myitems.builder.item.ItemSetBonusEffectStats;
-import api.praya.myitems.builder.item.ItemSetBonus;
 import api.praya.myitems.builder.ability.AbilityWeapon;
-import api.praya.myitems.builder.item.ItemSetBonusEffectEntity;
+import api.praya.myitems.builder.item.*;
+import com.praya.agarthalib.utility.EquipmentUtil;
+import com.praya.agarthalib.utility.TextUtil;
+import com.praya.myitems.MyItems;
+import com.praya.myitems.builder.handler.HandlerManager;
+import com.praya.myitems.config.game.ItemSetConfig;
+import com.praya.myitems.config.plugin.MainConfig;
 import core.praya.agarthalib.bridge.unity.Bridge;
 import core.praya.agarthalib.enums.main.Slot;
-import java.util.HashMap;
-import org.bukkit.entity.LivingEntity;
-import java.util.List;
-import com.praya.agarthalib.utility.EquipmentUtil;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.ChatColor;
-import com.praya.myitems.config.plugin.MainConfig;
-import java.util.Iterator;
-import api.praya.myitems.builder.item.ItemSetComponent;
-import java.util.ArrayList;
-import api.praya.myitems.builder.item.ItemSet;
-import java.util.Collection;
-import com.praya.myitems.MyItems;
-import com.praya.myitems.config.game.ItemSetConfig;
-import com.praya.myitems.builder.handler.HandlerManager;
+import org.bukkit.GameMode;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
-public class ItemSetManager extends HandlerManager
-{
+import java.util.*;
+
+public class ItemSetManager extends HandlerManager {
     private final ItemSetConfig itemSetConfig;
-    
+
     protected ItemSetManager(final MyItems plugin) {
         super(plugin);
         this.itemSetConfig = new ItemSetConfig(plugin);
     }
-    
+
     public final ItemSetConfig getItemSetConfig() {
         return this.itemSetConfig;
     }
-    
+
     public final Collection<String> getItemSetIDs() {
         return this.getItemSetConfig().getItemSetIDs();
     }
-    
+
     public final Collection<ItemSet> getAllItemSet() {
         return this.getItemSetConfig().getAllItemSet();
     }
-    
+
     public final ItemSet getItemSet(final String id) {
         return this.getItemSetConfig().getItemSet(id);
     }
-    
+
     public final boolean isExists(final String id) {
         return this.getItemSet(id) != null;
     }
-    
+
     public final Collection<String> getItemComponentIDs() {
         final Collection<String> itemComponentIDs = new ArrayList<String>();
         for (final ItemSet itemSet : this.getAllItemSet()) {
@@ -79,7 +65,7 @@ public class ItemSetManager extends HandlerManager
         }
         return itemComponentIDs;
     }
-    
+
     public final ItemSetComponent getItemComponentByKeyLore(final String keyLore) {
         if (keyLore != null) {
             for (final ItemSet itemSet : this.getAllItemSet()) {
@@ -92,7 +78,7 @@ public class ItemSetManager extends HandlerManager
         }
         return null;
     }
-    
+
     public final ItemSetComponent getItemComponentByLore(final String lore) {
         if (lore != null) {
             final String keySetComponentSelf = MainConfig.KEY_SET_COMPONENT_SELF;
@@ -107,10 +93,10 @@ public class ItemSetManager extends HandlerManager
         }
         return null;
     }
-    
+
     public final ItemSetComponent getItemComponent(final ItemStack item) {
         if (item != null) {
-            final List<String> lores = (List<String>)EquipmentUtil.getLores(item);
+            final List<String> lores = EquipmentUtil.getLores(item);
             for (final String lore : lores) {
                 final ItemSetComponent itemSetComponent = this.getItemComponentByLore(lore);
                 if (itemSetComponent != null) {
@@ -120,7 +106,7 @@ public class ItemSetManager extends HandlerManager
         }
         return null;
     }
-    
+
     public final ItemSet getItemSetByComponentID(final String componentID) {
         if (componentID != null) {
             for (final ItemSet key : this.getAllItemSet()) {
@@ -133,7 +119,7 @@ public class ItemSetManager extends HandlerManager
         }
         return null;
     }
-    
+
     public final ItemSet getItemSetByKeyLore(final String keyLore) {
         if (keyLore != null) {
             for (final ItemSet key : this.getAllItemSet()) {
@@ -146,7 +132,7 @@ public class ItemSetManager extends HandlerManager
         }
         return null;
     }
-    
+
     public final ItemSet getItemSetByLore(final String lore) {
         if (lore != null) {
             final String keySetComponentSelf = MainConfig.KEY_SET_COMPONENT_SELF;
@@ -161,10 +147,10 @@ public class ItemSetManager extends HandlerManager
         }
         return null;
     }
-    
+
     public final ItemSet getItemSet(final ItemStack item) {
         if (item != null) {
-            final List<String> lores = (List<String>)EquipmentUtil.getLores(item);
+            final List<String> lores = EquipmentUtil.getLores(item);
             for (final String lore : lores) {
                 final ItemSet itemSet = this.getItemSetByLore(lore);
                 if (itemSet != null) {
@@ -174,15 +160,15 @@ public class ItemSetManager extends HandlerManager
         }
         return null;
     }
-    
+
     public final boolean isItemSet(final ItemStack item) {
         return this.getItemSet(item) != null;
     }
-    
+
     public final HashMap<Slot, ItemSetComponent> getMapItemComponent(final LivingEntity entity) {
         return this.getMapItemComponent(entity, true);
     }
-    
+
     public final HashMap<Slot, ItemSetComponent> getMapItemComponent(final LivingEntity entity, final boolean checkSlot) {
         final HashMap<Slot, ItemSetComponent> mapItemSetComponent = new HashMap<Slot, ItemSetComponent>();
         if (entity != null) {
@@ -200,11 +186,11 @@ public class ItemSetManager extends HandlerManager
         }
         return mapItemSetComponent;
     }
-    
+
     public final HashMap<Slot, ItemSet> getMapItemSet(final LivingEntity entity) {
         return this.getMapItemSet(entity, true);
     }
-    
+
     public final HashMap<Slot, ItemSet> getMapItemSet(final LivingEntity entity, final boolean checkSlot) {
         final HashMap<Slot, ItemSet> mapItemSet = new HashMap<Slot, ItemSet>();
         if (entity != null) {
@@ -219,11 +205,11 @@ public class ItemSetManager extends HandlerManager
         }
         return mapItemSet;
     }
-    
+
     public final HashMap<ItemSet, Integer> getMapItemSetTotal(final LivingEntity entity) {
         return this.getMapItemSetTotal(entity, true);
     }
-    
+
     public final HashMap<ItemSet, Integer> getMapItemSetTotal(final LivingEntity entity, final boolean checkSlot) {
         final HashMap<ItemSet, Integer> mapItemSetTotal = new HashMap<ItemSet, Integer>();
         if (entity != null) {
@@ -233,23 +219,22 @@ public class ItemSetManager extends HandlerManager
                 if (mapItemSetTotal.containsKey(itemSet)) {
                     final int total = mapItemSetTotal.get(itemSet) + 1;
                     mapItemSetTotal.put(itemSet, total);
-                }
-                else {
+                } else {
                     mapItemSetTotal.put(itemSet, 1);
                 }
             }
         }
         return mapItemSetTotal;
     }
-    
+
     public final ItemSetBonusEffectEntity getItemSetBonusEffectEntity(final LivingEntity entity) {
         return this.getItemSetBonusEffectEntity(entity, true);
     }
-    
+
     public final ItemSetBonusEffectEntity getItemSetBonusEffectEntity(final LivingEntity entity, final boolean checkSlot) {
         return this.getItemSetBonusEffectEntity(entity, checkSlot, true);
     }
-    
+
     public final ItemSetBonusEffectEntity getItemSetBonusEffectEntity(final LivingEntity entity, final boolean checkSlot, final boolean checkChance) {
         final GameManager gameManager = this.plugin.getGameManager();
         final AbilityWeaponManager abilityWeaponManager = gameManager.getAbilityWeaponManager();
@@ -313,8 +298,7 @@ public class ItemSetManager extends HandlerManager
                             if (mapAbilityWeapon.containsKey(abilityWeapon)) {
                                 final int totalGrade = mapAbilityWeapon.get(abilityWeapon) + grade;
                                 mapAbilityWeapon.put(abilityWeapon, totalGrade);
-                            }
-                            else {
+                            } else {
                                 mapAbilityWeapon.put(abilityWeapon, grade);
                             }
                         }
@@ -326,15 +310,15 @@ public class ItemSetManager extends HandlerManager
         final ItemSetBonusEffectEntity itemSetBonusEffectEntity = new ItemSetBonusEffectEntity(itemSetBonusEffectStats2, mapAbilityWeapon);
         return itemSetBonusEffectEntity;
     }
-    
+
     public final void updateItemSet(final LivingEntity entity) {
         this.updateItemSet(entity, true);
     }
-    
+
     public final void updateItemSet(final LivingEntity entity, final boolean checkPlayerInventory) {
         this.updateItemSet(entity, checkPlayerInventory, null);
     }
-    
+
     public final void updateItemSet(final LivingEntity entity, final boolean checkPlayerInventory, final Inventory inventory) {
         final MainConfig mainConfig = MainConfig.getInstance();
         if (entity != null) {
@@ -363,8 +347,7 @@ public class ItemSetManager extends HandlerManager
                             if (mapItemSetTotal.containsKey(itemSet)) {
                                 final int total = mapItemSetTotal.get(itemSet) + 1;
                                 mapItemSetTotal.put(itemSet, total);
-                            }
-                            else {
+                            } else {
                                 mapItemSetTotal.put(itemSet, 1);
                             }
                         }
@@ -373,7 +356,7 @@ public class ItemSetManager extends HandlerManager
             }
             if (entity instanceof Player) {
                 if (checkPlayerInventory) {
-                    final Player player = (Player)entity;
+                    final Player player = (Player) entity;
                     final PlayerInventory playerInventory = player.getInventory();
                     final ItemStack itemCursor = player.getItemOnCursor();
                     if (itemCursor != null) {
@@ -407,7 +390,7 @@ public class ItemSetManager extends HandlerManager
                     final String name = itemSet2.getName();
                     final int total2 = mapItemSetTotal.containsKey(itemSet2) ? mapItemSetTotal.get(itemSet2) : 0;
                     final int maxComponent = itemSet2.getTotalComponent();
-                    final List<String> lores = (List<String>)EquipmentUtil.getLores(item2);
+                    final List<String> lores = EquipmentUtil.getLores(item2);
                     final List<String> loresBonus = new ArrayList<String>();
                     final List<String> loresComponent = new ArrayList<String>();
                     final List<Integer> bonusAmountIDs = new ArrayList<Integer>(itemSet2.getBonusAmountIDs());
@@ -427,27 +410,24 @@ public class ItemSetManager extends HandlerManager
                         String formatComponent = mainConfig.getSetFormatComponent();
                         String replacementKeyLore;
                         if (allItemSetComponent.contains(partComponent)) {
-                            formatComponent = String.valueOf(loreComponentActive) + formatComponent;
+                            formatComponent = loreComponentActive + formatComponent;
                             if (partComponent.equals(itemSetComponent2)) {
-                                replacementKeyLore = String.valueOf(keySetComponentSelf) + loreComponentActive + keyLore + keySetComponentSelf + loreComponentActive;
+                                replacementKeyLore = keySetComponentSelf + loreComponentActive + keyLore + keySetComponentSelf + loreComponentActive;
+                            } else {
+                                replacementKeyLore = keySetComponentOther + loreComponentActive + keyLore + keySetComponentOther + loreComponentActive;
                             }
-                            else {
-                                replacementKeyLore = String.valueOf(keySetComponentOther) + loreComponentActive + keyLore + keySetComponentOther + loreComponentActive;
-                            }
-                        }
-                        else {
-                            formatComponent = String.valueOf(loreComponentInactive) + formatComponent;
+                        } else {
+                            formatComponent = loreComponentInactive + formatComponent;
                             if (partComponent.equals(itemSetComponent2)) {
-                                replacementKeyLore = String.valueOf(keySetComponentSelf) + loreComponentInactive + keyLore + keySetComponentSelf + loreComponentInactive;
-                            }
-                            else {
-                                replacementKeyLore = String.valueOf(keySetComponentOther) + loreComponentInactive + keyLore + keySetComponentOther + loreComponentInactive;
+                                replacementKeyLore = keySetComponentSelf + loreComponentInactive + keyLore + keySetComponentSelf + loreComponentInactive;
+                            } else {
+                                replacementKeyLore = keySetComponentOther + loreComponentInactive + keyLore + keySetComponentOther + loreComponentInactive;
                             }
                         }
                         mapPlaceholder.clear();
                         mapPlaceholder.put("item_set_component_id", partComponentID);
                         mapPlaceholder.put("item_set_component_keylore", replacementKeyLore);
-                        formatComponent = TextUtil.placeholder((HashMap)mapPlaceholder, formatComponent, "<", ">");
+                        formatComponent = TextUtil.placeholder(mapPlaceholder, formatComponent, "<", ">");
                         loresComponent.add(formatComponent);
                     }
                     for (final int bonusAmountID : bonusAmountIDs) {
@@ -456,43 +436,42 @@ public class ItemSetManager extends HandlerManager
                         for (final String description : listDescription) {
                             String formatBonus = mainConfig.getSetFormatBonus();
                             if (total2 >= bonusAmountID) {
-                                formatBonus = String.valueOf(loreBonusActive) + formatBonus;
-                            }
-                            else {
-                                formatBonus = String.valueOf(loreBonusInactive) + formatBonus;
+                                formatBonus = loreBonusActive + formatBonus;
+                            } else {
+                                formatBonus = loreBonusInactive + formatBonus;
                             }
                             mapPlaceholder.clear();
                             mapPlaceholder.put("item_set_bonus_amount", String.valueOf(bonusAmountID));
                             mapPlaceholder.put("item_set_bonus_description", String.valueOf(description));
-                            formatBonus = TextUtil.placeholder((HashMap)mapPlaceholder, formatBonus, "<", ">");
+                            formatBonus = TextUtil.placeholder(mapPlaceholder, formatBonus, "<", ">");
                             loresBonus.add(formatBonus);
                         }
                     }
-                    final String lineBonus = TextUtil.convertListToString((List)loresBonus, "\n");
-                    final String lineComponent = TextUtil.convertListToString((List)loresComponent, "\n");
+                    final String lineBonus = TextUtil.convertListToString(loresBonus, "\n");
+                    final String lineComponent = TextUtil.convertListToString(loresComponent, "\n");
                     mapPlaceholder.clear();
                     mapPlaceholder.put("item_set_name", name);
                     mapPlaceholder.put("item_set_total", String.valueOf(total2));
                     mapPlaceholder.put("item_set_max", String.valueOf(maxComponent));
                     mapPlaceholder.put("list_item_set_component", lineComponent);
                     mapPlaceholder.put("list_item_set_bonus", lineBonus);
-                    loresSet = (List<String>)TextUtil.placeholder((HashMap)mapPlaceholder, (List)loresSet, "<", ">");
-                    loresSet = (List<String>)TextUtil.expandList((List)loresSet, "\n");
+                    loresSet = (List<String>) TextUtil.placeholder(mapPlaceholder, loresSet, "<", ">");
+                    loresSet = (List<String>) TextUtil.expandList(loresSet, "\n");
                     final ListIterator<String> iteratorLoresSet = loresSet.listIterator();
                     while (iteratorLoresSet.hasNext()) {
-                        final String lore2 = String.valueOf(keyLine) + iteratorLoresSet.next();
+                        final String lore2 = keyLine + iteratorLoresSet.next();
                         iteratorLoresSet.set(lore2);
                     }
                     lores.addAll(loresSet);
-                    EquipmentUtil.setLores(item2, (List)lores);
+                    EquipmentUtil.setLores(item2, lores);
                 }
             }
             if (entity instanceof Player) {
-                final Player player = (Player)entity;
+                final Player player = (Player) entity;
                 final GameMode gameMode = player.getGameMode();
                 final InventoryView inventoryView = player.getOpenInventory();
                 final InventoryType inventoryType = inventoryView.getType();
-                if (!gameMode.equals((Object)GameMode.CREATIVE) || !inventoryType.equals((Object)InventoryType.CREATIVE)) {
+                if (!gameMode.equals(GameMode.CREATIVE) || !inventoryType.equals(InventoryType.CREATIVE)) {
                     player.updateInventory();
                 }
             }

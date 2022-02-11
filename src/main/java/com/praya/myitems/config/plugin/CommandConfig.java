@@ -4,39 +4,38 @@
 
 package com.praya.myitems.config.plugin;
 
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
+import com.praya.agarthalib.utility.FileUtil;
+import com.praya.myitems.MyItems;
+import com.praya.myitems.builder.handler.HandlerCommand;
 import com.praya.myitems.manager.plugin.DataManager;
 import com.praya.myitems.manager.plugin.PluginManager;
-import java.util.List;
-import java.util.ArrayList;
-import org.bukkit.plugin.java.JavaPlugin;
-import com.praya.agarthalib.utility.FileUtil;
-import java.util.Iterator;
-import java.util.Collection;
-import com.praya.myitems.MyItems;
 import core.praya.agarthalib.builder.command.CommandBuild;
-import java.util.HashMap;
-import com.praya.myitems.builder.handler.HandlerCommand;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.java.JavaPlugin;
 
-public class CommandConfig extends HandlerCommand
-{
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+
+public class CommandConfig extends HandlerCommand {
     private final HashMap<String, CommandBuild> mapCommand;
-    
+
     public CommandConfig(final MyItems plugin) {
         super(plugin);
         this.mapCommand = new HashMap<String, CommandBuild>();
         this.setup();
     }
-    
+
     public final Collection<String> getCommandIDs() {
         return this.mapCommand.keySet();
     }
-    
+
     public final Collection<CommandBuild> getCommandBuilds() {
         return this.mapCommand.values();
     }
-    
+
     public final CommandBuild getCommand(final String id) {
         for (final String key : this.getCommandIDs()) {
             if (key.equalsIgnoreCase(id)) {
@@ -45,21 +44,21 @@ public class CommandConfig extends HandlerCommand
         }
         return null;
     }
-    
+
     public final void setup() {
         this.reset();
         this.loadConfig();
     }
-    
+
     private final void reset() {
         this.mapCommand.clear();
     }
-    
+
     private final void loadConfig() {
         final PluginManager pluginManager = this.plugin.getPluginManager();
         final DataManager dataManager = pluginManager.getDataManager();
         final String path = dataManager.getPath("Path_File_Command");
-        final FileConfiguration config = FileUtil.getFileConfigurationResource((JavaPlugin)this.plugin, path);
+        final FileConfiguration config = FileUtil.getFileConfigurationResource(this.plugin, path);
         for (final String key : config.getKeys(false)) {
             if (key.equalsIgnoreCase("Command")) {
                 final ConfigurationSection idSection = config.getConfigurationSection(key);
@@ -70,15 +69,13 @@ public class CommandConfig extends HandlerCommand
                     for (final String mainData : mainDataSection.getKeys(false)) {
                         if (mainData.equalsIgnoreCase("Permission")) {
                             permission = mainDataSection.getString(mainData);
-                        }
-                        else {
+                        } else {
                             if (!mainData.equalsIgnoreCase("Aliases")) {
                                 continue;
                             }
                             if (mainDataSection.isString(mainData)) {
                                 aliases.add(mainDataSection.getString(mainData));
-                            }
-                            else {
+                            } else {
                                 if (!mainDataSection.isList(mainData)) {
                                     continue;
                                 }
@@ -86,7 +83,7 @@ public class CommandConfig extends HandlerCommand
                             }
                         }
                     }
-                    final CommandBuild commandBuild = new CommandBuild(id, permission, (List)aliases);
+                    final CommandBuild commandBuild = new CommandBuild(id, permission, aliases);
                     this.mapCommand.put(id, commandBuild);
                 }
             }

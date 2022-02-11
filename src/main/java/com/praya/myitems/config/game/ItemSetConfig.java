@@ -4,56 +4,40 @@
 
 package com.praya.myitems.config.game;
 
-import org.bukkit.Material;
-import java.util.Set;
-import java.util.List;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import java.io.File;
+import api.praya.myitems.builder.ability.AbilityItemWeapon;
+import api.praya.myitems.builder.item.*;
+import com.praya.agarthalib.utility.*;
+import com.praya.myitems.MyItems;
+import com.praya.myitems.builder.handler.HandlerConfig;
 import com.praya.myitems.manager.plugin.DataManager;
 import com.praya.myitems.manager.plugin.PluginManager;
-import api.praya.myitems.builder.item.ItemSetComponentItem;
-import com.praya.agarthalib.utility.EnchantmentUtil;
-import com.praya.agarthalib.utility.MaterialUtil;
-import org.bukkit.enchantments.Enchantment;
 import core.praya.agarthalib.enums.main.Slot;
-import java.util.HashSet;
-import api.praya.myitems.builder.item.ItemSetBonusEffect;
-import api.praya.myitems.builder.ability.AbilityItemWeapon;
 import org.bukkit.ChatColor;
-import com.praya.agarthalib.utility.TextUtil;
-import api.praya.myitems.builder.item.ItemSetBonusEffectAbilityWeapon;
-import api.praya.myitems.builder.item.ItemSetBonusEffectStats;
-import java.util.ArrayList;
-import com.praya.agarthalib.utility.MathUtil;
-import api.praya.myitems.builder.item.ItemSetComponent;
-import api.praya.myitems.builder.item.ItemSetBonus;
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.plugin.java.JavaPlugin;
-import com.praya.agarthalib.utility.FileUtil;
-import java.util.Iterator;
-import java.util.Collection;
-import com.praya.myitems.MyItems;
-import api.praya.myitems.builder.item.ItemSet;
-import java.util.HashMap;
-import com.praya.myitems.builder.handler.HandlerConfig;
 
-public class ItemSetConfig extends HandlerConfig
-{
+import java.io.File;
+import java.util.*;
+
+public class ItemSetConfig extends HandlerConfig {
     private final HashMap<String, ItemSet> mapItemSet;
-    
+
     public ItemSetConfig(final MyItems plugin) {
         super(plugin);
         this.mapItemSet = new HashMap<String, ItemSet>();
     }
-    
+
     public final Collection<String> getItemSetIDs() {
         return this.mapItemSet.keySet();
     }
-    
+
     public final Collection<ItemSet> getAllItemSet() {
         return this.mapItemSet.values();
     }
-    
+
     public final ItemSet getItemSet(final String id) {
         for (final String key : this.getItemSetIDs()) {
             if (key.equalsIgnoreCase(id)) {
@@ -62,25 +46,25 @@ public class ItemSetConfig extends HandlerConfig
         }
         return null;
     }
-    
+
     public final void setup() {
         this.reset();
         this.loadConfig();
     }
-    
+
     private final void reset() {
         this.mapItemSet.clear();
     }
-    
+
     private final void loadConfig() {
         final PluginManager pluginManager = this.plugin.getPluginManager();
         final DataManager dataManager = pluginManager.getDataManager();
         final String pathDefault = dataManager.getPath("Path_File_Item_Set");
         final String pathFolder = dataManager.getPath("Path_Folder_Item_Set");
-        final File fileDefault = FileUtil.getFile((JavaPlugin)this.plugin, pathDefault);
-        final File fileFolder = FileUtil.getFile((JavaPlugin)this.plugin, pathFolder);
+        final File fileDefault = FileUtil.getFile(this.plugin, pathDefault);
+        final File fileFolder = FileUtil.getFile(this.plugin, pathFolder);
         if (!fileDefault.exists()) {
-            FileUtil.saveResource((JavaPlugin)this.plugin, pathDefault);
+            FileUtil.saveResource(this.plugin, pathDefault);
         }
         File[] listFiles;
         for (int length = (listFiles = fileFolder.listFiles()).length, i = 0; i < length; ++i) {
@@ -94,8 +78,7 @@ public class ItemSetConfig extends HandlerConfig
                 for (final String mainData : mainDataSection.getKeys(false)) {
                     if (mainData.equalsIgnoreCase("Name")) {
                         name = mainDataSection.getString(mainData);
-                    }
-                    else if (mainData.equalsIgnoreCase("Bonus")) {
+                    } else if (mainData.equalsIgnoreCase("Bonus")) {
                         final ConfigurationSection bonusAmountSection = mainDataSection.getConfigurationSection(mainData);
                         for (final String bonusAmount : bonusAmountSection.getKeys(false)) {
                             if (MathUtil.isNumber(bonusAmount)) {
@@ -110,15 +93,13 @@ public class ItemSetConfig extends HandlerConfig
                                             for (final String descriptionLine : bonusDataSection.getStringList(bonusData)) {
                                                 description.add(ChatColor.stripColor(TextUtil.colorful(descriptionLine)));
                                             }
-                                        }
-                                        else {
+                                        } else {
                                             if (!bonusDataSection.isString(bonusData)) {
                                                 continue;
                                             }
                                             description.add(ChatColor.stripColor(TextUtil.colorful(bonusDataSection.getString(bonusData))));
                                         }
-                                    }
-                                    else {
+                                    } else {
                                         if (!bonusData.equalsIgnoreCase("Effect")) {
                                             continue;
                                         }
@@ -150,65 +131,45 @@ public class ItemSetConfig extends HandlerConfig
                                                 for (final String effectStats : effectStatsSection.getKeys(false)) {
                                                     if (effectStats.equalsIgnoreCase("Additional_Damage") || effectStats.equalsIgnoreCase("Damage")) {
                                                         additionalDamage = effectStatsSection.getDouble(effectStats);
-                                                    }
-                                                    else if (effectStats.equalsIgnoreCase("Percent_Damage")) {
+                                                    } else if (effectStats.equalsIgnoreCase("Percent_Damage")) {
                                                         percentDamage = effectStatsSection.getDouble(effectStats);
-                                                    }
-                                                    else if (effectStats.equalsIgnoreCase("Penetration")) {
+                                                    } else if (effectStats.equalsIgnoreCase("Penetration")) {
                                                         penetration = effectStatsSection.getDouble(effectStats);
-                                                    }
-                                                    else if (effectStats.equalsIgnoreCase("PvP_Damage")) {
+                                                    } else if (effectStats.equalsIgnoreCase("PvP_Damage")) {
                                                         pvpDamage = effectStatsSection.getDouble(effectStats);
-                                                    }
-                                                    else if (effectStats.equalsIgnoreCase("PvE_Damage")) {
+                                                    } else if (effectStats.equalsIgnoreCase("PvE_Damage")) {
                                                         pveDamage = effectStatsSection.getDouble(effectStats);
-                                                    }
-                                                    else if (effectStats.equalsIgnoreCase("Additional_Defense") || effectStats.equalsIgnoreCase("Defense")) {
+                                                    } else if (effectStats.equalsIgnoreCase("Additional_Defense") || effectStats.equalsIgnoreCase("Defense")) {
                                                         additionalDefense = effectStatsSection.getDouble(effectStats);
-                                                    }
-                                                    else if (effectStats.equalsIgnoreCase("Percent_Defense")) {
+                                                    } else if (effectStats.equalsIgnoreCase("Percent_Defense")) {
                                                         percentDefense = effectStatsSection.getDouble(effectStats);
-                                                    }
-                                                    else if (effectStats.equalsIgnoreCase("Health")) {
+                                                    } else if (effectStats.equalsIgnoreCase("Health")) {
                                                         health = effectStatsSection.getDouble(effectStats);
-                                                    }
-                                                    else if (effectStats.equalsIgnoreCase("Health_Regen") || effectStats.equalsIgnoreCase("Regen") || effectStats.equalsIgnoreCase("Regeneration")) {
+                                                    } else if (effectStats.equalsIgnoreCase("Health_Regen") || effectStats.equalsIgnoreCase("Regen") || effectStats.equalsIgnoreCase("Regeneration")) {
                                                         healthRegen = effectStatsSection.getDouble(effectStats);
-                                                    }
-                                                    else if (effectStats.equalsIgnoreCase("Stamina_Max") || effectStats.equalsIgnoreCase("Max_Stamina")) {
+                                                    } else if (effectStats.equalsIgnoreCase("Stamina_Max") || effectStats.equalsIgnoreCase("Max_Stamina")) {
                                                         staminaMax = effectStatsSection.getDouble(effectStats);
-                                                    }
-                                                    else if (effectStats.equalsIgnoreCase("Stamina_Regen") || effectStats.equalsIgnoreCase("Regen_Stamina")) {
+                                                    } else if (effectStats.equalsIgnoreCase("Stamina_Regen") || effectStats.equalsIgnoreCase("Regen_Stamina")) {
                                                         staminaRegen = effectStatsSection.getDouble(effectStats);
-                                                    }
-                                                    else if (effectStats.equalsIgnoreCase("Attack_AoE_Radius")) {
+                                                    } else if (effectStats.equalsIgnoreCase("Attack_AoE_Radius")) {
                                                         attackAoERadius = effectStatsSection.getDouble(effectStats);
-                                                    }
-                                                    else if (effectStats.equalsIgnoreCase("Attack_AoE_Damage")) {
+                                                    } else if (effectStats.equalsIgnoreCase("Attack_AoE_Damage")) {
                                                         attackAoEDamage = effectStatsSection.getDouble(effectStats);
-                                                    }
-                                                    else if (effectStats.equalsIgnoreCase("PvP_Defense")) {
+                                                    } else if (effectStats.equalsIgnoreCase("PvP_Defense")) {
                                                         pvpDefense = effectStatsSection.getDouble(effectStats);
-                                                    }
-                                                    else if (effectStats.equalsIgnoreCase("PvE_Defense")) {
+                                                    } else if (effectStats.equalsIgnoreCase("PvE_Defense")) {
                                                         pveDefense = effectStatsSection.getDouble(effectStats);
-                                                    }
-                                                    else if (effectStats.equalsIgnoreCase("Critical_Chance")) {
+                                                    } else if (effectStats.equalsIgnoreCase("Critical_Chance")) {
                                                         criticalChance = effectStatsSection.getDouble(effectStats);
-                                                    }
-                                                    else if (effectStats.equalsIgnoreCase("Critical_Damage")) {
+                                                    } else if (effectStats.equalsIgnoreCase("Critical_Damage")) {
                                                         criticalDamage = effectStatsSection.getDouble(effectStats);
-                                                    }
-                                                    else if (effectStats.equalsIgnoreCase("Block_Amount")) {
+                                                    } else if (effectStats.equalsIgnoreCase("Block_Amount")) {
                                                         blockAmount = effectStatsSection.getDouble(effectStats);
-                                                    }
-                                                    else if (effectStats.equalsIgnoreCase("Block_Rate")) {
+                                                    } else if (effectStats.equalsIgnoreCase("Block_Rate")) {
                                                         blockRate = effectStatsSection.getDouble(effectStats);
-                                                    }
-                                                    else if (effectStats.equalsIgnoreCase("Hit_Rate")) {
+                                                    } else if (effectStats.equalsIgnoreCase("Hit_Rate")) {
                                                         hitRate = effectStatsSection.getDouble(effectStats);
-                                                    }
-                                                    else {
+                                                    } else {
                                                         if (!effectStats.equalsIgnoreCase("Dodge_Rate")) {
                                                             continue;
                                                         }
@@ -216,8 +177,7 @@ public class ItemSetConfig extends HandlerConfig
                                                     }
                                                 }
                                                 bonusEffectStats = new ItemSetBonusEffectStats(additionalDamage, percentDamage, penetration, pvpDamage, pveDamage, additionalDefense, percentDefense, health, healthRegen, staminaMax, staminaRegen, attackAoERadius, attackAoEDamage, pvpDefense, pveDefense, criticalChance, criticalDamage, blockAmount, blockRate, hitRate, dodgeRate);
-                                            }
-                                            else {
+                                            } else {
                                                 if (!effectData.equalsIgnoreCase("Ability_Weapon")) {
                                                     continue;
                                                 }
@@ -230,8 +190,7 @@ public class ItemSetConfig extends HandlerConfig
                                                     for (final String effectAbilityWeaponData : effectAbilityWeaponDataSection.getKeys(false)) {
                                                         if (effectAbilityWeaponData.equalsIgnoreCase("Chance")) {
                                                             chance = MathUtil.limitDouble(effectAbilityWeaponDataSection.getDouble(effectAbilityWeaponData), 0.0, 100.0);
-                                                        }
-                                                        else {
+                                                        } else {
                                                             if (!effectAbilityWeaponData.equalsIgnoreCase("Grade")) {
                                                                 continue;
                                                             }
@@ -253,15 +212,14 @@ public class ItemSetConfig extends HandlerConfig
                                 mapBonus.put(amountID, itemSetBonus);
                             }
                         }
-                    }
-                    else {
+                    } else {
                         if (!mainData.equalsIgnoreCase("Component")) {
                             continue;
                         }
                         final ConfigurationSection componentSection = mainDataSection.getConfigurationSection(mainData);
                         for (final String component : componentSection.getKeys(false)) {
                             final ConfigurationSection componentDataSection = componentSection.getConfigurationSection(component);
-                            final String componentID = String.valueOf(key) + "_" + component;
+                            final String componentID = key + "_" + component;
                             final List<String> lores = new ArrayList<String>();
                             final List<String> flags = new ArrayList<String>();
                             final Set<Slot> slots = new HashSet<Slot>();
@@ -275,29 +233,21 @@ public class ItemSetConfig extends HandlerConfig
                             for (final String componentData : componentDataSection.getKeys(false)) {
                                 if (componentData.equalsIgnoreCase("KeyLore")) {
                                     keyLore = ChatColor.stripColor(TextUtil.colorful(componentDataSection.getString(componentData)));
-                                }
-                                else if (componentData.equalsIgnoreCase("Display_Name") || componentData.equalsIgnoreCase("Display") || componentData.equalsIgnoreCase("Name")) {
+                                } else if (componentData.equalsIgnoreCase("Display_Name") || componentData.equalsIgnoreCase("Display") || componentData.equalsIgnoreCase("Name")) {
                                     displayName = componentDataSection.getString(componentData);
-                                }
-                                else if (componentData.equalsIgnoreCase("Material")) {
+                                } else if (componentData.equalsIgnoreCase("Material")) {
                                     material = MaterialUtil.getMaterial(componentDataSection.getString(componentData));
-                                }
-                                else if (componentData.equalsIgnoreCase("Data")) {
-                                    data = (short)componentDataSection.getInt(componentData);
-                                }
-                                else if (componentData.equalsIgnoreCase("Shiny")) {
+                                } else if (componentData.equalsIgnoreCase("Data")) {
+                                    data = (short) componentDataSection.getInt(componentData);
+                                } else if (componentData.equalsIgnoreCase("Shiny")) {
                                     shiny = componentDataSection.getBoolean(componentData);
-                                }
-                                else if (componentData.equalsIgnoreCase("Unbreakable")) {
+                                } else if (componentData.equalsIgnoreCase("Unbreakable")) {
                                     unbreakable = componentDataSection.getBoolean(componentData);
-                                }
-                                else if (componentData.equalsIgnoreCase("Lores") || componentData.equalsIgnoreCase("Lore")) {
+                                } else if (componentData.equalsIgnoreCase("Lores") || componentData.equalsIgnoreCase("Lore")) {
                                     lores.addAll(componentDataSection.getStringList(componentData));
-                                }
-                                else if (componentData.equalsIgnoreCase("Flags") || componentData.equalsIgnoreCase("ItemFlags")) {
+                                } else if (componentData.equalsIgnoreCase("Flags") || componentData.equalsIgnoreCase("ItemFlags")) {
                                     flags.addAll(componentDataSection.getStringList(componentData));
-                                }
-                                else if (componentData.equalsIgnoreCase("Slots") || componentData.equalsIgnoreCase("Slot")) {
+                                } else if (componentData.equalsIgnoreCase("Slots") || componentData.equalsIgnoreCase("Slot")) {
                                     if (componentDataSection.isString(componentData)) {
                                         final String slotData = componentDataSection.getString(componentData);
                                         final Slot slot = Slot.get(slotData);
@@ -305,12 +255,11 @@ public class ItemSetConfig extends HandlerConfig
                                             continue;
                                         }
                                         slots.add(slot);
-                                    }
-                                    else {
+                                    } else {
                                         if (!componentDataSection.isList(componentData)) {
                                             continue;
                                         }
-                                        final List<String> listSlotData = (List<String>)componentDataSection.getStringList(componentData);
+                                        final List<String> listSlotData = componentDataSection.getStringList(componentData);
                                         for (final String slotData2 : listSlotData) {
                                             final Slot slot2 = Slot.get(slotData2);
                                             if (slot2 != null) {
@@ -318,8 +267,7 @@ public class ItemSetConfig extends HandlerConfig
                                             }
                                         }
                                     }
-                                }
-                                else {
+                                } else {
                                     if (!componentData.equalsIgnoreCase("Enchantments") && !componentData.equalsIgnoreCase("Enchantment")) {
                                         continue;
                                     }

@@ -4,8 +4,7 @@
 
 package api.praya.myitems.builder.socket;
 
-public class SocketGemsProperties
-{
+public class SocketGemsProperties {
     private final double additionalDamage;
     private final double percentDamage;
     private final double penetration;
@@ -27,7 +26,7 @@ public class SocketGemsProperties
     private final double blockRate;
     private final double hitRate;
     private final double dodgeRate;
-    
+
     public SocketGemsProperties(final double additionalDamage, final double percentDamage, final double penetration, final double pvpDamage, final double pveDamage, final double additionalDefense, final double percentDefense, final double health, final double healthRegen, final double staminaMax, final double staminaRegen, final double attackAoERadius, final double attackAoEDamage, final double pvpDefense, final double pveDefense, final double criticalChance, final double criticalDamage, final double blockAmount, final double blockRate, final double hitRate, final double dodgeRate) {
         this.additionalDamage = additionalDamage;
         this.percentDamage = percentDamage;
@@ -51,87 +50,87 @@ public class SocketGemsProperties
         this.hitRate = hitRate;
         this.dodgeRate = dodgeRate;
     }
-    
+
     public final double getAdditionalDamage() {
         return this.additionalDamage;
     }
-    
+
     public final double getPercentDamage() {
         return this.percentDamage;
     }
-    
+
     public final double getPenetration() {
         return this.penetration;
     }
-    
+
     public final double getPvPDamage() {
         return this.pvpDamage;
     }
-    
+
     public final double getPvEDamage() {
         return this.pveDamage;
     }
-    
+
     public final double getAdditionalDefense() {
         return this.additionalDefense;
     }
-    
+
     public final double getPercentDefense() {
         return this.percentDefense;
     }
-    
+
     public final double getHealth() {
         return this.health;
     }
-    
+
     public final double getHealthRegen() {
         return this.healthRegen;
     }
-    
+
     public final double getStaminaMax() {
         return this.staminaMax;
     }
-    
+
     public final double getStaminaRegen() {
         return this.staminaRegen;
     }
-    
+
     public final double getAttackAoERadius() {
         return this.attackAoERadius;
     }
-    
+
     public final double getAttackAoEDamage() {
         return this.attackAoEDamage;
     }
-    
+
     public final double getPvPDefense() {
         return this.pvpDefense;
     }
-    
+
     public final double getPvEDefense() {
         return this.pveDefense;
     }
-    
+
     public final double getCriticalChance() {
         return this.criticalChance;
     }
-    
+
     public final double getCriticalDamage() {
         return this.criticalDamage;
     }
-    
+
     public final double getBlockAmount() {
         return this.blockAmount;
     }
-    
+
     public final double getBlockRate() {
         return this.blockRate;
     }
-    
+
     public final double getHitRate() {
         return this.hitRate;
     }
-    
+
     public final double getDodgeRate() {
         return this.dodgeRate;
     }

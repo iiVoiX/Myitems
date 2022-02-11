@@ -4,32 +4,29 @@
 
 package com.praya.myitems.builder.passive.buff;
 
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import com.praya.agarthalib.utility.PotionUtil;
-import com.praya.agarthalib.utility.ServerUtil;
-import core.praya.agarthalib.enums.main.VersionNMS;
-import com.praya.myitems.config.plugin.MainConfig;
-import org.bukkit.entity.Player;
 import api.praya.myitems.builder.passive.PassiveEffectEnum;
+import com.praya.agarthalib.utility.ServerUtil;
 import com.praya.myitems.builder.abs.PassiveEffect;
+import com.praya.myitems.config.plugin.MainConfig;
+import core.praya.agarthalib.enums.main.VersionNMS;
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffectType;
 
-public class BuffLuck extends PassiveEffect
-{
+public class BuffLuck extends PassiveEffect {
     private static final PassiveEffectEnum buff;
-    
+
     static {
         buff = PassiveEffectEnum.LUCK;
     }
-    
+
     public BuffLuck() {
         super(BuffLuck.buff, 1);
     }
-    
+
     public BuffLuck(final int grade) {
         super(BuffLuck.buff, grade);
     }
-    
+
     @Override
     public final void cast(final Player player) {
         final MainConfig mainConfig = MainConfig.getInstance();

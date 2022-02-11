@@ -4,45 +4,44 @@
 
 package com.praya.myitems.manager.plugin;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.bukkit.command.CommandSender;
-import java.util.Iterator;
-import core.praya.agarthalib.builder.command.CommandBuild;
-import java.util.Collection;
 import com.praya.myitems.MyItems;
-import com.praya.myitems.config.plugin.CommandConfig;
 import com.praya.myitems.builder.handler.HandlerManager;
+import com.praya.myitems.config.plugin.CommandConfig;
+import core.praya.agarthalib.builder.command.CommandBuild;
+import org.bukkit.command.CommandSender;
 
-public class CommandManager extends HandlerManager
-{
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+public class CommandManager extends HandlerManager {
     private final CommandConfig commandConfig;
-    
+
     protected CommandManager(final MyItems plugin) {
         super(plugin);
         this.commandConfig = new CommandConfig(plugin);
     }
-    
+
     public final CommandConfig getCommandConfig() {
         return this.commandConfig;
     }
-    
+
     public final Collection<String> getCommandIDs() {
         return this.getCommandConfig().getCommandIDs();
     }
-    
+
     public final Collection<CommandBuild> getCommandBuilds() {
         return this.getCommandConfig().getCommandBuilds();
     }
-    
+
     public final CommandBuild getCommand(final String id) {
         return this.getCommandConfig().getCommand(id);
     }
-    
+
     public final boolean isCommandExists(final String id) {
         return this.getCommand(id) != null;
     }
-    
+
     public final boolean checkCommand(final String arg, final String id) {
         final CommandBuild commandBuild = this.getCommand(id);
         if (commandBuild != null) {
@@ -54,7 +53,7 @@ public class CommandManager extends HandlerManager
         }
         return false;
     }
-    
+
     public final boolean checkPermission(final CommandSender sender, final String id) {
         final CommandBuild commandBuild = this.getCommand(id);
         if (commandBuild != null) {
@@ -63,12 +62,12 @@ public class CommandManager extends HandlerManager
         }
         return true;
     }
-    
+
     public final List<String> getAliases(final String id) {
         final CommandBuild commandBuild = this.getCommand(id);
         return (commandBuild != null) ? commandBuild.getAliases() : new ArrayList<String>();
     }
-    
+
     public final String getPermission(final String id) {
         final CommandBuild commandBuild = this.getCommand(id);
         return (commandBuild != null) ? commandBuild.getPermission() : null;

@@ -4,33 +4,32 @@
 
 package com.praya.myitems.listener.custom;
 
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.EventHandler;
+import api.praya.myitems.builder.event.PowerSpecialCastEvent;
+import api.praya.myitems.builder.lorestats.LoreStatsEnum;
+import api.praya.myitems.builder.lorestats.LoreStatsOption;
 import api.praya.myitems.builder.player.PlayerPowerCooldown;
 import api.praya.myitems.builder.power.PowerSpecialEnum;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.entity.Player;
-import com.praya.myitems.manager.player.PlayerPowerManager;
-import com.praya.myitems.manager.game.LoreStatsManager;
-import com.praya.myitems.manager.game.GameManager;
-import core.praya.agarthalib.enums.main.Slot;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.OfflinePlayer;
-import api.praya.myitems.builder.lorestats.LoreStatsOption;
-import api.praya.myitems.builder.lorestats.LoreStatsEnum;
 import com.praya.agarthalib.utility.MathUtil;
-import com.praya.myitems.builder.abs.SpecialPower;
-import api.praya.myitems.builder.event.PowerSpecialCastEvent;
 import com.praya.myitems.MyItems;
-import org.bukkit.event.Listener;
+import com.praya.myitems.builder.abs.SpecialPower;
 import com.praya.myitems.builder.handler.HandlerEvent;
+import com.praya.myitems.manager.game.GameManager;
+import com.praya.myitems.manager.game.LoreStatsManager;
+import com.praya.myitems.manager.player.PlayerPowerManager;
+import core.praya.agarthalib.enums.main.Slot;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 
-public class ListenerPowerSpecialCast extends HandlerEvent implements Listener
-{
+public class ListenerPowerSpecialCast extends HandlerEvent implements Listener {
     public ListenerPowerSpecialCast(final MyItems plugin) {
         super(plugin);
     }
-    
+
     @EventHandler(priority = EventPriority.MONITOR)
     public void eventPowerSpecialCast(final PowerSpecialCastEvent event) {
         final GameManager gameManager = this.plugin.getGameManager();
@@ -43,14 +42,14 @@ public class ListenerPowerSpecialCast extends HandlerEvent implements Listener
             final SpecialPower specialPower = SpecialPower.getSpecial(special);
             final double cooldown = event.getCooldown();
             final long timeCooldown = MathUtil.convertSecondsToMilis(cooldown);
-            final int durability = (int)statsManager.getLoreValue(item, LoreStatsEnum.DURABILITY, LoreStatsOption.CURRENT);
-            final PlayerPowerCooldown powerCooldown = playerPowerManager.getPlayerPowerCooldown((OfflinePlayer)player);
-            specialPower.cast((LivingEntity)player);
+            final int durability = (int) statsManager.getLoreValue(item, LoreStatsEnum.DURABILITY, LoreStatsOption.CURRENT);
+            final PlayerPowerCooldown powerCooldown = playerPowerManager.getPlayerPowerCooldown(player);
+            specialPower.cast(player);
             if (timeCooldown > 0L) {
                 powerCooldown.setPowerSpecialCooldown(special, timeCooldown);
             }
-            if (!statsManager.durability((LivingEntity)player, item, durability, true)) {
-                statsManager.sendBrokenCode((LivingEntity)player, Slot.MAINHAND);
+            if (!statsManager.durability(player, item, durability, true)) {
+                statsManager.sendBrokenCode(player, Slot.MAINHAND);
             }
         }
     }

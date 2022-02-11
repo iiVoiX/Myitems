@@ -4,28 +4,17 @@
 
 package com.praya.myitems.builder.abs;
 
-import com.praya.myitems.builder.specialpower.SpecialPowerNeroBeam;
-import com.praya.myitems.builder.specialpower.SpecialPowerIceSpikes;
-import com.praya.myitems.builder.specialpower.SpecialPowerFissure;
-import com.praya.myitems.builder.specialpower.SpecialPowerBlink;
-import com.praya.myitems.builder.specialpower.SpecialPowerAmaterasu;
-import org.bukkit.entity.LivingEntity;
 import api.praya.myitems.builder.power.PowerSpecialEnum;
+import com.praya.myitems.builder.specialpower.*;
+import org.bukkit.entity.LivingEntity;
 
-public abstract class SpecialPower
-{
+public abstract class SpecialPower {
     protected final PowerSpecialEnum specialEnum;
-    
+
     public SpecialPower(final PowerSpecialEnum specialEnum) {
         this.specialEnum = specialEnum;
     }
-    
-    public abstract void cast(final LivingEntity p0);
-    
-    public final PowerSpecialEnum getSpecialEnum() {
-        return this.specialEnum;
-    }
-    
+
     public static final SpecialPower getSpecial(final PowerSpecialEnum specialEnum) {
         switch (specialEnum) {
             case AMATERASU: {
@@ -47,5 +36,11 @@ public abstract class SpecialPower
                 return null;
             }
         }
+    }
+
+    public abstract void cast(final LivingEntity p0);
+
+    public final PowerSpecialEnum getSpecialEnum() {
+        return this.specialEnum;
     }
 }

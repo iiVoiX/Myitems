@@ -4,69 +4,68 @@
 
 package com.praya.myitems.builder.specialpower;
 
-import org.bukkit.entity.Player;
-import com.praya.myitems.manager.game.LoreStatsManager;
-import com.praya.myitems.manager.game.GameManager;
-import org.bukkit.plugin.Plugin;
-import java.util.Iterator;
-import org.bukkit.potion.PotionEffectType;
-import com.praya.agarthalib.utility.CombatUtil;
-import core.praya.agarthalib.enums.branch.SoundEnum;
-import core.praya.agarthalib.enums.branch.ParticleEnum;
-import core.praya.agarthalib.bridge.unity.Bridge;
-import java.util.Set;
-import java.util.Collection;
-import org.bukkit.util.Vector;
-import org.bukkit.scheduler.BukkitRunnable;
-import com.praya.agarthalib.utility.PlayerUtil;
-import java.util.HashSet;
-import org.bukkit.Location;
-import com.praya.myitems.config.plugin.MainConfig;
-import org.bukkit.plugin.java.JavaPlugin;
-import com.praya.myitems.MyItems;
-import org.bukkit.entity.LivingEntity;
 import api.praya.myitems.builder.power.PowerSpecialEnum;
+import com.praya.agarthalib.utility.CombatUtil;
+import com.praya.agarthalib.utility.PlayerUtil;
+import com.praya.myitems.MyItems;
 import com.praya.myitems.builder.abs.SpecialPower;
+import com.praya.myitems.config.plugin.MainConfig;
+import com.praya.myitems.manager.game.GameManager;
+import com.praya.myitems.manager.game.LoreStatsManager;
+import core.praya.agarthalib.bridge.unity.Bridge;
+import core.praya.agarthalib.enums.branch.ParticleEnum;
+import core.praya.agarthalib.enums.branch.SoundEnum;
+import org.bukkit.Location;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
-public class SpecialPowerNeroBeam extends SpecialPower
-{
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+public class SpecialPowerNeroBeam extends SpecialPower {
     private static final PowerSpecialEnum special;
-    
+
     static {
         special = PowerSpecialEnum.NERO_BEAM;
     }
-    
+
     public SpecialPowerNeroBeam() {
         super(SpecialPowerNeroBeam.special);
     }
-    
+
     public final int getDuration() {
         return SpecialPowerNeroBeam.special.getDuration();
     }
-    
+
     public final int getLimit() {
         return 15;
     }
-    
+
     public final double getBaseRange() {
         return 1.5;
     }
-    
+
     public final double getScaleRange() {
         return 0.05;
     }
-    
+
     public final double getStartRadius() {
         return 0.2;
     }
-    
+
     public final double getScaleRadius() {
         return 0.05;
     }
-    
+
     @Override
     public final void cast(final LivingEntity caster) {
-        final MyItems plugin = (MyItems)JavaPlugin.getProvidingPlugin((Class)MyItems.class);
+        final MyItems plugin = (MyItems) JavaPlugin.getProvidingPlugin(MyItems.class);
         final GameManager gameManager = plugin.getGameManager();
         final LoreStatsManager statsManager = gameManager.getStatsManager();
         final MainConfig mainConfig = MainConfig.getInstance();
@@ -80,15 +79,15 @@ public class SpecialPowerNeroBeam extends SpecialPower
         final double weaponDamage = statsManager.getLoreStatsWeapon(caster).getDamage();
         final double skillDamage = SpecialPowerNeroBeam.special.getBaseAdditionalDamage() + SpecialPowerNeroBeam.special.getBasePercentDamage() * weaponDamage / 100.0;
         final Set<LivingEntity> listEntity = new HashSet<LivingEntity>();
-        final Collection<Player> players = (Collection<Player>)PlayerUtil.getNearbyPlayers(loc, mainConfig.getEffectRange());
+        final Collection<Player> players = PlayerUtil.getNearbyPlayers(loc, mainConfig.getEffectRange());
         new BukkitRunnable() {
             final int limit = SpecialPowerNeroBeam.this.getLimit();
             double range = SpecialPowerNeroBeam.this.getBaseRange();
-            double startRadius = SpecialPowerNeroBeam.this.getStartRadius();
+            final double startRadius = SpecialPowerNeroBeam.this.getStartRadius();
             double radius = 0.2;
             int t = 0;
             double degree;
-            
+
             public void run() {
                 if (this.t >= this.limit) {
                     this.cancel();
@@ -118,6 +117,6 @@ public class SpecialPowerNeroBeam extends SpecialPower
                 loc.add(vector);
                 ++this.t;
             }
-        }.runTaskTimer((Plugin)plugin, 0L, 1L);
+        }.runTaskTimer(plugin, 0L, 1L);
     }
 }

@@ -4,32 +4,40 @@
 
 package com.praya.myitems.builder.placeholder;
 
-import com.praya.myitems.manager.plugin.PlaceholderManager;
-import org.bukkit.entity.Player;
-import me.clip.placeholderapi.PlaceholderAPI;
 import com.praya.myitems.MyItems;
-import me.clip.placeholderapi.PlaceholderHook;
+import com.praya.myitems.manager.plugin.PlaceholderManager;
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class ReplacerPlaceholderAPIBuild extends PlaceholderHook
-{
-    private final String placeholder;
-    private final MyItems plugin;
-    
-    public ReplacerPlaceholderAPIBuild(final MyItems plugin, final String placeholder) {
-        this.plugin = plugin;
-        this.placeholder = placeholder;
+public class ReplacerPlaceholderAPIBuild extends PlaceholderExpansion {
+    @Override
+    public @NotNull String getAuthor() {
+        return "VoChiDanh";
     }
-    
-    public final String getPlaceholder() {
-        return this.placeholder;
+
+    @Override
+    public @NotNull String getIdentifier() {
+        return "myitems";
     }
-    
-    public final boolean hook() {
-        return PlaceholderAPI.registerPlaceholderHook(this.placeholder, (PlaceholderHook)this);
+
+    @Override
+    public @NotNull String getVersion() {
+        return "6.4.6-SNAPSHOT";
     }
-    
-    public String onPlaceholderRequest(final Player player, final String identifier) {
-        final PlaceholderManager placeholderManager = this.plugin.getPluginManager().getPlaceholderManager();
-        return placeholderManager.getReplacement(player, identifier);
+
+
+
+    @Override
+    public boolean persist() {
+        return true;
+    }
+
+    @Override
+    public String onPlaceholderRequest(Player p, @NotNull String identifier) {
+        if (p == null) {
+            return "Player not online";
+        }
+        return null;
     }
 }

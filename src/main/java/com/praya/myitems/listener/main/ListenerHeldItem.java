@@ -4,33 +4,33 @@
 
 package com.praya.myitems.listener.main;
 
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.EventHandler;
-import org.bukkit.inventory.Inventory;
-import com.praya.myitems.manager.game.GameManager;
-import org.bukkit.plugin.Plugin;
 import api.praya.myitems.builder.passive.PassiveEffectEnum;
-import java.util.Collection;
-import org.bukkit.entity.LivingEntity;
-import com.praya.myitems.utility.main.TriggerSupportUtil;
-import com.praya.myitems.manager.game.PassiveEffectManager;
-import com.praya.myitems.manager.game.ItemSetManager;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 import com.praya.agarthalib.utility.EquipmentUtil;
-import com.praya.myitems.config.plugin.MainConfig;
-import org.bukkit.event.player.PlayerItemHeldEvent;
 import com.praya.myitems.MyItems;
-import org.bukkit.event.Listener;
 import com.praya.myitems.builder.handler.HandlerEvent;
+import com.praya.myitems.config.plugin.MainConfig;
+import com.praya.myitems.manager.game.GameManager;
+import com.praya.myitems.manager.game.ItemSetManager;
+import com.praya.myitems.manager.game.PassiveEffectManager;
+import com.praya.myitems.utility.main.TriggerSupportUtil;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
-public class ListenerHeldItem extends HandlerEvent implements Listener
-{
+import java.util.Collection;
+
+public class ListenerHeldItem extends HandlerEvent implements Listener {
     public ListenerHeldItem(final MyItems plugin) {
         super(plugin);
     }
-    
+
     @EventHandler(priority = EventPriority.MONITOR)
     public void playerItemHeldEvent(final PlayerItemHeldEvent event) {
         final GameManager gameManager = this.plugin.getGameManager();
@@ -41,7 +41,7 @@ public class ListenerHeldItem extends HandlerEvent implements Listener
             final Player player = event.getPlayer();
             final int slotPrevious = event.getPreviousSlot();
             final int slotAfter = event.getNewSlot();
-            final Inventory inventory = (Inventory)player.getInventory();
+            final Inventory inventory = player.getInventory();
             final ItemStack itemBefore = inventory.getItem(slotPrevious);
             final ItemStack itemAfter = inventory.getItem(slotAfter);
             final boolean enableItemUniversal = mainConfig.isStatsEnableItemUniversal();
@@ -57,7 +57,7 @@ public class ListenerHeldItem extends HandlerEvent implements Listener
                             TriggerSupportUtil.updateSupport(player);
                         }
                         if (itemSetManager.isItemSet(itemBefore) || itemSetManager.isItemSet(itemAfter)) {
-                            itemSetManager.updateItemSet((LivingEntity)player);
+                            itemSetManager.updateItemSet(player);
                         }
                         if (isSolidBefore) {
                             final Collection<PassiveEffectEnum> passiveEffectBefore = passiveEffectManager.getPassiveEffects(itemBefore);
@@ -68,7 +68,7 @@ public class ListenerHeldItem extends HandlerEvent implements Listener
                             passiveEffectManager.reloadPassiveEffect(player, passiveEffectAfter, enableGradeCalculation);
                         }
                     }
-                }.runTaskLater((Plugin)this.plugin, 0L);
+                }.runTaskLater(this.plugin, 0L);
             }
         }
     }

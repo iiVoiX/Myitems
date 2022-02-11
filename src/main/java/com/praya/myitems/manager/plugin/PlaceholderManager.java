@@ -4,138 +4,119 @@
 
 package com.praya.myitems.manager.plugin;
 
-import org.bukkit.OfflinePlayer;
+import api.praya.agarthalib.main.AgarthaLibAPI;
+import api.praya.agarthalib.manager.plugin.SupportManagerAPI;
 import api.praya.myitems.builder.ability.AbilityWeapon;
-import com.praya.myitems.manager.register.RegisterAbilityWeaponManager;
-import com.praya.myitems.manager.game.RequirementManager;
-import com.praya.myitems.manager.game.LoreStatsManager;
-import com.praya.myitems.manager.game.PassiveEffectManager;
-import com.praya.myitems.manager.game.SocketManager;
-import com.praya.myitems.manager.game.ElementManager;
-import com.praya.myitems.manager.game.AbilityWeaponManager;
-import com.praya.myitems.manager.game.PowerSpecialManager;
-import com.praya.myitems.manager.game.PowerShootManager;
-import com.praya.myitems.manager.game.PowerCommandManager;
-import com.praya.myitems.manager.game.PowerManager;
-import com.praya.myitems.manager.register.RegisterManager;
-import com.praya.myitems.manager.game.GameManager;
-import com.praya.agarthalib.utility.PlayerUtil;
-import api.praya.myitems.builder.power.PowerSpecialEnum;
-import core.praya.agarthalib.enums.branch.ProjectileEnum;
+import api.praya.myitems.builder.lorestats.LoreStatsEnum;
+import api.praya.myitems.builder.lorestats.LoreStatsModifier;
+import api.praya.myitems.builder.passive.PassiveEffectEnum;
 import api.praya.myitems.builder.power.PowerClickEnum;
 import api.praya.myitems.builder.power.PowerEnum;
-import api.praya.myitems.builder.passive.PassiveEffectEnum;
-import com.praya.agarthalib.utility.MathUtil;
-import api.praya.myitems.builder.lorestats.LoreStatsEnum;
-import java.util.regex.Pattern;
-import java.util.ListIterator;
-import api.praya.myitems.builder.lorestats.LoreStatsModifier;
-import java.util.ArrayList;
-import com.praya.agarthalib.utility.EquipmentUtil;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.entity.Player;
-import com.praya.agarthalib.utility.ListUtil;
-import com.praya.agarthalib.utility.TextUtil;
-import java.util.List;
-import api.praya.agarthalib.manager.plugin.SupportManagerAPI;
-import com.praya.myitems.builder.placeholder.ReplacerPlaceholderAPIBuild;
-import api.praya.agarthalib.main.AgarthaLibAPI;
-import java.util.HashMap;
-import java.util.Collection;
+import api.praya.myitems.builder.power.PowerSpecialEnum;
+import com.praya.agarthalib.AgarthaLib;
+import com.praya.agarthalib.utility.*;
 import com.praya.myitems.MyItems;
-import com.praya.myitems.config.plugin.PlaceholderConfig;
 import com.praya.myitems.builder.handler.HandlerManager;
+import com.praya.myitems.builder.placeholder.ReplacerPlaceholderAPIBuild;
+import com.praya.myitems.config.plugin.PlaceholderConfig;
+import com.praya.myitems.manager.game.*;
+import com.praya.myitems.manager.register.RegisterAbilityWeaponManager;
+import com.praya.myitems.manager.register.RegisterManager;
+import core.praya.agarthalib.enums.branch.ProjectileEnum;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
-public class PlaceholderManager extends HandlerManager
-{
+import java.util.*;
+import java.util.regex.Pattern;
+
+public class PlaceholderManager extends HandlerManager {
     private final PlaceholderConfig placeholderConfig;
-    
+
     protected PlaceholderManager(final MyItems plugin) {
         super(plugin);
         this.placeholderConfig = new PlaceholderConfig(plugin);
     }
-    
+
     public final PlaceholderConfig getPlaceholderConfig() {
         return this.placeholderConfig;
     }
-    
+
     public final Collection<String> getPlaceholderIDs() {
         return this.getPlaceholderConfig().getPlaceholderIDs();
     }
-    
+
     public final Collection<String> getPlaceholders() {
         return this.getPlaceholderConfig().getPlaceholders();
     }
-    
+
     public final String getPlaceholder(final String id) {
         return this.getPlaceholderConfig().getPlaceholder(id);
     }
-    
+
     public final HashMap<String, String> getPlaceholderCopy() {
         return this.getPlaceholderConfig().getPlaceholderCopy();
     }
-    
+
     public final boolean isPlaceholderExists(final String id) {
         return this.getPlaceholder(id) != null;
     }
-    
+
     public final void registerAll() {
-        final AgarthaLibAPI agarthaLibAPI = AgarthaLibAPI.getInstance();
-        final SupportManagerAPI supportManagerAPI = agarthaLibAPI.getPluginManagerAPI().getSupportManager();
-        final String placeholder = this.plugin.getPluginPlaceholder();
-        if (supportManagerAPI.isSupportPlaceholderAPI()) {
-            new ReplacerPlaceholderAPIBuild(this.plugin, placeholder).hook();
+        final AgarthaLib agarthaLibAPI = AgarthaLib.getPlugin(AgarthaLib.class);
+            if (agarthaLibAPI.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")){
+            new ReplacerPlaceholderAPIBuild().register();
         }
     }
-    
+
     public final List<String> localPlaceholder(final List<String> list) {
         final String divider = "\n";
-        final String builder = TextUtil.convertListToString((List)list, "\n");
+        final String builder = TextUtil.convertListToString(list, "\n");
         final String text = this.localPlaceholder(builder);
-        return (List<String>)ListUtil.convertStringToList(text, "\n");
+        return ListUtil.convertStringToList(text, "\n");
     }
-    
+
     public final String localPlaceholder(final String text) {
-        return TextUtil.placeholder((HashMap)this.getPlaceholderCopy(), text);
+        return TextUtil.placeholder(this.getPlaceholderCopy(), text);
     }
-    
+
     public final List<String> pluginPlaceholder(final List<String> list, final String... identifiers) {
-        return this.pluginPlaceholder(list, (Player)null, identifiers);
+        return this.pluginPlaceholder(list, null, identifiers);
     }
-    
+
     public final List<String> pluginPlaceholder(final List<String> list, final Player player, final String... identifiers) {
         final String divider = "\n";
-        final String builder = TextUtil.convertListToString((List)list, "\n");
+        final String builder = TextUtil.convertListToString(list, "\n");
         final String text = this.pluginPlaceholder(builder, player, identifiers);
-        return (List<String>)ListUtil.convertStringToList(text, "\n");
+        return ListUtil.convertStringToList(text, "\n");
     }
-    
+
     public final String pluginPlaceholder(final String text, final String... identifiers) {
-        return this.pluginPlaceholder(text, (Player)null, identifiers);
+        return this.pluginPlaceholder(text, null, identifiers);
     }
-    
+
     public final String pluginPlaceholder(final String text, final Player player, final String... identifiers) {
         final HashMap<String, String> map = this.getMapPluginPlaceholder(player, identifiers);
-        return TextUtil.placeholder((HashMap)map, text);
+        return TextUtil.placeholder(map, text);
     }
-    
+
     public final HashMap<String, String> getMapPluginPlaceholder(final String... identifiers) {
-        return this.getMapPluginPlaceholder((Player)null, identifiers);
+        return this.getMapPluginPlaceholder(null, identifiers);
     }
-    
+
     public final HashMap<String, String> getMapPluginPlaceholder(final Player player, final String... identifiers) {
         final String placeholder = this.plugin.getPluginPlaceholder();
         final HashMap<String, String> map = new HashMap<String, String>();
         for (final String identifier : identifiers) {
             final String replacement = this.getReplacement(player, identifier);
             if (replacement != null) {
-                final String key = String.valueOf(placeholder) + "_" + identifier;
+                final String key = placeholder + "_" + identifier;
                 map.put(key, replacement);
             }
         }
         return map;
     }
-    
+
     public final ItemStack parseItem(final Player player, final ItemStack item) {
         final String divider = "\n";
         if (EquipmentUtil.hasDisplayName(item)) {
@@ -144,8 +125,8 @@ public class PlaceholderManager extends HandlerManager
             EquipmentUtil.setDisplayName(item, newDisplayName);
         }
         if (EquipmentUtil.hasLore(item)) {
-            final List<String> oldLores = (List<String>)EquipmentUtil.getLores(item);
-            final String oldLineLore = TextUtil.convertListToString((List)oldLores, "\n");
+            final List<String> oldLores = EquipmentUtil.getLores(item);
+            final String oldLineLore = TextUtil.convertListToString(oldLores, "\n");
             final String newLineLore = this.placeholder(player, oldLineLore);
             final String[] split = newLineLore.split("\n");
             final List<String> newLores = new ArrayList<String>();
@@ -154,19 +135,19 @@ public class PlaceholderManager extends HandlerManager
                 final String lore = array[i];
                 newLores.add(lore);
             }
-            EquipmentUtil.setLores(item, (List)newLores);
+            EquipmentUtil.setLores(item, newLores);
         }
         return item;
     }
-    
+
     public final List<String> placeholder(final Player player, final List<String> listText) {
         return this.placeholder(player, listText, null);
     }
-    
+
     public final List<String> placeholder(final Player player, final List<String> listText, final LoreStatsModifier modifier) {
         return this.placeholder(player, listText, modifier, "{", "}");
     }
-    
+
     public final List<String> placeholder(final Player player, final List<String> listText, final LoreStatsModifier modifier, final String leftKey, final String rightKey) {
         final List<String> list = new ArrayList<String>();
         if (listText != null) {
@@ -180,15 +161,15 @@ public class PlaceholderManager extends HandlerManager
         }
         return listText;
     }
-    
+
     public final String placeholder(final Player player, final String text) {
         return this.placeholder(player, text, null);
     }
-    
+
     public final String placeholder(final Player player, final String text, final LoreStatsModifier modifier) {
         return this.placeholder(player, text, modifier, "{", "}");
     }
-    
+
     public final String placeholder(final Player player, String text, final LoreStatsModifier modifier, final String leftKey, final String rightKey) {
         final String placeholder = this.plugin.getPluginPlaceholder();
         if (text.contains(leftKey)) {
@@ -204,7 +185,7 @@ public class PlaceholderManager extends HandlerManager
                         final String identifier = elements[1];
                         if (textholder.equalsIgnoreCase(placeholder)) {
                             final CharSequence replacement = this.getReplacement(player, identifier, modifier);
-                            final CharSequence sequence = String.valueOf(String.valueOf(leftKey)) + check + rightKey;
+                            final CharSequence sequence = leftKey + check + rightKey;
                             if (replacement != null) {
                                 text = text.replace(sequence, replacement);
                             }
@@ -215,11 +196,11 @@ public class PlaceholderManager extends HandlerManager
         }
         return text;
     }
-    
+
     public final String getReplacement(final Player player, final String identifier) {
         return this.getReplacement(player, identifier, null);
     }
-    
+
     public final String getReplacement(final Player player, final String identifier, final LoreStatsModifier statsModifier) {
         final GameManager gameManager = this.plugin.getGameManager();
         final RegisterManager registerManager = this.plugin.getRegisterManager();
@@ -256,8 +237,7 @@ public class PlaceholderManager extends HandlerManager
                             final double minValue1 = MathUtil.parseDouble(textMinValue2);
                             final double minValue2 = MathUtil.parseDouble(textMinValue3);
                             minValue3 = MathUtil.valueBetween(minValue1, minValue2);
-                        }
-                        else {
+                        } else {
                             if (!MathUtil.isNumber(textMinValue)) {
                                 return null;
                             }
@@ -266,8 +246,7 @@ public class PlaceholderManager extends HandlerManager
                         double maxValue;
                         if (length == 3) {
                             maxValue = minValue3;
-                        }
-                        else {
+                        } else {
                             final String textMaxValue = parts[3];
                             if (textMaxValue.contains("~")) {
                                 final String[] componentsMaxValue = textMaxValue.split("~");
@@ -279,8 +258,7 @@ public class PlaceholderManager extends HandlerManager
                                 final double maxValue2 = MathUtil.parseDouble(textMaxValue2);
                                 final double maxValue3 = MathUtil.parseDouble(textMaxValue3);
                                 maxValue = MathUtil.valueBetween(maxValue2, maxValue3);
-                            }
-                            else {
+                            } else {
                                 if (!MathUtil.isNumber(textMaxValue)) {
                                     return null;
                                 }
@@ -290,8 +268,7 @@ public class PlaceholderManager extends HandlerManager
                         return statsManager.getTextLoreStats(loreStats, MathUtil.roundNumber(minValue3 * modifier, 2), MathUtil.roundNumber(maxValue * modifier, 2));
                     }
                 }
-            }
-            else if (key.equalsIgnoreCase("text_ability")) {
+            } else if (key.equalsIgnoreCase("text_ability")) {
                 if (length >= 4) {
                     final String ability = parts[1];
                     final AbilityWeapon abilityWeapon = registerAbilityWeaponManager.getAbilityWeapon(ability);
@@ -308,10 +285,9 @@ public class PlaceholderManager extends HandlerManager
                             }
                             final int grade1 = MathUtil.parseInteger(textGrade2);
                             final int grade2 = MathUtil.parseInteger(textGrade3);
-                            final int rawGrade = (int)MathUtil.valueBetween((double)grade1, (double)grade2);
+                            final int rawGrade = (int) MathUtil.valueBetween(grade1, grade2);
                             grade3 = MathUtil.limitInteger(rawGrade, 1, rawGrade);
-                        }
-                        else {
+                        } else {
                             if (!MathUtil.isNumber(textGrade)) {
                                 return null;
                             }
@@ -329,8 +305,7 @@ public class PlaceholderManager extends HandlerManager
                             final double chance1 = MathUtil.parseDouble(textChance2);
                             final double chance2 = MathUtil.parseDouble(textChance3);
                             chance3 = MathUtil.valueBetween(chance1, chance2);
-                        }
-                        else {
+                        } else {
                             if (!MathUtil.isNumber(textChance)) {
                                 return null;
                             }
@@ -339,8 +314,7 @@ public class PlaceholderManager extends HandlerManager
                         return abilityWeaponManager.getTextAbility(ability, grade3, chance3);
                     }
                 }
-            }
-            else if (key.equalsIgnoreCase("text_buff")) {
+            } else if (key.equalsIgnoreCase("text_buff")) {
                 if (length >= 3) {
                     final String textBuff = parts[1];
                     final PassiveEffectEnum effect = PassiveEffectEnum.get(textBuff);
@@ -356,9 +330,8 @@ public class PlaceholderManager extends HandlerManager
                             }
                             final int grade4 = MathUtil.parseInteger(textGrade4);
                             final int grade5 = MathUtil.parseInteger(textGrade5);
-                            grade6 = (int)MathUtil.valueBetween((double)grade4, (double)grade5);
-                        }
-                        else {
+                            grade6 = (int) MathUtil.valueBetween(grade4, grade5);
+                        } else {
                             if (!MathUtil.isNumber(textGrade)) {
                                 return null;
                             }
@@ -367,8 +340,7 @@ public class PlaceholderManager extends HandlerManager
                         return passiveEffectManager.getTextPassiveEffect(effect, grade6);
                     }
                 }
-            }
-            else if (key.equalsIgnoreCase("text_power")) {
+            } else if (key.equalsIgnoreCase("text_power")) {
                 if (length >= 4) {
                     final String textPower = parts[1];
                     final PowerEnum power = PowerEnum.get(textPower);
@@ -380,8 +352,7 @@ public class PlaceholderManager extends HandlerManager
                             double cooldown;
                             if (length == 4) {
                                 cooldown = 0.0;
-                            }
-                            else {
+                            } else {
                                 final String textCooldown = parts[4];
                                 if (textCooldown.contains("~")) {
                                     final String[] componentsCooldown = textCooldown.split("~");
@@ -393,8 +364,7 @@ public class PlaceholderManager extends HandlerManager
                                     final double cooldown2 = MathUtil.parseDouble(textCooldown2);
                                     final double cooldown3 = MathUtil.parseDouble(textCooldown3);
                                     cooldown = MathUtil.valueBetween(cooldown2, cooldown3);
-                                }
-                                else {
+                                } else {
                                     if (!MathUtil.isNumber(textCooldown)) {
                                         return null;
                                     }
@@ -406,14 +376,12 @@ public class PlaceholderManager extends HandlerManager
                                 if (type != null) {
                                     return powerCommandManager.getTextPowerCommand(click, type, cooldown);
                                 }
-                            }
-                            else if (power.equals(PowerEnum.SHOOT)) {
+                            } else if (power.equals(PowerEnum.SHOOT)) {
                                 final ProjectileEnum type2 = ProjectileEnum.getProjectileEnum(textType);
                                 if (type2 != null) {
                                     return powerShootManager.getTextPowerShoot(click, type2, cooldown);
                                 }
-                            }
-                            else if (power.equals(PowerEnum.SPECIAL)) {
+                            } else if (power.equals(PowerEnum.SPECIAL)) {
                                 final PowerSpecialEnum type3 = PowerSpecialEnum.get(textType);
                                 if (type3 != null) {
                                     return powerSpecialManager.getTextPowerSpecial(click, type3, cooldown);
@@ -422,13 +390,11 @@ public class PlaceholderManager extends HandlerManager
                         }
                     }
                 }
-            }
-            else if (key.equalsIgnoreCase("text_socket_empty")) {
+            } else if (key.equalsIgnoreCase("text_socket_empty")) {
                 if (length >= 1) {
                     return socketManager.getTextSocketSlotEmpty();
                 }
-            }
-            else if (key.equalsIgnoreCase("text_socket_fill")) {
+            } else if (key.equalsIgnoreCase("text_socket_fill")) {
                 if (length >= 3) {
                     final String gems = parts[1];
                     if (socketManager.isExist(gems)) {
@@ -443,10 +409,9 @@ public class PlaceholderManager extends HandlerManager
                             }
                             final int grade7 = MathUtil.parseInteger(textGrade7);
                             final int grade8 = MathUtil.parseInteger(textGrade8);
-                            final int rawGrade3 = (int)MathUtil.valueBetween((double)grade7, (double)grade8);
+                            final int rawGrade3 = (int) MathUtil.valueBetween(grade7, grade8);
                             grade9 = MathUtil.limitInteger(rawGrade3, 1, rawGrade3);
-                        }
-                        else {
+                        } else {
                             if (!MathUtil.isNumber(textGrade6)) {
                                 return null;
                             }
@@ -455,8 +420,7 @@ public class PlaceholderManager extends HandlerManager
                         return socketManager.getTextSocketGemsLore(gems, grade9);
                     }
                 }
-            }
-            else if (key.equalsIgnoreCase("text_element") && length >= 3) {
+            } else if (key.equalsIgnoreCase("text_element") && length >= 3) {
                 final String textElement = parts[1];
                 if (elementManager.isExists(textElement)) {
                     final String textValue = parts[2];
@@ -471,8 +435,7 @@ public class PlaceholderManager extends HandlerManager
                         final double value1 = MathUtil.parseDouble(textValue2);
                         final double value2 = MathUtil.parseDouble(textValue3);
                         value3 = MathUtil.valueBetween(value1, value2);
-                    }
-                    else {
+                    } else {
                         if (!MathUtil.isNumber(textValue)) {
                             return null;
                         }
@@ -480,8 +443,7 @@ public class PlaceholderManager extends HandlerManager
                     }
                     return elementManager.getTextElement(textElement, value3);
                 }
-            }
-            else {
+            } else {
                 if (key.equalsIgnoreCase("text_requirement_unbound")) {
                     return requirementManager.getTextSoulUnbound();
                 }
@@ -491,8 +453,7 @@ public class PlaceholderManager extends HandlerManager
                     if (bound != null) {
                         return bound.getName();
                     }
-                }
-                else {
+                } else {
                     if (key.equalsIgnoreCase("text_requirement_level") && length >= 2) {
                         final String textLevel = parts[1];
                         int level3;
@@ -505,10 +466,9 @@ public class PlaceholderManager extends HandlerManager
                             }
                             final int level1 = MathUtil.parseInteger(textLevel2);
                             final int level2 = MathUtil.parseInteger(textLevel3);
-                            final int rawLevel = (int)MathUtil.valueBetween((double)level1, (double)level2);
+                            final int rawLevel = (int) MathUtil.valueBetween(level1, level2);
                             level3 = MathUtil.limitInteger(rawLevel, 0, rawLevel);
-                        }
-                        else {
+                        } else {
                             if (!MathUtil.isNumber(textLevel)) {
                                 return null;
                             }

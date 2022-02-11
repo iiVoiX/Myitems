@@ -6,8 +6,7 @@ package com.praya.myitems.builder.handler;
 
 import com.praya.myitems.MyItems;
 
-public class HandlerTabCompleter extends Handler
-{
+public class HandlerTabCompleter extends Handler {
     public HandlerTabCompleter(final MyItems plugin) {
         super(plugin);
     }

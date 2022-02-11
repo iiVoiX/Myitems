@@ -4,68 +4,53 @@
 
 package com.praya.myitems.listener.main;
 
-import org.bukkit.Location;
-import java.util.Iterator;
-import api.praya.myitems.builder.item.ItemSetBonusEffectStats;
-import api.praya.myitems.builder.item.ItemSetBonusEffectEntity;
+import api.praya.myitems.builder.ability.AbilityWeapon;
 import api.praya.myitems.builder.element.ElementBoostStats;
-import api.praya.myitems.builder.socket.SocketGemsProperties;
+import api.praya.myitems.builder.event.CombatCriticalDamageEvent;
+import api.praya.myitems.builder.event.CombatPreCriticalEvent;
+import api.praya.myitems.builder.item.ItemSetBonusEffectEntity;
+import api.praya.myitems.builder.item.ItemSetBonusEffectStats;
 import api.praya.myitems.builder.lorestats.LoreStatsArmor;
+import api.praya.myitems.builder.lorestats.LoreStatsEnum;
 import api.praya.myitems.builder.lorestats.LoreStatsWeapon;
-import org.bukkit.projectiles.ProjectileSource;
+import api.praya.myitems.builder.socket.SocketGemsProperties;
+import com.praya.myitems.MyItems;
+import com.praya.myitems.builder.handler.HandlerEvent;
+import com.praya.myitems.config.plugin.MainConfig;
+import com.praya.myitems.manager.game.*;
+import com.praya.myitems.manager.plugin.LanguageManager;
+import com.praya.myitems.manager.plugin.PluginManager;
+import core.praya.agarthalib.bridge.unity.Bridge;
+import core.praya.agarthalib.enums.branch.SoundEnum;
+import core.praya.agarthalib.enums.main.Slot;
+import core.praya.agarthalib.enums.main.SlotType;
+import core.praya.agarthalib.utility.*;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import com.praya.myitems.manager.game.ItemSetManager;
-import com.praya.myitems.manager.game.AbilityWeaponManager;
-import com.praya.myitems.manager.game.ElementManager;
-import com.praya.myitems.manager.game.SocketManager;
-import com.praya.myitems.manager.game.LoreStatsManager;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import api.praya.myitems.builder.event.CombatCriticalDamageEvent;
-import org.bukkit.event.Event;
-import core.praya.agarthalib.utility.ServerEventUtil;
-import api.praya.myitems.builder.event.CombatPreCriticalEvent;
-import core.praya.agarthalib.utility.MathUtil;
-import api.praya.myitems.builder.lorestats.LoreStatsEnum;
-import api.praya.myitems.builder.ability.AbilityWeapon;
-import core.praya.agarthalib.enums.main.SlotType;
-import org.bukkit.Material;
-import org.bukkit.event.entity.EntityDamageEvent;
-import core.praya.agarthalib.utility.ServerUtil;
-import core.praya.agarthalib.utility.CombatUtil;
-import core.praya.agarthalib.utility.EntityUtil;
-import org.bukkit.entity.LivingEntity;
-import core.praya.agarthalib.utility.ProjectileUtil;
-import com.praya.myitems.config.plugin.MainConfig;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.EventHandler;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.entity.Entity;
-import com.praya.myitems.manager.plugin.LanguageManager;
-import com.praya.myitems.manager.game.RequirementManager;
-import com.praya.myitems.manager.plugin.PluginManager;
-import com.praya.myitems.manager.game.GameManager;
-import java.util.HashMap;
-import org.bukkit.OfflinePlayer;
-import core.praya.agarthalib.enums.branch.SoundEnum;
-import org.bukkit.command.CommandSender;
-import core.praya.agarthalib.utility.SenderUtil;
-import core.praya.agarthalib.utility.TextUtil;
-import core.praya.agarthalib.utility.EquipmentUtil;
-import core.praya.agarthalib.bridge.unity.Bridge;
-import core.praya.agarthalib.enums.main.Slot;
-import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import com.praya.myitems.MyItems;
-import org.bukkit.event.Listener;
-import com.praya.myitems.builder.handler.HandlerEvent;
+import org.bukkit.projectiles.ProjectileSource;
 
-public class ListenerEntityDamageByEntity extends HandlerEvent implements Listener
-{
+import java.util.HashMap;
+
+public class ListenerEntityDamageByEntity extends HandlerEvent implements Listener {
     public ListenerEntityDamageByEntity(final MyItems plugin) {
         super(plugin);
     }
-    
+
     @EventHandler(priority = EventPriority.MONITOR)
     public void checkBoundAttacker(final EntityDamageByEntityEvent event) {
         final GameManager gameManager = this.plugin.getGameManager();
@@ -75,7 +60,7 @@ public class ListenerEntityDamageByEntity extends HandlerEvent implements Listen
         if (!event.isCancelled()) {
             final Entity attacker = event.getDamager();
             if (attacker instanceof Player) {
-                final Player player = (Player)attacker;
+                final Player player = (Player) attacker;
                 Slot[] values;
                 for (int length = (values = Slot.values()).length, i = 0; i < length; ++i) {
                     final Slot slot = values[i];
@@ -85,25 +70,24 @@ public class ListenerEntityDamageByEntity extends HandlerEvent implements Listen
                             if (!requirementManager.isAllowed(player, item)) {
                                 final String message = TextUtil.placeholder(lang.getText("Item_Lack_Requirement"), "Item", EquipmentUtil.getDisplayName(item));
                                 event.setCancelled(true);
-                                SenderUtil.sendMessage((CommandSender)player, message);
-                                SenderUtil.playSound((CommandSender)player, SoundEnum.ENTITY_BLAZE_DEATH);
-                            }
-                            else {
+                                SenderUtil.sendMessage(player, message);
+                                SenderUtil.playSound(player, SoundEnum.ENTITY_BLAZE_DEATH);
+                            } else {
                                 final Integer lineUnbound = requirementManager.getLineRequirementSoulUnbound(item);
                                 if (lineUnbound != null) {
-                                    final String loreBound = requirementManager.getTextSoulBound((OfflinePlayer)player);
+                                    final String loreBound = requirementManager.getTextSoulBound(player);
                                     final Integer lineOld = requirementManager.getLineRequirementSoulBound(item);
                                     final HashMap<String, String> map = new HashMap<String, String>();
                                     if (lineOld != null) {
-                                        EquipmentUtil.removeLore(item, (int)lineOld);
+                                        EquipmentUtil.removeLore(item, lineOld);
                                     }
                                     String message2 = lang.getText("Item_Bound");
                                     map.put("item", EquipmentUtil.getDisplayName(item));
                                     map.put("player", player.getName());
-                                    message2 = TextUtil.placeholder((HashMap)map, message2);
-                                    requirementManager.setMetadataSoulbound((OfflinePlayer)player, item);
-                                    EquipmentUtil.setLore(item, (int)lineUnbound, loreBound);
-                                    SenderUtil.sendMessage((CommandSender)player, message2);
+                                    message2 = TextUtil.placeholder(map, message2);
+                                    requirementManager.setMetadataSoulbound(player, item);
+                                    EquipmentUtil.setLore(item, lineUnbound, loreBound);
+                                    SenderUtil.sendMessage(player, message2);
                                 }
                             }
                         }
@@ -112,7 +96,7 @@ public class ListenerEntityDamageByEntity extends HandlerEvent implements Listen
             }
         }
     }
-    
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void entityDamageByEntityEvent(final EntityDamageByEntityEvent event) {
         final PluginManager pluginManager = this.plugin.getPluginManager();
@@ -136,9 +120,8 @@ public class ListenerEntityDamageByEntity extends HandlerEvent implements Listen
                     return;
                 }
                 attacker = EntityUtil.parseLivingEntity(source);
-                reverse = (EquipmentUtil.holdBow(attacker) && EquipmentUtil.getActiveSlotBow(attacker).equals((Object)Slot.OFFHAND));
-            }
-            else {
+                reverse = (EquipmentUtil.holdBow(attacker) && EquipmentUtil.getActiveSlotBow(attacker).equals(Slot.OFFHAND));
+            } else {
                 if (!EntityUtil.isLivingEntity(entityAttacker)) {
                     return;
                 }
@@ -149,16 +132,16 @@ public class ListenerEntityDamageByEntity extends HandlerEvent implements Listen
                 return;
             }
             final LivingEntity victims = EntityUtil.parseLivingEntity(entityVictims);
-            if (!Bridge.getBridgeLivingEntity().isLivingEntity((Entity)attacker)) {
+            if (!Bridge.getBridgeLivingEntity().isLivingEntity(attacker)) {
                 return;
             }
-            if (!Bridge.getBridgeLivingEntity().isLivingEntity((Entity)victims)) {
+            if (!Bridge.getBridgeLivingEntity().isLivingEntity(victims)) {
                 return;
             }
             final boolean isSkillDamage = CombatUtil.isSkillDamage(victims);
             final boolean isAreaDamage = CombatUtil.isAreaDamage(victims);
-            if (CombatUtil.hasMetadataInstantDamage((Entity)victims)) {
-                CombatUtil.removeMetadataInstantDamage((Entity)victims);
+            if (CombatUtil.hasMetadataInstantDamage(victims)) {
+                CombatUtil.removeMetadataInstantDamage(victims);
                 return;
             }
             final EntityDamageEvent.DamageCause damageCause = event.getCause();
@@ -168,15 +151,14 @@ public class ListenerEntityDamageByEntity extends HandlerEvent implements Listen
             final boolean enableVanillaDamage = mainConfig.isModifierEnableVanillaDamage();
             double damage = event.getDamage() - baseDamage;
             boolean customDamage = true;
-            if (!EntityUtil.isPlayer((Entity)attacker)) {
+            if (!EntityUtil.isPlayer(attacker)) {
                 final boolean enableCustomMobDamage = customDamage = mainConfig.isModifierEnableCustomMobDamage();
-            }
-            else {
+            } else {
                 final boolean enableCustomDamage = customDamage = mainConfig.isModifierEnableCustomModifier();
             }
-            if (!damageCause.equals((Object)EntityDamageEvent.DamageCause.PROJECTILE) && EquipmentUtil.isSolid(itemMainHand)) {
+            if (!damageCause.equals(EntityDamageEvent.DamageCause.PROJECTILE) && EquipmentUtil.isSolid(itemMainHand)) {
                 final Material materialMainHand = itemMainHand.getType();
-                if (materialMainHand.equals((Object)Material.BOW) && !isSkillDamage && !isAreaDamage) {
+                if (materialMainHand.equals(Material.BOW) && !isSkillDamage && !isAreaDamage) {
                     customDamage = false;
                 }
             }
@@ -186,11 +168,11 @@ public class ListenerEntityDamageByEntity extends HandlerEvent implements Listen
                     final double vanillaDamage = scaleDamageVanilla * baseDamage;
                     damage += vanillaDamage;
                 }
-            }
-            else {
+            } else {
                 --damage;
             }
-            Label_2213: {
+            Label_2213:
+            {
                 if (customDamage) {
                     final LoreStatsWeapon loreStatsAttacker = statsManager.getLoreStatsWeapon(attacker, reverse);
                     final LoreStatsArmor loreStatsVictims = statsManager.getLoreStatsArmor(victims);
@@ -210,8 +192,7 @@ public class ListenerEntityDamageByEntity extends HandlerEvent implements Listen
                         if (mapAbilityWeapon.containsKey(abilityWeaponItemSet)) {
                             final int totalGrade = mapAbilityWeapon.get(abilityWeaponItemSet) + itemSetBonusEffectEntityAttacker.getGradeAbilityWeapon(abilityWeaponItemSet);
                             mapAbilityWeapon.put(abilityWeaponItemSet, Math.min(maxGrade, totalGrade));
-                        }
-                        else {
+                        } else {
                             final int grade = itemSetBonusEffectEntityAttacker.getGradeAbilityWeapon(abilityWeaponItemSet);
                             mapAbilityWeapon.put(abilityWeaponItemSet, Math.min(maxGrade, grade));
                         }
@@ -258,17 +239,17 @@ public class ListenerEntityDamageByEntity extends HandlerEvent implements Listen
                     blockRate = blockRate + loreStatsVictims.getBlockRate() + socketVictims.getBlockRate() + itemSetBonusEffectStatsVictims.getBlockRate();
                     accuration = accuration + (loreStatsAttacker.getHitRate() + socketAttacker.getHitRate() + itemSetBonusEffectStatsAttacker.getHitRate()) - (loreStatsVictims.getDodgeRate() + socketVictims.getDodgeRate() + itemSetBonusEffectStatsVictims.getDodgeRate());
                     if (MathUtil.chanceOf(100.0 - accuration)) {
-                        if (EntityUtil.isPlayer((Entity)attacker)) {
-                            final Player player = EntityUtil.parsePlayer((Entity)attacker);
+                        if (EntityUtil.isPlayer(attacker)) {
+                            final Player player = EntityUtil.parsePlayer(attacker);
                             final String message = lang.getText("Attack_Miss");
-                            SenderUtil.playSound((CommandSender)player, SoundEnum.ENTITY_BAT_TAKEOFF);
-                            SenderUtil.sendMessage((CommandSender)player, message);
+                            SenderUtil.playSound(player, SoundEnum.ENTITY_BAT_TAKEOFF);
+                            SenderUtil.sendMessage(player, message);
                         }
-                        if (EntityUtil.isPlayer((Entity)victims)) {
-                            final Player player = EntityUtil.parsePlayer((Entity)victims);
+                        if (EntityUtil.isPlayer(victims)) {
+                            final Player player = EntityUtil.parsePlayer(victims);
                             final String message = lang.getText("Attack_Dodge");
-                            SenderUtil.playSound((CommandSender)player, SoundEnum.ENTITY_BAT_TAKEOFF);
-                            SenderUtil.sendMessage((CommandSender)player, message);
+                            SenderUtil.playSound(player, SoundEnum.ENTITY_BAT_TAKEOFF);
+                            SenderUtil.sendMessage(player, message);
                         }
                         event.setCancelled(true);
                         return;
@@ -279,25 +260,25 @@ public class ListenerEntityDamageByEntity extends HandlerEvent implements Listen
                     if (MathUtil.chanceOf(blockRate)) {
                         blockAmount = MathUtil.limitDouble(blockAmount, 0.0, 100.0);
                         damage = damage * (100.0 - blockAmount) / 100.0;
-                        if (EntityUtil.isPlayer((Entity)attacker)) {
-                            final Player player2 = EntityUtil.parsePlayer((Entity)attacker);
+                        if (EntityUtil.isPlayer(attacker)) {
+                            final Player player2 = EntityUtil.parsePlayer(attacker);
                             final String message2 = lang.getText("Attack_Block");
-                            SenderUtil.playSound((CommandSender)player2, SoundEnum.BLOCK_ANVIL_PLACE);
-                            SenderUtil.sendMessage((CommandSender)player2, message2);
+                            SenderUtil.playSound(player2, SoundEnum.BLOCK_ANVIL_PLACE);
+                            SenderUtil.sendMessage(player2, message2);
                         }
-                        if (EntityUtil.isPlayer((Entity)victims)) {
-                            final Player player2 = EntityUtil.parsePlayer((Entity)victims);
+                        if (EntityUtil.isPlayer(victims)) {
+                            final Player player2 = EntityUtil.parsePlayer(victims);
                             final String message2 = lang.getText("Attack_Blocked");
-                            SenderUtil.playSound((CommandSender)player2, SoundEnum.BLOCK_ANVIL_PLACE);
-                            SenderUtil.sendMessage((CommandSender)player2, message2);
+                            SenderUtil.playSound(player2, SoundEnum.BLOCK_ANVIL_PLACE);
+                            SenderUtil.sendMessage(player2, message2);
                         }
                     }
                     if (enableCustomCritical) {
                         final CombatPreCriticalEvent combatPreCriticalEvent = new CombatPreCriticalEvent(attacker, victims, cc);
-                        ServerEventUtil.callEvent((Event)combatPreCriticalEvent);
+                        ServerEventUtil.callEvent(combatPreCriticalEvent);
                         if (!combatPreCriticalEvent.isCancelled() && combatPreCriticalEvent.isCritical()) {
                             final CombatCriticalDamageEvent combatCriticalDamageEvent = new CombatCriticalDamageEvent(attacker, victims, damage, cd, 0.0);
-                            ServerEventUtil.callEvent((Event)combatCriticalDamageEvent);
+                            ServerEventUtil.callEvent(combatCriticalDamageEvent);
                             if (!combatCriticalDamageEvent.isCancelled()) {
                                 damage = combatCriticalDamageEvent.getCalculationDamage();
                             }
@@ -307,9 +288,9 @@ public class ListenerEntityDamageByEntity extends HandlerEvent implements Listen
                         Slot[] values;
                         for (int length = (values = Slot.values()).length, i = 0; i < length; ++i) {
                             final Slot slot = values[i];
-                            final LivingEntity holder = slot.getType().equals((Object)SlotType.WEAPON) ? attacker : victims;
+                            final LivingEntity holder = slot.getType().equals(SlotType.WEAPON) ? attacker : victims;
                             final ItemStack item = Bridge.getBridgeEquipment().getEquipment(holder, slot);
-                            if (EquipmentUtil.isSolid(item) && !item.getType().equals((Object)Material.BOW)) {
+                            if (EquipmentUtil.isSolid(item) && !item.getType().equals(Material.BOW)) {
                                 final boolean enableItemBrokenMessage = mainConfig.isStatsEnableItemBrokenMessage();
                                 statsManager.damageDurability(item);
                                 if (enableItemBrokenMessage && !statsManager.checkDurability(item)) {
@@ -325,8 +306,8 @@ public class ListenerEntityDamageByEntity extends HandlerEvent implements Listen
                             abilityWeapon.cast(entityAttacker, entityVictims, grade2, damage);
                         }
                     }
-                    final double bonusPercentDamage = EntityUtil.isPlayer((Entity)victims) ? pvpDamage : pveDamage;
-                    final double bonusPercentDefense = EntityUtil.isPlayer((Entity)attacker) ? pvpDefense : pveDefense;
+                    final double bonusPercentDamage = EntityUtil.isPlayer(victims) ? pvpDamage : pveDamage;
+                    final double bonusPercentDefense = EntityUtil.isPlayer(attacker) ? pvpDefense : pveDefense;
                     final double scaleDefenseOverall = mainConfig.getModifierScaleDefenseOverall();
                     final double scaleDamageMobReceive = mainConfig.getModifierScaleMobDamageReceive();
                     final boolean enableFlatDamage = mainConfig.isModifierEnableFlatDamage();
@@ -337,7 +318,7 @@ public class ListenerEntityDamageByEntity extends HandlerEvent implements Listen
                     damage = damage * (100.0 + bonusPercentDamage) / 100.0;
                     damage -= defense;
                     damage = MathUtil.limitDouble(damage, 0.0, damage);
-                    damage = (EntityUtil.isPlayer((Entity)victims) ? damage : (damage * scaleDamageMobReceive));
+                    damage = (EntityUtil.isPlayer(victims) ? damage : (damage * scaleDamageMobReceive));
                     if (!isAreaDamage && !isSkillDamage && attackAoERadius > 0.0 && attackAoEDamage > 0.0) {
                         final double attackAoEDamageEntity = damage * (attackAoEDamage / 100.0);
                         final Location attackAoELocation = victims.getLocation();
@@ -350,12 +331,11 @@ public class ListenerEntityDamageByEntity extends HandlerEvent implements Listen
                     if (!enableFlatDamage) {
                         final boolean enableBalancingSystem = mainConfig.isModifierEnableBalancingSystem();
                         final boolean enableBalancingMob = mainConfig.isModifierEnableBalancingMob();
-                        if (EntityUtil.isPlayer((Entity)victims)) {
+                        if (EntityUtil.isPlayer(victims)) {
                             if (!enableBalancingSystem) {
                                 break Label_2213;
                             }
-                        }
-                        else if (!enableBalancingMob) {
+                        } else if (!enableBalancingMob) {
                             break Label_2213;
                         }
                         final double modusValue = mainConfig.getModifierModusValue();
@@ -372,7 +352,7 @@ public class ListenerEntityDamageByEntity extends HandlerEvent implements Listen
                 if (enableVanillaModifier) {
                     if (attacker.hasPotionEffect(PotionEffectType.INCREASE_DAMAGE)) {
                         for (final PotionEffect potion : attacker.getActivePotionEffects()) {
-                            if (potion.getType().equals((Object)PotionEffectType.INCREASE_DAMAGE)) {
+                            if (potion.getType().equals(PotionEffectType.INCREASE_DAMAGE)) {
                                 damage += damage * potion.getAmplifier() / 10.0;
                                 break;
                             }
@@ -380,7 +360,7 @@ public class ListenerEntityDamageByEntity extends HandlerEvent implements Listen
                     }
                     if (victims.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
                         for (final PotionEffect potion : victims.getActivePotionEffects()) {
-                            if (potion.getType().equals((Object)PotionEffectType.DAMAGE_RESISTANCE)) {
+                            if (potion.getType().equals(PotionEffectType.DAMAGE_RESISTANCE)) {
                                 damage -= damage * potion.getAmplifier() / 20.0;
                                 break;
                             }
@@ -390,11 +370,9 @@ public class ListenerEntityDamageByEntity extends HandlerEvent implements Listen
                         final double scaleAbsorbEffect = mainConfig.getModifierScaleAbsorbEffect();
                         if (scaleAbsorbEffect > 1.0) {
                             event.setDamage(EntityDamageEvent.DamageModifier.ABSORPTION, -damage);
-                        }
-                        else if (scaleAbsorbEffect < 0.1) {
+                        } else if (scaleAbsorbEffect < 0.1) {
                             event.setDamage(EntityDamageEvent.DamageModifier.ABSORPTION, -(damage * 0.1));
-                        }
-                        else {
+                        } else {
                             event.setDamage(EntityDamageEvent.DamageModifier.ABSORPTION, -(damage * scaleAbsorbEffect));
                         }
                     }

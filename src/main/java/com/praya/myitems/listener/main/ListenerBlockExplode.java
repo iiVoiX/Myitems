@@ -4,19 +4,18 @@
 
 package com.praya.myitems.listener.main;
 
-import org.bukkit.event.EventHandler;
 import com.praya.agarthalib.utility.BlockUtil;
-import org.bukkit.event.block.BlockExplodeEvent;
 import com.praya.myitems.MyItems;
-import org.bukkit.event.Listener;
 import com.praya.myitems.builder.handler.HandlerEvent;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockExplodeEvent;
 
-public class ListenerBlockExplode extends HandlerEvent implements Listener
-{
+public class ListenerBlockExplode extends HandlerEvent implements Listener {
     public ListenerBlockExplode(final MyItems plugin) {
         super(plugin);
     }
-    
+
     @EventHandler
     public void onBlockExplode(final BlockExplodeEvent event) {
         if (!event.isCancelled() && BlockUtil.isSet(event.getBlock())) {

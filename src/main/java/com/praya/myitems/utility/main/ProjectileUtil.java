@@ -7,8 +7,7 @@ package com.praya.myitems.utility.main;
 import com.praya.myitems.config.plugin.MainConfig;
 import core.praya.agarthalib.enums.branch.ProjectileEnum;
 
-public class ProjectileUtil
-{
+public class ProjectileUtil {
     public static final String getText(final ProjectileEnum projectile) {
         final MainConfig mainConfig = MainConfig.getInstance();
         switch (projectile) {
@@ -44,7 +43,7 @@ public class ProjectileUtil
             }
         }
     }
-    
+
     public static final ProjectileEnum getProjectileByLore(final String lore) {
         ProjectileEnum[] values;
         for (int length = (values = ProjectileEnum.values()).length, i = 0; i < length; ++i) {

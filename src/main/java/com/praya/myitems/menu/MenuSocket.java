@@ -4,51 +4,42 @@
 
 package com.praya.myitems.menu;
 
-import api.praya.myitems.builder.socket.SocketGemsTree;
-import java.util.List;
-import java.util.ArrayList;
-import core.praya.agarthalib.enums.main.SlotType;
-import core.praya.agarthalib.builder.menu.MenuSlot;
-import api.praya.myitems.builder.socket.SocketGems;
-import org.bukkit.metadata.MetadataValue;
-import org.bukkit.inventory.Inventory;
 import api.praya.agarthalib.builder.support.SupportVault;
-import api.praya.agarthalib.manager.plugin.SupportManagerAPI;
-import com.praya.myitems.manager.plugin.LanguageManager;
-import com.praya.myitems.manager.game.SocketManager;
-import com.praya.myitems.manager.game.GameManager;
-import com.praya.myitems.manager.plugin.PluginManager;
-import com.praya.agarthalib.utility.PlayerUtil;
-import com.praya.agarthalib.utility.TextUtil;
-import core.praya.agarthalib.enums.main.RomanNumber;
-import java.util.HashMap;
-import core.praya.agarthalib.enums.branch.SoundEnum;
-import org.bukkit.command.CommandSender;
-import com.praya.agarthalib.utility.SenderUtil;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Entity;
-import com.praya.agarthalib.utility.MetadataUtil;
-import com.praya.agarthalib.utility.MathUtil;
-import org.bukkit.inventory.ItemStack;
-import core.praya.agarthalib.enums.branch.MaterialEnum;
-import org.bukkit.entity.LivingEntity;
-import com.praya.agarthalib.utility.EquipmentUtil;
-import core.praya.agarthalib.builder.menu.MenuGUI;
-import com.praya.myitems.config.plugin.MainConfig;
 import api.praya.agarthalib.main.AgarthaLibAPI;
-import core.praya.agarthalib.builder.menu.MenuSlotAction;
-import core.praya.agarthalib.builder.menu.Menu;
-import org.bukkit.entity.Player;
+import api.praya.agarthalib.manager.plugin.SupportManagerAPI;
+import api.praya.myitems.builder.socket.SocketGems;
+import api.praya.myitems.builder.socket.SocketGemsTree;
+import com.praya.agarthalib.utility.*;
 import com.praya.myitems.MyItems;
-import core.praya.agarthalib.builder.menu.MenuExecutor;
 import com.praya.myitems.builder.handler.HandlerMenu;
+import com.praya.myitems.config.plugin.MainConfig;
+import com.praya.myitems.manager.game.GameManager;
+import com.praya.myitems.manager.game.SocketManager;
+import com.praya.myitems.manager.plugin.LanguageManager;
+import com.praya.myitems.manager.plugin.PluginManager;
+import core.praya.agarthalib.builder.menu.*;
+import core.praya.agarthalib.enums.branch.MaterialEnum;
+import core.praya.agarthalib.enums.branch.SoundEnum;
+import core.praya.agarthalib.enums.main.RomanNumber;
+import core.praya.agarthalib.enums.main.SlotType;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.MetadataValue;
 
-public class MenuSocket extends HandlerMenu implements MenuExecutor
-{
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class MenuSocket extends HandlerMenu implements MenuExecutor {
     public MenuSocket(final MyItems plugin) {
         super(plugin);
     }
-    
+
     public void onClick(final Player player, final Menu menu, final MenuSlotAction.ActionType actionType, final String... args) {
         final AgarthaLibAPI agarthaLibAPI = AgarthaLibAPI.getInstance();
         final PluginManager pluginManager = this.plugin.getPluginManager();
@@ -59,7 +50,7 @@ public class MenuSocket extends HandlerMenu implements MenuExecutor
         final SupportVault supportVault = supportManager.getSupportVault();
         final MainConfig mainConfig = MainConfig.getInstance();
         if (menu instanceof MenuGUI) {
-            final MenuGUI menuGUI = (MenuGUI)menu;
+            final MenuGUI menuGUI = (MenuGUI) menu;
             if (args.length > 0) {
                 final String label = args[0];
                 if (label.equalsIgnoreCase("MyItems") && args.length > 1) {
@@ -86,8 +77,7 @@ public class MenuSocket extends HandlerMenu implements MenuExecutor
                                         if (!isGems && !isRodUnlock && !isRodRemove) {
                                             return;
                                         }
-                                    }
-                                    else {
+                                    } else {
                                         final boolean containsSocketEmpty = socketManager.containsSocketEmpty(itemCursor);
                                         final boolean containsSocketGems = socketManager.containsSocketGems(itemCursor);
                                         final boolean containsSocketLocked = socketManager.containsSocketLocked(itemCursor);
@@ -97,8 +87,8 @@ public class MenuSocket extends HandlerMenu implements MenuExecutor
                                     }
                                 }
                                 if (EquipmentUtil.isSolid(itemCurrent)) {
-                                    final String headerItemInput = lang.getText((LivingEntity)player, "Menu_Item_Header_Socket_Item_Input");
-                                    final String headerSocketInput = lang.getText((LivingEntity)player, "Menu_Item_Header_Socket_Socket_Input");
+                                    final String headerItemInput = lang.getText(player, "Menu_Item_Header_Socket_Item_Input");
+                                    final String headerSocketInput = lang.getText(player, "Menu_Item_Header_Socket_Socket_Input");
                                     final ItemStack itemItemInput = EquipmentUtil.createItem(MaterialEnum.WHITE_STAINED_GLASS_PANE, headerItemInput, 1);
                                     final ItemStack itemSocketInput = EquipmentUtil.createItem(MaterialEnum.WHITE_STAINED_GLASS_PANE, headerSocketInput, 1);
                                     if (itemCurrent.isSimilar(itemItemInput) || itemCurrent.isSimilar(itemSocketInput)) {
@@ -106,14 +96,12 @@ public class MenuSocket extends HandlerMenu implements MenuExecutor
                                             return;
                                         }
                                         inventory.setItem(index, itemCursor);
-                                        player.setItemOnCursor((ItemStack)null);
-                                    }
-                                    else if (!EquipmentUtil.isSolid(itemCursor)) {
+                                        player.setItemOnCursor(null);
+                                    } else if (!EquipmentUtil.isSolid(itemCursor)) {
                                         final ItemStack itemReplace = isSocketSlot ? itemSocketInput : itemItemInput;
                                         player.setItemOnCursor(itemCurrent);
                                         inventory.setItem(index, itemReplace);
-                                    }
-                                    else if (itemCurrent.isSimilar(itemCursor)) {
+                                    } else if (itemCurrent.isSimilar(itemCursor)) {
                                         final int amountCurrent = itemCurrent.getAmount();
                                         final int amountCursor = itemCursor.getAmount();
                                         final int amountTotal = amountCurrent + amountCursor;
@@ -124,48 +112,44 @@ public class MenuSocket extends HandlerMenu implements MenuExecutor
                                         itemCursor.setAmount(newCursor);
                                         inventory.setItem(index, itemCurrent);
                                         if (newCursor == 0) {
-                                            player.setItemOnCursor((ItemStack)null);
-                                        }
-                                        else {
+                                            player.setItemOnCursor(null);
+                                        } else {
                                             player.setItemOnCursor(itemCursor);
                                         }
-                                    }
-                                    else {
+                                    } else {
                                         inventory.setItem(index, itemCursor);
                                         player.setItemOnCursor(itemCurrent);
                                     }
-                                    MetadataUtil.removeMetadata((Entity)player, "MyItems Socket Line_Selector");
+                                    MetadataUtil.removeMetadata(player, "MyItems Socket Line_Selector");
                                     this.updateSocketMenu(menuGUI, player);
                                 }
                             }
-                        }
-                        else if (subArg.equalsIgnoreCase("Line_Selector")) {
+                        } else if (subArg.equalsIgnoreCase("Line_Selector")) {
                             if (args.length > 3) {
                                 final String textLine = args[3];
                                 final int line = MathUtil.parseInteger(textLine);
-                                final MetadataValue metadata = MetadataUtil.createMetadata((Object)line);
+                                final MetadataValue metadata = MetadataUtil.createMetadata(line);
                                 player.setMetadata("MyItems Socket Line_Selector", metadata);
                                 this.updateSocketMenu(menuGUI, player);
                             }
-                        }
-                        else if (subArg.equalsIgnoreCase("Accept")) {
+                        } else if (subArg.equalsIgnoreCase("Accept")) {
                             final MenuGUI.SlotCell cellItemResult = MenuGUI.SlotCell.G3;
                             final Inventory inventory2 = menu.getInventory();
-                            final String headerItemItemResult = lang.getText((LivingEntity)player, "Menu_Item_Header_Socket_Item_Result");
+                            final String headerItemItemResult = lang.getText(player, "Menu_Item_Header_Socket_Item_Result");
                             final ItemStack itemItemResult = EquipmentUtil.createItem(MaterialEnum.RED_STAINED_GLASS_PANE, headerItemItemResult, 1);
                             final ItemStack itemResult = inventory2.getItem(cellItemResult.getIndex());
                             if (!itemResult.isSimilar(itemItemResult)) {
                                 final MenuGUI.SlotCell cellItemInput = MenuGUI.SlotCell.B3;
                                 final MenuGUI.SlotCell cellSocketInput = MenuGUI.SlotCell.C3;
-                                final String headerItemInput = lang.getText((LivingEntity)player, "Menu_Item_Header_Socket_Item_Input");
-                                final String headerSocketInput = lang.getText((LivingEntity)player, "Menu_Item_Header_Socket_Socket_Input");
+                                final String headerItemInput = lang.getText(player, "Menu_Item_Header_Socket_Item_Input");
+                                final String headerSocketInput = lang.getText(player, "Menu_Item_Header_Socket_Socket_Input");
                                 final ItemStack itemItemInput = EquipmentUtil.createItem(MaterialEnum.WHITE_STAINED_GLASS_PANE, headerItemInput, 1);
                                 final ItemStack itemSocketInput = EquipmentUtil.createItem(MaterialEnum.WHITE_STAINED_GLASS_PANE, headerSocketInput, 1);
                                 final ItemStack itemItem = inventory2.getItem(cellItemInput.getIndex());
                                 final ItemStack itemSocket = inventory2.getItem(cellSocketInput.getIndex());
                                 final ItemStack itemRodUnlock2 = mainConfig.getSocketItemRodUnlock();
                                 final ItemStack itemRodRemove2 = mainConfig.getSocketItemRodRemove();
-                                final int line2 = MetadataUtil.getMetadata((Entity)player, "MyItems Socket Line_Selector").asInt();
+                                final int line2 = MetadataUtil.getMetadata(player, "MyItems Socket Line_Selector").asInt();
                                 final int amountItem = itemItem.getAmount();
                                 final int amountSocket = itemSocket.getAmount();
                                 int actionID;
@@ -173,35 +157,31 @@ public class MenuSocket extends HandlerMenu implements MenuExecutor
                                 if (socketManager.isSocketItem(itemSocket)) {
                                     actionID = 0;
                                     actionCost = mainConfig.getSocketCostSocket();
-                                }
-                                else if (itemSocket.isSimilar(itemRodUnlock2)) {
+                                } else if (itemSocket.isSimilar(itemRodUnlock2)) {
                                     actionID = 1;
                                     actionCost = mainConfig.getSocketCostUnlock();
-                                }
-                                else if (itemSocket.isSimilar(itemRodRemove2)) {
+                                } else if (itemSocket.isSimilar(itemRodRemove2)) {
                                     actionID = 2;
                                     actionCost = mainConfig.getSocketCostDesocket();
-                                }
-                                else {
+                                } else {
                                     actionID = -1;
                                     actionCost = 0.0;
                                 }
                                 if (supportVault != null) {
-                                    final double playerBalance = supportVault.getBalance((OfflinePlayer)player);
+                                    final double playerBalance = supportVault.getBalance(player);
                                     if (playerBalance < actionCost) {
-                                        final String message = lang.getText((LivingEntity)player, "Argument_Lack_Money");
-                                        SenderUtil.sendMessage((CommandSender)player, message);
-                                        SenderUtil.playSound((CommandSender)player, SoundEnum.ENTITY_BLAZE_DEATH);
+                                        final String message = lang.getText(player, "Argument_Lack_Money");
+                                        SenderUtil.sendMessage(player, message);
+                                        SenderUtil.playSound(player, SoundEnum.ENTITY_BLAZE_DEATH);
                                         return;
                                     }
-                                    supportVault.remBalance((OfflinePlayer)player, actionCost);
+                                    supportVault.remBalance(player, actionCost);
                                 }
                                 if (amountSocket > 1) {
                                     final int amountSocketLeft = amountSocket - 1;
                                     itemSocket.setAmount(amountSocketLeft);
                                     inventory2.setItem(cellSocketInput.getIndex(), itemSocket);
-                                }
-                                else {
+                                } else {
                                     inventory2.setItem(cellSocketInput.getIndex(), itemSocketInput);
                                 }
                                 if (actionID == 0) {
@@ -210,45 +190,42 @@ public class MenuSocket extends HandlerMenu implements MenuExecutor
                                     final double chance = socketBuild.getSuccessRate();
                                     final int grade = socketBuild.getGrade();
                                     if (!MathUtil.chanceOf(chance)) {
-                                        final String message2 = lang.getText((LivingEntity)player, "Socket_Input_Failure");
-                                        SenderUtil.sendMessage((CommandSender)player, message2);
-                                        SenderUtil.playSound((CommandSender)player, SoundEnum.ENTITY_BLAZE_DEATH);
+                                        final String message2 = lang.getText(player, "Socket_Input_Failure");
+                                        SenderUtil.sendMessage(player, message2);
+                                        SenderUtil.playSound(player, SoundEnum.ENTITY_BLAZE_DEATH);
                                         return;
                                     }
                                     final HashMap<String, String> map = new HashMap<String, String>();
-                                    String message3 = lang.getText((LivingEntity)player, "Socket_Input_Success");
+                                    String message3 = lang.getText(player, "Socket_Input_Success");
                                     map.put("socket", socketID);
                                     map.put("grade", RomanNumber.getRomanNumber(grade));
                                     map.put("line", String.valueOf(line2));
-                                    message3 = TextUtil.placeholder((HashMap)map, message3);
+                                    message3 = TextUtil.placeholder(map, message3);
                                     PlayerUtil.addItem(player, itemResult);
-                                    SenderUtil.sendMessage((CommandSender)player, message3);
-                                    SenderUtil.playSound((CommandSender)player, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
-                                }
-                                else if (actionID == 1) {
+                                    SenderUtil.sendMessage(player, message3);
+                                    SenderUtil.playSound(player, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
+                                } else if (actionID == 1) {
                                     final HashMap<String, String> map2 = new HashMap<String, String>();
-                                    String message4 = lang.getText((LivingEntity)player, "Socket_Unlock_Success");
+                                    String message4 = lang.getText(player, "Socket_Unlock_Success");
                                     map2.put("line", String.valueOf(line2));
-                                    message4 = TextUtil.placeholder((HashMap)map2, message4);
+                                    message4 = TextUtil.placeholder(map2, message4);
                                     PlayerUtil.addItem(player, itemResult);
-                                    SenderUtil.sendMessage((CommandSender)player, message4);
-                                    SenderUtil.playSound((CommandSender)player, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
-                                }
-                                else if (actionID == 2) {
+                                    SenderUtil.sendMessage(player, message4);
+                                    SenderUtil.playSound(player, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
+                                } else if (actionID == 2) {
                                     final HashMap<String, String> map2 = new HashMap<String, String>();
-                                    String message4 = lang.getText((LivingEntity)player, "Socket_Remove_Success");
+                                    String message4 = lang.getText(player, "Socket_Remove_Success");
                                     map2.put("line", String.valueOf(line2));
-                                    message4 = TextUtil.placeholder((HashMap)map2, message4);
+                                    message4 = TextUtil.placeholder(map2, message4);
                                     PlayerUtil.addItem(player, itemResult);
-                                    SenderUtil.sendMessage((CommandSender)player, message4);
-                                    SenderUtil.playSound((CommandSender)player, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
+                                    SenderUtil.sendMessage(player, message4);
+                                    SenderUtil.playSound(player, SoundEnum.ENTITY_EXPERIENCE_ORB_PICKUP);
                                 }
                                 if (amountItem > 1) {
                                     final int amountItemLeft = amountItem - 1;
                                     itemItem.setAmount(amountItemLeft);
                                     inventory2.setItem(cellItemInput.getIndex(), itemItem);
-                                }
-                                else {
+                                } else {
                                     inventory2.setItem(cellItemInput.getIndex(), itemItemInput);
                                 }
                             }
@@ -258,7 +235,7 @@ public class MenuSocket extends HandlerMenu implements MenuExecutor
             }
         }
     }
-    
+
     public final void updateSocketMenu(final MenuGUI menuGUI, final Player player) {
         final PluginManager pluginManager = this.plugin.getPluginManager();
         final GameManager gameManager = this.plugin.getGameManager();
@@ -266,11 +243,11 @@ public class MenuSocket extends HandlerMenu implements MenuExecutor
         final LanguageManager lang = pluginManager.getLanguageManager();
         final MainConfig mainConfig = MainConfig.getInstance();
         final String metadataID = "MyItems Socket Line_Selector";
-        final String headerLineSelector = lang.getText((LivingEntity)player, "Menu_Item_Header_Socket_Line_Selector");
+        final String headerLineSelector = lang.getText(player, "Menu_Item_Header_Socket_Line_Selector");
         final MenuGUI.SlotCell cellItemInput = MenuGUI.SlotCell.B3;
         final MenuGUI.SlotCell cellSocketInput = MenuGUI.SlotCell.C3;
         final MenuGUI.SlotCell cellItemResult = MenuGUI.SlotCell.G3;
-        final MenuGUI.SlotCell[] cellsLineSelector = { MenuGUI.SlotCell.F2, MenuGUI.SlotCell.G2, MenuGUI.SlotCell.H2 };
+        final MenuGUI.SlotCell[] cellsLineSelector = {MenuGUI.SlotCell.F2, MenuGUI.SlotCell.G2, MenuGUI.SlotCell.H2};
         final MenuSlot menuSlotItemResult = new MenuSlot(cellItemResult.getIndex());
         final Inventory inventory = menuGUI.getInventory();
         final ItemStack itemItemInput = inventory.getItem(cellItemInput.getIndex());
@@ -280,7 +257,7 @@ public class MenuSocket extends HandlerMenu implements MenuExecutor
         int socketLine = -1;
         int socketLinePrevious = -1;
         int socketLineNext = -1;
-        List<String> loreLineSelector = lang.getListText((LivingEntity)player, "Menu_Item_Lores_Socket_Line_Selector");
+        List<String> loreLineSelector = lang.getListText(player, "Menu_Item_Lores_Socket_Line_Selector");
         if (EquipmentUtil.isSolid(itemItemInput) && EquipmentUtil.isSolid(itemSocketInput)) {
             final ItemStack itemRodUnlock = mainConfig.getSocketItemRodUnlock();
             final ItemStack itemRodRemove = mainConfig.getSocketItemRodRemove();
@@ -295,14 +272,12 @@ public class MenuSocket extends HandlerMenu implements MenuExecutor
                 final SocketGemsTree socketTree = socket.getSocketTree();
                 final SlotType typeItem = socketTree.getTypeItem();
                 final SlotType typeDefault = SlotType.getSlotType(itemItemInput);
-                if (typeItem.equals((Object)typeDefault) || typeItem.equals((Object)SlotType.UNIVERSAL)) {
+                if (typeItem.equals(typeDefault) || typeItem.equals(SlotType.UNIVERSAL)) {
                     socketActionID = 0;
                 }
-            }
-            else if (containsSocketLocked && isSocketRodUnlock) {
+            } else if (containsSocketLocked && isSocketRodUnlock) {
                 socketActionID = 1;
-            }
-            else if (containsSocketGems && isSocketRodRemove) {
+            } else if (containsSocketGems && isSocketRodRemove) {
                 socketActionID = 2;
             }
             if (socketActionID != -1) {
@@ -326,9 +301,9 @@ public class MenuSocket extends HandlerMenu implements MenuExecutor
                     }
                 }
                 final int size = listLineSocket.size();
-                final boolean hasMetadataLine = MetadataUtil.hasMetadata((Entity)player, "MyItems Socket Line_Selector");
+                final boolean hasMetadataLine = MetadataUtil.hasMetadata(player, "MyItems Socket Line_Selector");
                 if (hasMetadataLine) {
-                    final int metadataLine = MetadataUtil.getMetadata((Entity)player, "MyItems Socket Line_Selector").asInt();
+                    final int metadataLine = MetadataUtil.getMetadata(player, "MyItems Socket Line_Selector").asInt();
                     int order = 0;
                     for (int index = 0; index < size; ++index) {
                         if (listLineSocket.get(index) == metadataLine) {
@@ -339,8 +314,7 @@ public class MenuSocket extends HandlerMenu implements MenuExecutor
                     socketLine = (listLineSocket.contains(metadataLine) ? metadataLine : listLineSocket.get(0));
                     socketLinePrevious = ((order == 0) ? listLineSocket.get(size - 1) : listLineSocket.get(order - 1));
                     socketLineNext = ((order == size - 1) ? listLineSocket.get(0) : listLineSocket.get(order + 1));
-                }
-                else {
+                } else {
                     socketLine = listLineSocket.get(0);
                     socketLinePrevious = listLineSocket.get(size - 1);
                     socketLineNext = ((size > 1) ? listLineSocket.get(1) : listLineSocket.get(0));
@@ -350,27 +324,24 @@ public class MenuSocket extends HandlerMenu implements MenuExecutor
         String socketAction;
         double socketCost;
         if (socketActionID == 0) {
-            socketAction = lang.getText((LivingEntity)player, "Socket_Action_Gems");
+            socketAction = lang.getText(player, "Socket_Action_Gems");
             socketCost = mainConfig.getSocketCostSocket();
-        }
-        else if (socketActionID == 1) {
-            socketAction = lang.getText((LivingEntity)player, "Socket_Action_Unlock");
+        } else if (socketActionID == 1) {
+            socketAction = lang.getText(player, "Socket_Action_Unlock");
             socketCost = mainConfig.getSocketCostUnlock();
-        }
-        else if (socketActionID == 2) {
-            socketAction = lang.getText((LivingEntity)player, "Socket_Action_Desocket");
+        } else if (socketActionID == 2) {
+            socketAction = lang.getText(player, "Socket_Action_Desocket");
             socketCost = mainConfig.getSocketCostDesocket();
-        }
-        else {
-            socketAction = lang.getText((LivingEntity)player, "Socket_Action_Unknown");
+        } else {
+            socketAction = lang.getText(player, "Socket_Action_Unknown");
             socketCost = 0.0;
         }
         map.put("socket_line", (socketLine == -1) ? "None" : String.valueOf(socketLine));
         map.put("socket_action", String.valueOf(socketAction));
         map.put("socket_cost", String.valueOf(socketCost));
         map.put("symbol_currency", mainConfig.getUtilityCurrency());
-        loreLineSelector = (List<String>)TextUtil.placeholder((HashMap)map, (List)loreLineSelector);
-        final ItemStack itemLineSelector = EquipmentUtil.createItem(MaterialEnum.SIGN, headerLineSelector, 1, (List)loreLineSelector);
+        loreLineSelector = (List<String>) TextUtil.placeholder(map, loreLineSelector);
+        final ItemStack itemLineSelector = EquipmentUtil.createItem(MaterialEnum.SIGN, headerLineSelector, 1, loreLineSelector);
         MenuGUI.SlotCell[] array;
         for (int length = (array = cellsLineSelector).length, i = 0; i < length; ++i) {
             final MenuGUI.SlotCell cell = array[i];
@@ -384,22 +355,20 @@ public class MenuSocket extends HandlerMenu implements MenuExecutor
             menuGUI.setMenuSlot(menuSlot);
         }
         if (socketActionID == -1) {
-            final String headerItemItemResult = lang.getText((LivingEntity)player, "Menu_Item_Header_Socket_Item_Result");
+            final String headerItemItemResult = lang.getText(player, "Menu_Item_Header_Socket_Item_Result");
             final ItemStack itemItemResult = EquipmentUtil.createItem(MaterialEnum.RED_STAINED_GLASS_PANE, headerItemItemResult, 1);
             menuSlotItemResult.setItem(itemItemResult);
             menuGUI.setMenuSlot(menuSlotItemResult);
-        }
-        else {
+        } else {
             final ItemStack itemItemResult2 = itemItemInput.clone();
-            final MetadataValue metadata = MetadataUtil.createMetadata((Object)socketLine);
+            final MetadataValue metadata = MetadataUtil.createMetadata(socketLine);
             if (socketActionID == 0) {
                 final SocketGems socketBuild = socketManager.getSocketBuild(itemSocketInput);
                 final String gemsID = socketManager.getSocketName(itemSocketInput);
                 final int gemsGrade = socketBuild.getGrade();
                 final String loreGems = socketManager.getTextSocketGemsLore(gemsID, gemsGrade);
                 EquipmentUtil.setLore(itemItemResult2, socketLine, loreGems);
-            }
-            else if (socketActionID == 1 || socketActionID == 2) {
+            } else if (socketActionID == 1 || socketActionID == 2) {
                 final String loreEmpty = socketManager.getTextSocketSlotEmpty();
                 EquipmentUtil.setLore(itemItemResult2, socketLine, loreEmpty);
             }

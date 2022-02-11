@@ -4,66 +4,78 @@
 
 package api.praya.myitems.builder.lorestats;
 
-import java.util.Iterator;
-import com.praya.myitems.config.plugin.MainConfig;
 import com.praya.agarthalib.utility.PluginUtil;
+import com.praya.myitems.config.plugin.MainConfig;
+
 import java.util.Arrays;
 import java.util.List;
 
-public enum LoreStatsEnum
-{
-    DAMAGE((String)null, Arrays.asList("Damage", "Attack", "Physical Attack", "PhysicalAttack", "Physical_Attack")), 
-    PENETRATION((String)null, Arrays.asList("Penetration", "Pentrate", "Pierce")), 
-    PVP_DAMAGE((String)null, Arrays.asList("PvP Damage", "PvP_Damage", "PvPDamage")), 
-    PVE_DAMAGE((String)null, Arrays.asList("PvE Damage", "PvE_Damage", "PvEDamage")), 
-    DEFENSE((String)null, Arrays.asList("Defense", "Armor", "Protection", "Physical Defense", "PhysicalDefense", "Physical_Defense")), 
-    PVP_DEFENSE((String)null, Arrays.asList("PvP Defense", "PvP_Defense", "PvPDefense")), 
-    PVE_DEFENSE((String)null, Arrays.asList("PvE Defense", "PvE_Defense", "PvEDefense")), 
-    HEALTH((String)null, Arrays.asList("Health", "Hearth", "HP", "Life")), 
-    HEALTH_REGEN("LifeEssence", Arrays.asList("Health Regen", "Health_Regen", "HealthRegen", "Regen", "Regeneration")), 
-    STAMINA_MAX("CombatStamina", Arrays.asList("Stamina Max", "Stamina_Max", "StaminaMax", "Max Stamina", "Max_Stamina", "Max_Stamina")), 
-    STAMINA_REGEN("CombatStamina", Arrays.asList("Stamina Regen", "Stamina_Regen", "StaminaRegen", "Regen Stamina", "Regen_Stamina", "Regen_Stamina")), 
-    ATTACK_AOE_RADIUS((String)null, Arrays.asList("Attack AoE Radius", "Attack_AoE_Radius", "AoE Radius", "AoE_Radius")), 
-    ATTACK_AOE_DAMAGE((String)null, Arrays.asList("Attack AoE Damage", "Attack_AoE_Damage", "AoE Damage", "AoE_Damage")), 
-    CRITICAL_CHANCE((String)null, Arrays.asList("Critical Chance", "CriticalChance", "Critical_Chance", "CC", "CritChance")), 
-    CRITICAL_DAMAGE((String)null, Arrays.asList("Critical Damage", "CriticalDamage", "Critical_Damage", "CD", "CritDamage")), 
-    BLOCK_AMOUNT((String)null, Arrays.asList("Block Amount", "BlockAmount", "Block_Amount")), 
-    BLOCK_RATE((String)null, Arrays.asList("Block Rate", "BlockRate", "Block_Rate", "Block")), 
-    HIT_RATE((String)null, Arrays.asList("Hit Rate", "HitRate", "Hit_Rate", "Hit", "Accuration", "Accuracy")), 
-    DODGE_RATE((String)null, Arrays.asList("Dodge Rate", "DodgeRate", "Dodge_Rate", "Dodge")), 
-    FISHING_CHANCE("DreamFish", Arrays.asList("Fishing Chance", "FishingChance", "Fishing_Chance", "Fishing Rate", "FishingRate", "Fishing_Rate")), 
-    FISHING_POWER("DreamFish", Arrays.asList("Fishing Power", "FishingPower", "Fishing_Power")), 
-    FISHING_SPEED("DreamFish", Arrays.asList("Fishing Speed", "FishingSpeed", "Fishing_Speed")), 
-    LURES_MAX_TENSION("DreamFish", Arrays.asList("Lures Tension", "LuresTension", "Lures_Tension", "Lures Max Tension", "LuresMaxTension", "Lures_Max_Tension")), 
-    LURES_ENDURANCE("DreamFish", Arrays.asList("Lures Endurance", "LuresEndurance", "Lures_Endurance")), 
-    DURABILITY((String)null, Arrays.asList("Durability")), 
-    LEVEL((String)null, Arrays.asList("Level"));
-    
+public enum LoreStatsEnum {
+    DAMAGE(null, Arrays.asList("Damage", "Attack", "Physical Attack", "PhysicalAttack", "Physical_Attack")),
+    PENETRATION(null, Arrays.asList("Penetration", "Pentrate", "Pierce")),
+    PVP_DAMAGE(null, Arrays.asList("PvP Damage", "PvP_Damage", "PvPDamage")),
+    PVE_DAMAGE(null, Arrays.asList("PvE Damage", "PvE_Damage", "PvEDamage")),
+    DEFENSE(null, Arrays.asList("Defense", "Armor", "Protection", "Physical Defense", "PhysicalDefense", "Physical_Defense")),
+    PVP_DEFENSE(null, Arrays.asList("PvP Defense", "PvP_Defense", "PvPDefense")),
+    PVE_DEFENSE(null, Arrays.asList("PvE Defense", "PvE_Defense", "PvEDefense")),
+    HEALTH(null, Arrays.asList("Health", "Hearth", "HP", "Life")),
+    HEALTH_REGEN("LifeEssence", Arrays.asList("Health Regen", "Health_Regen", "HealthRegen", "Regen", "Regeneration")),
+    STAMINA_MAX("CombatStamina", Arrays.asList("Stamina Max", "Stamina_Max", "StaminaMax", "Max Stamina", "Max_Stamina", "Max_Stamina")),
+    STAMINA_REGEN("CombatStamina", Arrays.asList("Stamina Regen", "Stamina_Regen", "StaminaRegen", "Regen Stamina", "Regen_Stamina", "Regen_Stamina")),
+    ATTACK_AOE_RADIUS(null, Arrays.asList("Attack AoE Radius", "Attack_AoE_Radius", "AoE Radius", "AoE_Radius")),
+    ATTACK_AOE_DAMAGE(null, Arrays.asList("Attack AoE Damage", "Attack_AoE_Damage", "AoE Damage", "AoE_Damage")),
+    CRITICAL_CHANCE(null, Arrays.asList("Critical Chance", "CriticalChance", "Critical_Chance", "CC", "CritChance")),
+    CRITICAL_DAMAGE(null, Arrays.asList("Critical Damage", "CriticalDamage", "Critical_Damage", "CD", "CritDamage")),
+    BLOCK_AMOUNT(null, Arrays.asList("Block Amount", "BlockAmount", "Block_Amount")),
+    BLOCK_RATE(null, Arrays.asList("Block Rate", "BlockRate", "Block_Rate", "Block")),
+    HIT_RATE(null, Arrays.asList("Hit Rate", "HitRate", "Hit_Rate", "Hit", "Accuration", "Accuracy")),
+    DODGE_RATE(null, Arrays.asList("Dodge Rate", "DodgeRate", "Dodge_Rate", "Dodge")),
+    FISHING_CHANCE("DreamFish", Arrays.asList("Fishing Chance", "FishingChance", "Fishing_Chance", "Fishing Rate", "FishingRate", "Fishing_Rate")),
+    FISHING_POWER("DreamFish", Arrays.asList("Fishing Power", "FishingPower", "Fishing_Power")),
+    FISHING_SPEED("DreamFish", Arrays.asList("Fishing Speed", "FishingSpeed", "Fishing_Speed")),
+    LURES_MAX_TENSION("DreamFish", Arrays.asList("Lures Tension", "LuresTension", "Lures_Tension", "Lures Max Tension", "LuresMaxTension", "Lures_Max_Tension")),
+    LURES_ENDURANCE("DreamFish", Arrays.asList("Lures Endurance", "LuresEndurance", "Lures_Endurance")),
+    DURABILITY(null, Arrays.asList("Durability")),
+    LEVEL(null, Arrays.asList("Level"));
+
     private final String dependency;
     private final List<String> aliases;
-    
-    private LoreStatsEnum(final String dependency, final List<String> aliases) {
+
+    LoreStatsEnum(final String dependency, final List<String> aliases) {
         this.dependency = dependency;
         this.aliases = aliases;
     }
-    
+
+    public static final LoreStatsEnum get(final String stats) {
+        LoreStatsEnum[] values;
+        for (int length = (values = values()).length, i = 0; i < length; ++i) {
+            final LoreStatsEnum key = values[i];
+            for (final String aliases : key.getAliases()) {
+                if (aliases.equalsIgnoreCase(stats)) {
+                    return key;
+                }
+            }
+        }
+        return null;
+    }
+
     public final String getDependency() {
         return this.dependency;
     }
-    
+
     public final List<String> getAliases() {
         return this.aliases;
     }
-    
+
     public final boolean hasDependency() {
         return this.getDependency() != null;
     }
-    
+
     public final boolean isAllowed() {
         final String dependency = this.getDependency();
         return PluginUtil.isPluginInstalled(dependency);
     }
-    
+
     public final String getText() {
         final MainConfig mainConfig = MainConfig.getInstance();
         switch (this) {
@@ -149,18 +161,5 @@ public enum LoreStatsEnum
                 return null;
             }
         }
-    }
-    
-    public static final LoreStatsEnum get(final String stats) {
-        LoreStatsEnum[] values;
-        for (int length = (values = values()).length, i = 0; i < length; ++i) {
-            final LoreStatsEnum key = values[i];
-            for (final String aliases : key.getAliases()) {
-                if (aliases.equalsIgnoreCase(stats)) {
-                    return key;
-                }
-            }
-        }
-        return null;
     }
 }

@@ -6,8 +6,7 @@ package com.praya.myitems.manager.game;
 
 import com.praya.myitems.MyItems;
 
-public class GameManager
-{
+public class GameManager {
     private final AbilityWeaponManager abilityWeaponManager;
     private final ElementManager elementManager;
     private final ItemManager itemManager;
@@ -21,7 +20,7 @@ public class GameManager
     private final SocketManager socketManager;
     private final LoreStatsManager statsManager;
     private final MenuManager menuManager;
-    
+
     public GameManager(final MyItems plugin) {
         this.abilityWeaponManager = new AbilityWeaponManager(plugin);
         this.elementManager = new ElementManager(plugin);
@@ -37,55 +36,55 @@ public class GameManager
         this.statsManager = new LoreStatsManager(plugin);
         this.menuManager = new MenuManager(plugin);
     }
-    
+
     public final AbilityWeaponManager getAbilityWeaponManager() {
         return this.abilityWeaponManager;
     }
-    
+
     public final ElementManager getElementManager() {
         return this.elementManager;
     }
-    
+
     public final ItemManager getItemManager() {
         return this.itemManager;
     }
-    
+
     public final ItemTypeManager getItemTypeManager() {
         return this.itemTypeManager;
     }
-    
+
     public final ItemTierManager getItemTierManager() {
         return this.itemTierManager;
     }
-    
+
     public final ItemGeneratorManager getItemGeneratorManager() {
         return this.itemGeneratorManager;
     }
-    
+
     public final ItemSetManager getItemSetManager() {
         return this.itemSetManager;
     }
-    
+
     public final PassiveEffectManager getPassiveEffectManager() {
         return this.passiveEffectManager;
     }
-    
+
     public final PowerManager getPowerManager() {
         return this.powerManager;
     }
-    
+
     public final RequirementManager getRequirementManager() {
         return this.requirementManager;
     }
-    
+
     public final SocketManager getSocketManager() {
         return this.socketManager;
     }
-    
+
     public final LoreStatsManager getStatsManager() {
         return this.statsManager;
     }
-    
+
     public final MenuManager getMenuManager() {
         return this.menuManager;
     }

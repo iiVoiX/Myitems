@@ -4,8 +4,7 @@
 
 package api.praya.myitems.builder.ability;
 
-public class AbilityItemWeapon extends AbilityItem
-{
+public class AbilityItemWeapon extends AbilityItem {
     public AbilityItemWeapon(final String ability, final int grade, final double chance) {
         super(ability, grade, chance);
     }

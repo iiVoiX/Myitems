@@ -5,32 +5,32 @@
 package com.praya.myitems.listener.main;
 
 import api.praya.myitems.builder.passive.PassiveEffectEnum;
-import java.util.Collection;
-import org.bukkit.Material;
+import com.praya.agarthalib.utility.EquipmentUtil;
+import com.praya.myitems.MyItems;
+import com.praya.myitems.builder.handler.HandlerEvent;
+import com.praya.myitems.config.plugin.MainConfig;
+import com.praya.myitems.manager.game.GameManager;
+import com.praya.myitems.manager.game.ItemSetManager;
 import com.praya.myitems.manager.game.PassiveEffectManager;
 import com.praya.myitems.utility.main.TriggerSupportUtil;
-import com.praya.agarthalib.utility.EquipmentUtil;
-import com.praya.myitems.config.plugin.MainConfig;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.EventHandler;
-import org.bukkit.inventory.ItemStack;
-import com.praya.myitems.manager.game.GameManager;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import com.praya.myitems.manager.game.ItemSetManager;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
-import com.praya.myitems.MyItems;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import com.praya.myitems.builder.handler.HandlerEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
-public class ListenerPlayerSwapHandItems extends HandlerEvent implements Listener
-{
+import java.util.Collection;
+
+public class ListenerPlayerSwapHandItems extends HandlerEvent implements Listener {
     public ListenerPlayerSwapHandItems(final MyItems plugin) {
         super(plugin);
     }
-    
+
     @EventHandler(priority = EventPriority.MONITOR)
     public void triggerEquipmentChangeEvent(final PlayerSwapHandItemsEvent event) {
         final GameManager gameManager = this.plugin.getGameManager();
@@ -42,13 +42,13 @@ public class ListenerPlayerSwapHandItems extends HandlerEvent implements Listene
             if (itemSetManager.isItemSet(itemMainHand) || itemSetManager.isItemSet(itemOffHand)) {
                 new BukkitRunnable() {
                     public void run() {
-                        itemSetManager.updateItemSet((LivingEntity)player);
+                        itemSetManager.updateItemSet(player);
                     }
-                }.runTaskLater((Plugin)this.plugin, 0L);
+                }.runTaskLater(this.plugin, 0L);
             }
         }
     }
-    
+
     @EventHandler(priority = EventPriority.MONITOR)
     public void playerSwapHandItemsEvent(final PlayerSwapHandItemsEvent event) {
         final GameManager gameManager = this.plugin.getGameManager();
@@ -66,8 +66,7 @@ public class ListenerPlayerSwapHandItems extends HandlerEvent implements Listene
                 final Collection<PassiveEffectEnum> passiveEffectsMainHand = passiveEffectManager.getPassiveEffects(itemMainHand);
                 isShieldMainHand = materialMainHand.toString().equalsIgnoreCase("SHIELD");
                 passiveEffectManager.reloadPassiveEffect(player, passiveEffectsMainHand, enableGradeCalculation);
-            }
-            else {
+            } else {
                 isShieldMainHand = false;
             }
             boolean isShieldOffHand;
@@ -76,8 +75,7 @@ public class ListenerPlayerSwapHandItems extends HandlerEvent implements Listene
                 final Collection<PassiveEffectEnum> passiveEffectsOffHand = passiveEffectManager.getPassiveEffects(itemOffHand);
                 isShieldOffHand = materialOffHand.toString().equalsIgnoreCase("SHIELD");
                 passiveEffectManager.reloadPassiveEffect(player, passiveEffectsOffHand, enableGradeCalculation);
-            }
-            else {
+            } else {
                 isShieldOffHand = false;
             }
             if (enableItemUniversal || isShieldMainHand || isShieldOffHand) {
@@ -85,7 +83,7 @@ public class ListenerPlayerSwapHandItems extends HandlerEvent implements Listene
                     public void run() {
                         TriggerSupportUtil.updateSupport(player);
                     }
-                }.runTaskLater((Plugin)this.plugin, 0L);
+                }.runTaskLater(this.plugin, 0L);
             }
         }
     }

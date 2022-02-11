@@ -4,36 +4,35 @@
 
 package com.praya.myitems.tabcompleter;
 
-import java.util.Iterator;
-import core.praya.agarthalib.builder.message.MessageBuild;
-import com.praya.myitems.manager.plugin.LanguageManager;
-import com.praya.myitems.manager.plugin.CommandManager;
-import com.praya.myitems.manager.game.ItemSetManager;
+import com.praya.agarthalib.utility.SenderUtil;
+import com.praya.agarthalib.utility.TabCompleterUtil;
+import com.praya.agarthalib.utility.TextUtil;
+import com.praya.myitems.MyItems;
+import com.praya.myitems.builder.handler.HandlerTabCompleter;
+import com.praya.myitems.manager.game.GameManager;
 import com.praya.myitems.manager.game.ItemGeneratorManager;
 import com.praya.myitems.manager.game.ItemManager;
-import com.praya.myitems.manager.game.GameManager;
+import com.praya.myitems.manager.game.ItemSetManager;
+import com.praya.myitems.manager.plugin.CommandManager;
+import com.praya.myitems.manager.plugin.LanguageManager;
 import com.praya.myitems.manager.plugin.PluginManager;
-import com.praya.agarthalib.utility.TabCompleterUtil;
-import org.bukkit.World;
-import org.bukkit.Bukkit;
-import java.util.Collection;
-import com.praya.agarthalib.utility.TextUtil;
-import com.praya.agarthalib.utility.SenderUtil;
+import core.praya.agarthalib.builder.message.MessageBuild;
 import core.praya.agarthalib.enums.branch.SoundEnum;
-import java.util.ArrayList;
-import java.util.List;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import com.praya.myitems.MyItems;
 import org.bukkit.command.TabCompleter;
-import com.praya.myitems.builder.handler.HandlerTabCompleter;
 
-public class TabCompleterMyItems extends HandlerTabCompleter implements TabCompleter
-{
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+public class TabCompleterMyItems extends HandlerTabCompleter implements TabCompleter {
     public TabCompleterMyItems(final MyItems plugin) {
         super(plugin);
     }
-    
+
     public List<String> onTabComplete(final CommandSender sender, final Command command, final String label, final String[] args) {
         final PluginManager pluginManager = this.plugin.getPluginManager();
         final GameManager gameManager = this.plugin.getGameManager();
@@ -84,8 +83,7 @@ public class TabCompleterMyItems extends HandlerTabCompleter implements TabCompl
             if (commandManager.checkPermission(sender, "MyItems_Simulation")) {
                 tabList.add("Simulation");
             }
-        }
-        else if (args.length == 2) {
+        } else if (args.length == 2) {
             final String argument1 = args[0];
             if (commandManager.checkCommand(argument1, "MyItems_Save")) {
                 if (commandManager.checkPermission(sender, "MyItems_Save")) {
@@ -93,27 +91,23 @@ public class TabCompleterMyItems extends HandlerTabCompleter implements TabCompl
                     final MessageBuild message = lang.getMessage(sender, "Argument_MyItems_Save");
                     message.sendMessage(sender, "tooltip_save", tooltip);
                 }
-            }
-            else if (commandManager.checkCommand(argument1, "MyItems_Load")) {
+            } else if (commandManager.checkCommand(argument1, "MyItems_Load")) {
                 if (commandManager.checkPermission(sender, "MyItems_Load")) {
                     tabList.add("Custom");
                     tabList.add("Generator");
                     tabList.add("Set");
                 }
-            }
-            else if (commandManager.checkCommand(argument1, "MyItems_Drop")) {
+            } else if (commandManager.checkCommand(argument1, "MyItems_Drop")) {
                 if (commandManager.checkPermission(sender, "MyItems_Drop")) {
                     tabList.add("Custom");
                     tabList.add("Generator");
                     tabList.add("Set");
                 }
-            }
-            else if (commandManager.checkCommand(argument1, "MyItems_Remove") && commandManager.checkPermission(sender, "MyItems_Remove")) {
+            } else if (commandManager.checkCommand(argument1, "MyItems_Remove") && commandManager.checkPermission(sender, "MyItems_Remove")) {
                 final Collection<String> itemIDs = itemManager.getItemIDs();
                 tabList.addAll(itemIDs);
             }
-        }
-        else if (args.length == 3) {
+        } else if (args.length == 3) {
             final String argument1 = args[0];
             final String argument2 = args[1];
             if (commandManager.checkCommand(argument1, "MyItems_Load")) {
@@ -121,33 +115,27 @@ public class TabCompleterMyItems extends HandlerTabCompleter implements TabCompl
                     if (commandManager.checkCommand(argument2, "MyItems_Load_Custom")) {
                         final Collection<String> itemIDs2 = itemManager.getItemIDs();
                         tabList.addAll(itemIDs2);
-                    }
-                    else if (commandManager.checkCommand(argument2, "MyItems_Load_Generator")) {
+                    } else if (commandManager.checkCommand(argument2, "MyItems_Load_Generator")) {
                         final Collection<String> itemIDs2 = itemGeneratorManager.getItemGeneratorIDs();
                         tabList.addAll(itemIDs2);
-                    }
-                    else if (commandManager.checkCommand(argument2, "MyItems_Load_Set")) {
+                    } else if (commandManager.checkCommand(argument2, "MyItems_Load_Set")) {
                         final Collection<String> itemIDs2 = itemSetManager.getItemComponentIDs();
                         tabList.addAll(itemIDs2);
                     }
                 }
-            }
-            else if (commandManager.checkCommand(argument1, "MyItems_Drop") && commandManager.checkPermission(sender, "MyItems_Drop")) {
+            } else if (commandManager.checkCommand(argument1, "MyItems_Drop") && commandManager.checkPermission(sender, "MyItems_Drop")) {
                 if (commandManager.checkCommand(argument2, "MyItems_Drop_Custom")) {
                     final Collection<String> itemIDs2 = itemManager.getItemIDs();
                     tabList.addAll(itemIDs2);
-                }
-                else if (commandManager.checkCommand(argument2, "MyItems_Drop_Generator")) {
+                } else if (commandManager.checkCommand(argument2, "MyItems_Drop_Generator")) {
                     final Collection<String> itemIDs2 = itemGeneratorManager.getItemGeneratorIDs();
                     tabList.addAll(itemIDs2);
-                }
-                else if (commandManager.checkCommand(argument2, "MyItems_Load_Set")) {
+                } else if (commandManager.checkCommand(argument2, "MyItems_Load_Set")) {
                     final Collection<String> itemIDs2 = itemSetManager.getItemComponentIDs();
                     tabList.addAll(itemIDs2);
                 }
             }
-        }
-        else if (args.length == 4) {
+        } else if (args.length == 4) {
             final String argument1 = args[0];
             if (commandManager.checkCommand(argument1, "MyItems_Drop") && commandManager.checkPermission(sender, "MyItems_Drop")) {
                 final Collection<String> worldNames = itemSetManager.getItemComponentIDs();
@@ -158,6 +146,6 @@ public class TabCompleterMyItems extends HandlerTabCompleter implements TabCompl
                 tabList.addAll(worldNames);
             }
         }
-        return (List<String>)TabCompleterUtil.returnList((List)tabList, args);
+        return (List<String>) TabCompleterUtil.returnList(tabList, args);
     }
 }

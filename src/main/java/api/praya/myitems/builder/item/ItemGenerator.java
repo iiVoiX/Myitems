@@ -4,38 +4,32 @@
 
 package api.praya.myitems.builder.item;
 
-import java.util.Collection;
-import org.bukkit.Material;
+import api.praya.myitems.builder.lorestats.*;
+import com.praya.agarthalib.utility.EquipmentUtil;
+import com.praya.agarthalib.utility.MapUtil;
+import com.praya.agarthalib.utility.MathUtil;
+import com.praya.agarthalib.utility.TextUtil;
+import com.praya.myitems.MyItems;
+import com.praya.myitems.manager.game.GameManager;
 import com.praya.myitems.manager.game.ItemTierManager;
 import com.praya.myitems.manager.game.ItemTypeManager;
 import com.praya.myitems.manager.plugin.PlaceholderManager;
-import com.praya.myitems.manager.game.GameManager;
 import com.praya.myitems.manager.plugin.PluginManager;
 import core.praya.agarthalib.bridge.unity.Bridge;
-import core.praya.agarthalib.enums.main.TagsAttribute;
-import org.bukkit.enchantments.Enchantment;
-import com.praya.agarthalib.utility.EquipmentUtil;
-import org.bukkit.entity.Player;
-import api.praya.myitems.builder.lorestats.LoreStatsModifier;
-import api.praya.myitems.builder.lorestats.LoreStatsUniversal;
-import api.praya.myitems.builder.lorestats.LoreStatsArmor;
-import api.praya.myitems.builder.lorestats.LoreStatsWeapon;
-import api.praya.myitems.builder.lorestats.LoreStatsEnum;
-import com.praya.agarthalib.utility.MathUtil;
-import com.praya.agarthalib.utility.TextUtil;
 import core.praya.agarthalib.enums.branch.MaterialEnum;
-import com.praya.agarthalib.utility.MapUtil;
-import org.bukkit.plugin.java.JavaPlugin;
-import com.praya.myitems.MyItems;
-import org.bukkit.inventory.ItemStack;
-import java.util.Iterator;
 import core.praya.agarthalib.enums.main.Slot;
+import core.praya.agarthalib.enums.main.TagsAttribute;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-public class ItemGenerator
-{
+public class ItemGenerator {
     private final String id;
     private final String displayName;
     private final boolean unbreakable;
@@ -43,7 +37,7 @@ public class ItemGenerator
     private final List<String> flags;
     private final HashMap<ItemType, ItemGeneratorType> mapType;
     private final HashMap<ItemTier, ItemGeneratorTier> mapTier;
-    
+
     public ItemGenerator(final String id, final String displayName, final boolean unbreakable, final List<String> lores, final List<String> flags, final HashMap<ItemType, ItemGeneratorType> mapType, final HashMap<ItemTier, ItemGeneratorTier> mapTier) {
         this.id = id;
         this.displayName = displayName;
@@ -53,7 +47,7 @@ public class ItemGenerator
         this.mapType = mapType;
         this.mapTier = mapTier;
     }
-    
+
     @Deprecated
     public ItemGenerator(final String id, final String displayName, final List<String> lores, final HashMap<ItemType, ItemGeneratorType> mapType, final HashMap<ItemTier, ItemGeneratorTier> mapTier) {
         this.id = id;
@@ -64,39 +58,39 @@ public class ItemGenerator
         this.mapType = mapType;
         this.mapTier = mapTier;
     }
-    
+
     public final String getId() {
         return this.id;
     }
-    
+
     public final String getDisplayName() {
         return this.displayName;
     }
-    
+
     public final boolean isUnbreakable() {
         return this.unbreakable;
     }
-    
+
     public final List<String> getLores() {
         return this.lores;
     }
-    
+
     public final List<String> getFlags() {
         return this.flags;
     }
-    
+
     public final HashMap<ItemType, ItemGeneratorType> getMapType() {
         return this.mapType;
     }
-    
+
     public final HashMap<ItemTier, ItemGeneratorTier> getMapTier() {
         return this.mapTier;
     }
-    
+
     public final HashMap<String, Integer> getMapPossibilityType() {
         return this.getMapPossibilityType(null);
     }
-    
+
     public final HashMap<String, Integer> getMapPossibilityType(final Slot slot) {
         final HashMap<String, Integer> mapPossibilityType = new HashMap<String, Integer>();
         for (final ItemType key : this.getMapType().keySet()) {
@@ -105,9 +99,8 @@ public class ItemGenerator
             final int possibility = this.getMapType().get(key).getPossibility();
             if (slot == null) {
                 mapPossibilityType.put(id, possibility);
-            }
-            else {
-                if (!slot.equals((Object)slotDefault)) {
+            } else {
+                if (!slot.equals(slotDefault)) {
                     continue;
                 }
                 mapPossibilityType.put(id, possibility);
@@ -115,7 +108,7 @@ public class ItemGenerator
         }
         return mapPossibilityType;
     }
-    
+
     public final HashMap<String, Integer> getMapPossibilityTier() {
         final HashMap<String, Integer> mapPossibilityTier = new HashMap<String, Integer>();
         for (final ItemTier key : this.getMapTier().keySet()) {
@@ -125,13 +118,13 @@ public class ItemGenerator
         }
         return mapPossibilityTier;
     }
-    
+
     public final ItemStack generateItem() {
         return this.generateItem(null);
     }
-    
+
     public final ItemStack generateItem(final Slot slot) {
-        final MyItems plugin = (MyItems)JavaPlugin.getPlugin((Class)MyItems.class);
+        final MyItems plugin = (MyItems) JavaPlugin.getPlugin((Class) MyItems.class);
         final PluginManager pluginManager = plugin.getPluginManager();
         final GameManager gameManager = plugin.getGameManager();
         final PlaceholderManager placeholderManager = pluginManager.getPlaceholderManager();
@@ -140,14 +133,14 @@ public class ItemGenerator
         final HashMap<String, Integer> mapPossibilityType = this.getMapPossibilityType(slot);
         final HashMap<String, Integer> mapPossibilityTier = this.getMapPossibilityTier();
         if (!mapPossibilityType.isEmpty() && !mapPossibilityTier.isEmpty()) {
-            final String idType = MapUtil.getRandomIdByInteger((HashMap)mapPossibilityType);
-            final String idTier = MapUtil.getRandomIdByInteger((HashMap)mapPossibilityTier);
+            final String idType = MapUtil.getRandomIdByInteger(mapPossibilityType);
+            final String idTier = MapUtil.getRandomIdByInteger(mapPossibilityTier);
             final ItemType itemType = itemTypeManager.getItemType(idType);
             final ItemTier itemTier = itemTierManager.getItemTier(idTier);
             if (itemType != null && itemType != null) {
                 final Material material = itemType.getMaterial();
                 final short data = itemType.getData();
-                final MaterialEnum materialEnum = MaterialEnum.getMaterialEnum(material, (int)data);
+                final MaterialEnum materialEnum = MaterialEnum.getMaterialEnum(material, data);
                 if (materialEnum != null) {
                     final boolean shiny = itemType.isShiny();
                     final ItemGeneratorType itemTypeProperties = this.getMapType().get(itemType);
@@ -159,11 +152,11 @@ public class ItemGenerator
                     final List<String> additionalLores = itemTierProperties.getAdditionalLores();
                     final Collection<Enchantment> enchantments = itemType.getEnchantments();
                     final Collection<Slot> allSlotNBT = itemType.getAllSlotNBT();
-                    final int random = (int)(Math.random() * names.size());
+                    final int random = (int) (Math.random() * names.size());
                     final String divider = "\n";
-                    final String lineDescription = TextUtil.convertListToString((List)description, "\n");
-                    final String lineLore = TextUtil.convertListToString((List)this.lores, "\n");
-                    final String lineAdditionalLores = TextUtil.convertListToString((List)additionalLores, "\n");
+                    final String lineDescription = TextUtil.convertListToString(description, "\n");
+                    final String lineLore = TextUtil.convertListToString(this.lores, "\n");
+                    final String lineAdditionalLores = TextUtil.convertListToString(additionalLores, "\n");
                     final String name = names.isEmpty() ? null : names.get(MathUtil.limitInteger(random, 0, names.size() - 1));
                     final HashMap<String, String> map = new HashMap<String, String>();
                     final HashMap<LoreStatsEnum, Double> mapStatsModifier = new HashMap<LoreStatsEnum, Double>();
@@ -207,16 +200,16 @@ public class ItemGenerator
                     map.put("Tier_ID", idTier);
                     map.put("Tier_Name", itemTier.getName());
                     map.put("Tier_Prefix", itemTier.getPrefix());
-                    display = TextUtil.placeholder((HashMap)map, display);
+                    display = TextUtil.placeholder(map, display);
                     display = TextUtil.colorful(display);
-                    loreBuilder = (lineAdditionalLores.isEmpty() ? loreBuilder : (String.valueOf(loreBuilder) + "\n" + lineAdditionalLores));
-                    loreBuilder = TextUtil.placeholder((HashMap)map, loreBuilder);
+                    loreBuilder = (lineAdditionalLores.isEmpty() ? loreBuilder : (loreBuilder + "\n" + lineAdditionalLores));
+                    loreBuilder = TextUtil.placeholder(map, loreBuilder);
                     loreBuilder = placeholderManager.placeholder(null, loreBuilder, statsModifier);
                     loreBuilder = TextUtil.colorful(loreBuilder);
                     final String[] finalLores = loreBuilder.split("\n");
                     final ItemStack item = EquipmentUtil.createItem(materialEnum, display, 1, finalLores);
                     for (final String flag : this.flags) {
-                        EquipmentUtil.addFlag(item, new String[] { flag });
+                        EquipmentUtil.addFlag(item, flag);
                     }
                     for (final Enchantment enchantment : enchantments) {
                         final int grade = itemType.getEnchantmentGrade(enchantment);

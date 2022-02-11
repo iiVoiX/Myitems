@@ -4,9 +4,8 @@
 
 package api.praya.myitems.builder.ability;
 
-public interface AbilityWeaponAttributeCastDamage
-{
+public interface AbilityWeaponAttributeCastDamage {
     double getCastBonusDamage(final int p0);
-    
+
     double getCastPercentDamage(final int p0);
 }

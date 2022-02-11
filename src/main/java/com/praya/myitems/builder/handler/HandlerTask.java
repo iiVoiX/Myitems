@@ -6,8 +6,7 @@ package com.praya.myitems.builder.handler;
 
 import com.praya.myitems.MyItems;
 
-public class HandlerTask extends Handler
-{
+public class HandlerTask extends Handler {
     protected HandlerTask(final MyItems plugin) {
         super(plugin);
     }

@@ -4,53 +4,48 @@
 
 package com.praya.myitems.menu;
 
-import java.util.Iterator;
+import api.praya.myitems.builder.ability.AbilityWeapon;
 import api.praya.myitems.builder.element.ElementBoostStats;
-import api.praya.myitems.builder.item.ItemSetBonusEffectStats;
 import api.praya.myitems.builder.item.ItemSetBonusEffectEntity;
+import api.praya.myitems.builder.item.ItemSetBonusEffectStats;
 import api.praya.myitems.builder.item.ItemStatsArmor;
 import api.praya.myitems.builder.item.ItemStatsWeapon;
-import org.bukkit.inventory.ItemStack;
-import com.praya.myitems.manager.plugin.LanguageManager;
-import com.praya.myitems.manager.player.PlayerItemStatsManager;
-import com.praya.myitems.manager.game.ItemSetManager;
-import com.praya.myitems.manager.game.ElementManager;
-import com.praya.myitems.manager.game.AbilityWeaponManager;
-import com.praya.myitems.manager.player.PlayerManager;
-import com.praya.myitems.manager.game.GameManager;
-import com.praya.myitems.manager.plugin.PluginManager;
-import core.praya.agarthalib.enums.branch.FlagEnum;
 import com.praya.agarthalib.utility.EquipmentUtil;
-import core.praya.agarthalib.enums.branch.MaterialEnum;
-import java.util.List;
-import com.praya.agarthalib.utility.TextUtil;
-import core.praya.agarthalib.enums.main.RomanNumber;
-import api.praya.myitems.builder.ability.AbilityWeapon;
 import com.praya.agarthalib.utility.MathUtil;
-import java.util.ArrayList;
-import core.praya.agarthalib.enums.main.SlotType;
-import core.praya.agarthalib.enums.main.Slot;
-import core.praya.agarthalib.bridge.unity.Bridge;
-import java.util.HashMap;
-import core.praya.agarthalib.builder.menu.MenuSlot;
-import org.bukkit.entity.LivingEntity;
-import core.praya.agarthalib.builder.menu.MenuGUI;
-import core.praya.agarthalib.builder.menu.MenuSlotAction;
-import core.praya.agarthalib.builder.menu.Menu;
-import org.bukkit.entity.Player;
+import com.praya.agarthalib.utility.TextUtil;
 import com.praya.myitems.MyItems;
-import core.praya.agarthalib.builder.menu.MenuExecutor;
 import com.praya.myitems.builder.handler.HandlerMenu;
+import com.praya.myitems.manager.game.AbilityWeaponManager;
+import com.praya.myitems.manager.game.ElementManager;
+import com.praya.myitems.manager.game.GameManager;
+import com.praya.myitems.manager.game.ItemSetManager;
+import com.praya.myitems.manager.player.PlayerItemStatsManager;
+import com.praya.myitems.manager.player.PlayerManager;
+import com.praya.myitems.manager.plugin.LanguageManager;
+import com.praya.myitems.manager.plugin.PluginManager;
+import core.praya.agarthalib.bridge.unity.Bridge;
+import core.praya.agarthalib.builder.menu.*;
+import core.praya.agarthalib.enums.branch.FlagEnum;
+import core.praya.agarthalib.enums.branch.MaterialEnum;
+import core.praya.agarthalib.enums.main.RomanNumber;
+import core.praya.agarthalib.enums.main.Slot;
+import core.praya.agarthalib.enums.main.SlotType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
-public class MenuStats extends HandlerMenu implements MenuExecutor
-{
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class MenuStats extends HandlerMenu implements MenuExecutor {
     public MenuStats(final MyItems plugin) {
         super(plugin);
     }
-    
+
     public void onClick(final Player player, final Menu menu, final MenuSlotAction.ActionType actionType, final String... args) {
     }
-    
+
     public final void updateStatsMenu(final MenuGUI menuGUI, final Player player) {
         final PluginManager pluginManager = this.plugin.getPluginManager();
         final GameManager gameManager = this.plugin.getGameManager();
@@ -61,17 +56,17 @@ public class MenuStats extends HandlerMenu implements MenuExecutor
         final PlayerItemStatsManager playerItemStatsManager = playerManager.getPlayerItemStatsManager();
         final LanguageManager lang = pluginManager.getLanguageManager();
         final String divider = "\n";
-        final String headerSlotHelmet = lang.getText((LivingEntity)player, "Menu_Item_Header_Stats_Slot_Helmet");
-        final String headerSlotChestplate = lang.getText((LivingEntity)player, "Menu_Item_Header_Stats_Slot_Chestplate");
-        final String headerSlotLeggings = lang.getText((LivingEntity)player, "Menu_Item_Header_Stats_Slot_Leggings");
-        final String headerSlotBoots = lang.getText((LivingEntity)player, "Menu_Item_Header_Stats_Slot_Boots");
-        final String headerSlotMainHand = lang.getText((LivingEntity)player, "Menu_Item_Header_Stats_Slot_MainHand");
-        final String headerSlotOffHand = lang.getText((LivingEntity)player, "Menu_Item_Header_Stats_Slot_OffHand");
-        final String headerInformation = lang.getText((LivingEntity)player, "Menu_Item_Header_Stats_Information");
-        final String headerAttack = lang.getText((LivingEntity)player, "Menu_Item_Header_Stats_Attack");
-        final String headerDefense = lang.getText((LivingEntity)player, "Menu_Item_Header_Stats_Defense");
-        final String headerAbility = lang.getText((LivingEntity)player, "Menu_Item_Header_Stats_Ability");
-        final String headerElement = lang.getText((LivingEntity)player, "Menu_Item_Header_Stats_Element");
+        final String headerSlotHelmet = lang.getText(player, "Menu_Item_Header_Stats_Slot_Helmet");
+        final String headerSlotChestplate = lang.getText(player, "Menu_Item_Header_Stats_Slot_Chestplate");
+        final String headerSlotLeggings = lang.getText(player, "Menu_Item_Header_Stats_Slot_Leggings");
+        final String headerSlotBoots = lang.getText(player, "Menu_Item_Header_Stats_Slot_Boots");
+        final String headerSlotMainHand = lang.getText(player, "Menu_Item_Header_Stats_Slot_MainHand");
+        final String headerSlotOffHand = lang.getText(player, "Menu_Item_Header_Stats_Slot_OffHand");
+        final String headerInformation = lang.getText(player, "Menu_Item_Header_Stats_Information");
+        final String headerAttack = lang.getText(player, "Menu_Item_Header_Stats_Attack");
+        final String headerDefense = lang.getText(player, "Menu_Item_Header_Stats_Defense");
+        final String headerAbility = lang.getText(player, "Menu_Item_Header_Stats_Ability");
+        final String headerElement = lang.getText(player, "Menu_Item_Header_Stats_Element");
         final MenuGUI.SlotCell cellEquipmentHelmet = MenuGUI.SlotCell.C2;
         final MenuGUI.SlotCell cellEquipmentChestplate = MenuGUI.SlotCell.C3;
         final MenuGUI.SlotCell cellEquipmentLeggings = MenuGUI.SlotCell.C4;
@@ -104,10 +99,10 @@ public class MenuStats extends HandlerMenu implements MenuExecutor
         final ItemStack itemEquipmentOffHand = Bridge.getBridgeEquipment().getEquipment(player, Slot.OFFHAND);
         final ItemStatsWeapon itemStatsWeapon = playerItemStatsManager.getItemStatsWeapon(player);
         final ItemStatsArmor itemStatsArmor = playerItemStatsManager.getItemStatsArmor(player);
-        final HashMap<AbilityWeapon, Integer> mapAbilityWeapon = abilityWeaponManager.getMapAbilityWeapon((LivingEntity)player);
-        final HashMap<String, Double> mapElementWeapon = elementManager.getMapElement((LivingEntity)player, SlotType.WEAPON, false);
-        final HashMap<String, Double> mapElementArmor = elementManager.getMapElement((LivingEntity)player, SlotType.ARMOR, false);
-        final ItemSetBonusEffectEntity itemSetBonusEffectEntity = itemSetManager.getItemSetBonusEffectEntity((LivingEntity)player, true, false);
+        final HashMap<AbilityWeapon, Integer> mapAbilityWeapon = abilityWeaponManager.getMapAbilityWeapon(player);
+        final HashMap<String, Double> mapElementWeapon = elementManager.getMapElement(player, SlotType.WEAPON, false);
+        final HashMap<String, Double> mapElementArmor = elementManager.getMapElement(player, SlotType.ARMOR, false);
+        final ItemSetBonusEffectEntity itemSetBonusEffectEntity = itemSetManager.getItemSetBonusEffectEntity(player, true, false);
         final ItemSetBonusEffectStats itemSetBonusEffectStats = itemSetBonusEffectEntity.getEffectStats();
         final ElementBoostStats elementWeapon = elementManager.getElementBoostStats(mapElementWeapon);
         final double elementAdditionalDamage = elementWeapon.getBaseAdditionalDamage();
@@ -140,62 +135,61 @@ public class MenuStats extends HandlerMenu implements MenuExecutor
         final List<String> loreElementDataWeapon = new ArrayList<String>();
         final List<String> loreElementDataArmor = new ArrayList<String>();
         String loreDamage = String.valueOf(MathUtil.roundNumber(totalDamageMin));
-        List<String> loreInformation = lang.getListText((LivingEntity)player, "Menu_Item_Lores_Stats_Information");
-        List<String> loreAttack = lang.getListText((LivingEntity)player, "Menu_Item_Lores_Stats_Attack");
-        List<String> loreDefense = lang.getListText((LivingEntity)player, "Menu_Item_Lores_Stats_Defense");
-        List<String> loreAbility = lang.getListText((LivingEntity)player, "Menu_Item_Lores_Stats_Ability");
-        List<String> loreElement = lang.getListText((LivingEntity)player, "Menu_Item_Lores_Stats_Element");
+        List<String> loreInformation = lang.getListText(player, "Menu_Item_Lores_Stats_Information");
+        List<String> loreAttack = lang.getListText(player, "Menu_Item_Lores_Stats_Attack");
+        List<String> loreDefense = lang.getListText(player, "Menu_Item_Lores_Stats_Defense");
+        List<String> loreAbility = lang.getListText(player, "Menu_Item_Lores_Stats_Ability");
+        List<String> loreElement = lang.getListText(player, "Menu_Item_Lores_Stats_Element");
         for (final AbilityWeapon abilityWeaponItemSet : itemSetBonusEffectEntity.getAllAbilityWeapon()) {
             final int grade = itemSetBonusEffectEntity.getGradeAbilityWeapon(abilityWeaponItemSet);
             final int maxGrade = abilityWeaponItemSet.getMaxGrade();
             if (mapAbilityWeapon.containsKey(abilityWeaponItemSet)) {
                 final int totalGrade = mapAbilityWeapon.get(abilityWeaponItemSet) + grade;
                 mapAbilityWeapon.put(abilityWeaponItemSet, Math.min(maxGrade, totalGrade));
-            }
-            else {
+            } else {
                 mapAbilityWeapon.put(abilityWeaponItemSet, Math.min(maxGrade, grade));
             }
         }
         for (final AbilityWeapon abilityWeapon : mapAbilityWeapon.keySet()) {
             final String abilityType = abilityWeapon.getID();
             final int abilityGrade = mapAbilityWeapon.get(abilityWeapon);
-            String formatAbilityData = lang.getText((LivingEntity)player, "Menu_Item_Format_Stats_Ability_Data");
+            String formatAbilityData = lang.getText(player, "Menu_Item_Format_Stats_Ability_Data");
             mapData.clear();
             mapData.put("ability_type", abilityType);
             mapData.put("ability_grade", RomanNumber.getRomanNumber(abilityGrade));
-            formatAbilityData = TextUtil.placeholder((HashMap)mapData, formatAbilityData);
+            formatAbilityData = TextUtil.placeholder(mapData, formatAbilityData);
             loreAbilityDataWeapon.add(formatAbilityData);
         }
         for (final String keyElement : mapElementWeapon.keySet()) {
             final double elementValue = mapElementWeapon.get(keyElement);
-            String formatElementData = lang.getText((LivingEntity)player, "Menu_Item_Format_Stats_Element_Data");
+            String formatElementData = lang.getText(player, "Menu_Item_Format_Stats_Element_Data");
             mapData.clear();
             mapData.put("element_type", keyElement);
             mapData.put("element_value", String.valueOf(elementValue));
-            formatElementData = TextUtil.placeholder((HashMap)mapData, formatElementData);
+            formatElementData = TextUtil.placeholder(mapData, formatElementData);
             loreElementDataWeapon.add(formatElementData);
         }
         for (final String keyElement : mapElementArmor.keySet()) {
             final double elementValue = mapElementArmor.get(keyElement);
-            String formatElementData = lang.getText((LivingEntity)player, "Menu_Item_Format_Stats_Element_Data");
+            String formatElementData = lang.getText(player, "Menu_Item_Format_Stats_Element_Data");
             mapData.clear();
             mapData.put("element_type", keyElement);
             mapData.put("element_value", String.valueOf(elementValue));
-            formatElementData = TextUtil.placeholder((HashMap)mapData, formatElementData);
+            formatElementData = TextUtil.placeholder(mapData, formatElementData);
             loreElementDataArmor.add(formatElementData);
         }
         if (totalDamageMin != totalDamageMax) {
-            loreDamage = lang.getText((LivingEntity)player, "Menu_Item_Format_Stats_Attack_Damage_Range");
+            loreDamage = lang.getText(player, "Menu_Item_Format_Stats_Attack_Damage_Range");
             mapData.clear();
             mapData.put("stats_damage_min", String.valueOf(MathUtil.roundNumber(totalDamageMin)));
             mapData.put("stats_damage_max", String.valueOf(MathUtil.roundNumber(totalDamageMax)));
-            loreDamage = TextUtil.placeholder((HashMap)mapData, loreDamage);
+            loreDamage = TextUtil.placeholder(mapData, loreDamage);
         }
-        final String lineAbilityDataWeapon = TextUtil.convertListToString((List)loreAbilityDataWeapon, "\n");
-        final String lineElementDataWeapon = TextUtil.convertListToString((List)loreElementDataWeapon, "\n");
-        final String lineElementDataArmor = TextUtil.convertListToString((List)loreElementDataArmor, "\n");
-        final String lineAbilityEmpty = lang.getText((LivingEntity)player, "Menu_Item_Format_Stats_Ability_Empty");
-        final String lineElementEmpty = lang.getText((LivingEntity)player, "Menu_Item_Format_Stats_Element_Empty");
+        final String lineAbilityDataWeapon = TextUtil.convertListToString(loreAbilityDataWeapon, "\n");
+        final String lineElementDataWeapon = TextUtil.convertListToString(loreElementDataWeapon, "\n");
+        final String lineElementDataArmor = TextUtil.convertListToString(loreElementDataArmor, "\n");
+        final String lineAbilityEmpty = lang.getText(player, "Menu_Item_Format_Stats_Ability_Empty");
+        final String lineElementEmpty = lang.getText(player, "Menu_Item_Format_Stats_Element_Empty");
         map.put("stats_damage", loreDamage);
         map.put("stats_penetration", String.valueOf(MathUtil.roundNumber(totalPenetration)));
         map.put("stats_pvp_damage", String.valueOf(MathUtil.roundNumber(totalPvPDamage)));
@@ -225,29 +219,29 @@ public class MenuStats extends HandlerMenu implements MenuExecutor
         map.put("ability_data_weapon", mapAbilityWeapon.isEmpty() ? lineAbilityEmpty : lineAbilityDataWeapon);
         map.put("element_data_weapon", mapElementWeapon.isEmpty() ? lineElementEmpty : lineElementDataWeapon);
         map.put("element_data_armor", mapElementArmor.isEmpty() ? lineElementEmpty : lineElementDataArmor);
-        loreInformation = (List<String>)TextUtil.placeholder((HashMap)map, (List)loreInformation);
-        loreAttack = (List<String>)TextUtil.placeholder((HashMap)map, (List)loreAttack);
-        loreDefense = (List<String>)TextUtil.placeholder((HashMap)map, (List)loreDefense);
-        loreAbility = (List<String>)TextUtil.placeholder((HashMap)map, (List)loreAbility);
-        loreElement = (List<String>)TextUtil.placeholder((HashMap)map, (List)loreElement);
-        loreInformation = (List<String>)TextUtil.expandList((List)loreInformation, "\n");
-        loreAttack = (List<String>)TextUtil.expandList((List)loreAttack, "\n");
-        loreDefense = (List<String>)TextUtil.expandList((List)loreDefense, "\n");
-        loreAbility = (List<String>)TextUtil.expandList((List)loreAbility, "\n");
-        loreElement = (List<String>)TextUtil.expandList((List)loreElement, "\n");
+        loreInformation = (List<String>) TextUtil.placeholder(map, loreInformation);
+        loreAttack = (List<String>) TextUtil.placeholder(map, loreAttack);
+        loreDefense = (List<String>) TextUtil.placeholder(map, loreDefense);
+        loreAbility = (List<String>) TextUtil.placeholder(map, loreAbility);
+        loreElement = (List<String>) TextUtil.placeholder(map, loreElement);
+        loreInformation = (List<String>) TextUtil.expandList(loreInformation, "\n");
+        loreAttack = (List<String>) TextUtil.expandList(loreAttack, "\n");
+        loreDefense = (List<String>) TextUtil.expandList(loreDefense, "\n");
+        loreAbility = (List<String>) TextUtil.expandList(loreAbility, "\n");
+        loreElement = (List<String>) TextUtil.expandList(loreElement, "\n");
         final ItemStack itemSlotHelmet = EquipmentUtil.createItem(MaterialEnum.RED_STAINED_GLASS_PANE, headerSlotHelmet, 1);
         final ItemStack itemSlotChestplate = EquipmentUtil.createItem(MaterialEnum.RED_STAINED_GLASS_PANE, headerSlotChestplate, 1);
         final ItemStack itemSlotLeggings = EquipmentUtil.createItem(MaterialEnum.RED_STAINED_GLASS_PANE, headerSlotLeggings, 1);
         final ItemStack itemSlotBoots = EquipmentUtil.createItem(MaterialEnum.RED_STAINED_GLASS_PANE, headerSlotBoots, 1);
         final ItemStack itemSlotMainHand = EquipmentUtil.createItem(MaterialEnum.RED_STAINED_GLASS_PANE, headerSlotMainHand, 1);
         final ItemStack itemSlotOffHand = EquipmentUtil.createItem(MaterialEnum.RED_STAINED_GLASS_PANE, headerSlotOffHand, 1);
-        final ItemStack itemInformation = EquipmentUtil.createItem(MaterialEnum.SIGN, headerInformation, 1, (List)loreInformation);
-        final ItemStack itemAttack = EquipmentUtil.createItem(MaterialEnum.IRON_SWORD, headerAttack, 1, (List)loreAttack);
-        final ItemStack itemDefense = EquipmentUtil.createItem(MaterialEnum.IRON_CHESTPLATE, headerDefense, 1, (List)loreDefense);
-        final ItemStack itemAbility = EquipmentUtil.createItem(MaterialEnum.BLAZE_POWDER, headerAbility, 1, (List)loreAbility);
-        final ItemStack itemElement = EquipmentUtil.createItem(MaterialEnum.MAGMA_CREAM, headerElement, 1, (List)loreElement);
-        EquipmentUtil.addFlag(itemAttack, new FlagEnum[] { FlagEnum.HIDE_ATTRIBUTES });
-        EquipmentUtil.addFlag(itemDefense, new FlagEnum[] { FlagEnum.HIDE_ATTRIBUTES });
+        final ItemStack itemInformation = EquipmentUtil.createItem(MaterialEnum.SIGN, headerInformation, 1, loreInformation);
+        final ItemStack itemAttack = EquipmentUtil.createItem(MaterialEnum.IRON_SWORD, headerAttack, 1, loreAttack);
+        final ItemStack itemDefense = EquipmentUtil.createItem(MaterialEnum.IRON_CHESTPLATE, headerDefense, 1, loreDefense);
+        final ItemStack itemAbility = EquipmentUtil.createItem(MaterialEnum.BLAZE_POWDER, headerAbility, 1, loreAbility);
+        final ItemStack itemElement = EquipmentUtil.createItem(MaterialEnum.MAGMA_CREAM, headerElement, 1, loreElement);
+        EquipmentUtil.addFlag(itemAttack, FlagEnum.HIDE_ATTRIBUTES);
+        EquipmentUtil.addFlag(itemDefense, FlagEnum.HIDE_ATTRIBUTES);
         menuSlotEquipmentHelmet.setItem(EquipmentUtil.isSolid(itemEquipmentHelmet) ? itemEquipmentHelmet : itemSlotHelmet);
         menuSlotEquipmentChestplate.setItem(EquipmentUtil.isSolid(itemEquipmentChestplate) ? itemEquipmentChestplate : itemSlotChestplate);
         menuSlotEquipmentLeggings.setItem(EquipmentUtil.isSolid(itemEquipmentLeggings) ? itemEquipmentLeggings : itemSlotLeggings);

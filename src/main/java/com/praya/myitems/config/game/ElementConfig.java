@@ -4,44 +4,43 @@
 
 package com.praya.myitems.config.game;
 
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import java.io.File;
-import com.praya.myitems.manager.plugin.DataManager;
-import com.praya.myitems.manager.plugin.PluginManager;
-import api.praya.myitems.builder.element.ElementPotion;
+import api.praya.myitems.builder.element.Element;
 import api.praya.myitems.builder.element.ElementBoost;
+import api.praya.myitems.builder.element.ElementPotion;
+import api.praya.myitems.builder.potion.PotionProperties;
+import com.praya.agarthalib.utility.FileUtil;
 import com.praya.agarthalib.utility.MathUtil;
 import com.praya.agarthalib.utility.PotionUtil;
 import com.praya.agarthalib.utility.TextUtil;
-import api.praya.myitems.builder.potion.PotionProperties;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.plugin.java.JavaPlugin;
-import com.praya.agarthalib.utility.FileUtil;
-import java.util.Iterator;
-import java.util.Collection;
 import com.praya.myitems.MyItems;
-import api.praya.myitems.builder.element.Element;
-import java.util.HashMap;
 import com.praya.myitems.builder.handler.HandlerConfig;
+import com.praya.myitems.manager.plugin.DataManager;
+import com.praya.myitems.manager.plugin.PluginManager;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffectType;
 
-public class ElementConfig extends HandlerConfig
-{
+import java.io.File;
+import java.util.Collection;
+import java.util.HashMap;
+
+public class ElementConfig extends HandlerConfig {
     private final HashMap<String, Element> mapElement;
-    
+
     public ElementConfig(final MyItems plugin) {
         super(plugin);
         this.mapElement = new HashMap<String, Element>();
     }
-    
+
     public final Collection<String> getElements() {
         return this.mapElement.keySet();
     }
-    
+
     public final Collection<Element> getElementBuilds() {
         return this.mapElement.values();
     }
-    
+
     public final Element getElementBuild(final String element) {
         for (final String key : this.getElements()) {
             if (key.equalsIgnoreCase(element)) {
@@ -50,24 +49,24 @@ public class ElementConfig extends HandlerConfig
         }
         return null;
     }
-    
+
     public final void setup() {
         this.moveOldFile();
         this.reset();
         this.loadConfig();
     }
-    
+
     private final void reset() {
         this.mapElement.clear();
     }
-    
+
     private final void loadConfig() {
         final PluginManager pluginManager = this.plugin.getPluginManager();
         final DataManager dataManager = pluginManager.getDataManager();
         final String path = dataManager.getPath("Path_File_Element");
-        final File file = FileUtil.getFile((JavaPlugin)this.plugin, path);
+        final File file = FileUtil.getFile(this.plugin, path);
         if (!file.exists()) {
-            FileUtil.saveResource((JavaPlugin)this.plugin, path);
+            FileUtil.saveResource(this.plugin, path);
         }
         final FileConfiguration config = FileUtil.getFileConfiguration(file);
         for (final String key : config.getKeys(false)) {
@@ -81,20 +80,16 @@ public class ElementConfig extends HandlerConfig
             for (final String keySection : section.getKeys(false)) {
                 if (keySection.equalsIgnoreCase("Keylore")) {
                     keyLore = TextUtil.colorful(section.getString(keySection));
-                }
-                else if (keySection.equalsIgnoreCase("Scale_Bonus_Additional_Damage") || keySection.equalsIgnoreCase("Scale_Base_Additional_Damage")) {
+                } else if (keySection.equalsIgnoreCase("Scale_Bonus_Additional_Damage") || keySection.equalsIgnoreCase("Scale_Base_Additional_Damage")) {
                     scaleAdditionalDamage = section.getDouble(keySection);
-                }
-                else if (keySection.equalsIgnoreCase("Scale_Bonus_Percent_Damage") || keySection.equalsIgnoreCase("Scale_Base_Percent_Damage")) {
+                } else if (keySection.equalsIgnoreCase("Scale_Bonus_Percent_Damage") || keySection.equalsIgnoreCase("Scale_Base_Percent_Damage")) {
                     scalePercentDamage = section.getDouble(keySection);
-                }
-                else if (keySection.equalsIgnoreCase("Resistance")) {
+                } else if (keySection.equalsIgnoreCase("Resistance")) {
                     final ConfigurationSection resistanceSection = section.getConfigurationSection(keySection);
                     for (final String keyResistance : resistanceSection.getKeys(false)) {
                         resistance.put(keyResistance, resistanceSection.getDouble(keyResistance));
                     }
-                }
-                else {
+                } else {
                     if (!keySection.equalsIgnoreCase("Potion_To_Attacker") && !keySection.equalsIgnoreCase("Potion_To_Attackers") && !keySection.equalsIgnoreCase("Potion_To_Victim") && !keySection.equalsIgnoreCase("Potion_To_Victims")) {
                         continue;
                     }
@@ -109,11 +104,9 @@ public class ElementConfig extends HandlerConfig
                             for (final String keyAttribute : attributePotionSection.getKeys(false)) {
                                 if (keyAttribute.equalsIgnoreCase("Grade")) {
                                     potionGrade = attributePotionSection.getInt(keyAttribute);
-                                }
-                                else if (keyAttribute.equalsIgnoreCase("Scale_Chance")) {
+                                } else if (keyAttribute.equalsIgnoreCase("Scale_Chance")) {
                                     potionScaleChance = attributePotionSection.getDouble(keyAttribute);
-                                }
-                                else {
+                                } else {
                                     if (!keyAttribute.equalsIgnoreCase("Scale_Duration")) {
                                         continue;
                                     }
@@ -126,8 +119,7 @@ public class ElementConfig extends HandlerConfig
                             final PotionProperties potionAttributes = new PotionProperties(potionGrade, potionScaleChance, potionScaleDuration);
                             if (keySection.equalsIgnoreCase("Potion_To_Attacker") || keySection.equalsIgnoreCase("Potion_To_Attackers")) {
                                 potionAttacker.put(potion, potionAttributes);
-                            }
-                            else {
+                            } else {
                                 if (!keySection.equalsIgnoreCase("Potion_To_Victim") && !keySection.equalsIgnoreCase("Potion_To_Victims")) {
                                     continue;
                                 }
@@ -145,14 +137,14 @@ public class ElementConfig extends HandlerConfig
             }
         }
     }
-    
+
     private final void moveOldFile() {
         final PluginManager pluginManager = this.plugin.getPluginManager();
         final DataManager dataManager = pluginManager.getDataManager();
         final String pathSource = "element.yml";
         final String pathTarget = dataManager.getPath("Path_File_Element");
-        final File fileSource = FileUtil.getFile((JavaPlugin)this.plugin, "element.yml");
-        final File fileTarget = FileUtil.getFile((JavaPlugin)this.plugin, pathTarget);
+        final File fileSource = FileUtil.getFile(this.plugin, "element.yml");
+        final File fileTarget = FileUtil.getFile(this.plugin, pathTarget);
         if (fileSource.exists()) {
             FileUtil.moveFileSilent(fileSource, fileTarget);
         }

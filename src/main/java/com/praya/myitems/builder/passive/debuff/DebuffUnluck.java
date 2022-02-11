@@ -4,32 +4,29 @@
 
 package com.praya.myitems.builder.passive.debuff;
 
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import com.praya.agarthalib.utility.PotionUtil;
-import com.praya.agarthalib.utility.ServerUtil;
-import core.praya.agarthalib.enums.main.VersionNMS;
-import com.praya.myitems.config.plugin.MainConfig;
-import org.bukkit.entity.Player;
 import api.praya.myitems.builder.passive.PassiveEffectEnum;
+import com.praya.agarthalib.utility.ServerUtil;
 import com.praya.myitems.builder.abs.PassiveEffect;
+import com.praya.myitems.config.plugin.MainConfig;
+import core.praya.agarthalib.enums.main.VersionNMS;
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffectType;
 
-public class DebuffUnluck extends PassiveEffect
-{
+public class DebuffUnluck extends PassiveEffect {
     private static final PassiveEffectEnum debuff;
-    
+
     static {
         debuff = PassiveEffectEnum.UNLUCK;
     }
-    
+
     public DebuffUnluck() {
         super(DebuffUnluck.debuff, 1);
     }
-    
+
     public DebuffUnluck(final int grade) {
         super(DebuffUnluck.debuff, grade);
     }
-    
+
     @Override
     public final void cast(final Player player) {
         final MainConfig mainConfig = MainConfig.getInstance();
