@@ -45,8 +45,6 @@ public class BuffInvisibility extends PassiveEffect
             final int duration = this.getDuration();
             final long cooldown = this.getCooldown();
             final boolean isEnableParticle = mainConfig.isMiscEnableParticlePotion();
-            final PotionEffect potion = PotionUtil.createPotion(potionType, duration, this.grade, true, isEnableParticle);
-            player.addPotionEffect(potion);
             passiveEffectManager.setPassiveEffectCooldown(BuffInvisibility.buff, (OfflinePlayer)player, cooldown);
         }
     }

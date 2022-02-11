@@ -45,8 +45,6 @@ public class BuffVision extends PassiveEffect
             final long cooldown = this.getCooldown();
             final int duration = this.getDuration();
             final boolean isEnableParticle = mainConfig.isMiscEnableParticlePotion();
-            final PotionEffect potion = PotionUtil.createPotion(potionType, duration, this.grade, true, isEnableParticle);
-            player.addPotionEffect(potion);
             passiveEffectManager.setPassiveEffectCooldown(BuffVision.buff, (OfflinePlayer)player, cooldown);
         }
     }

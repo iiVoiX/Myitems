@@ -45,8 +45,6 @@ public class DebuffConfuse extends PassiveEffect
             final int duration = this.getDuration();
             final long cooldown = this.getCooldown();
             final boolean isEnableParticle = mainConfig.isMiscEnableParticlePotion();
-            final PotionEffect potion = PotionUtil.createPotion(potionType, duration, this.grade, true, isEnableParticle);
-            player.addPotionEffect(potion);
             passiveEffectManager.setPassiveEffectCooldown(DebuffConfuse.debuff, (OfflinePlayer)player, cooldown);
         }
     }

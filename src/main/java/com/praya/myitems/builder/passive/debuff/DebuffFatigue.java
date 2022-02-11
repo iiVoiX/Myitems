@@ -33,7 +33,5 @@ public class DebuffFatigue extends PassiveEffect
         final MainConfig mainConfig = MainConfig.getInstance();
         final PotionEffectType potionType = this.getPotion();
         final boolean isEnableParticle = mainConfig.isMiscEnableParticlePotion();
-        final PotionEffect potion = PotionUtil.createPotion(potionType, 96000, this.grade, true, isEnableParticle);
-        player.addPotionEffect(potion);
     }
 }

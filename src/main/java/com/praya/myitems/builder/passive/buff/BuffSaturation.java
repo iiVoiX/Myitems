@@ -45,8 +45,6 @@ public class BuffSaturation extends PassiveEffect
             final long cooldown = this.getCooldown();
             final int duration = this.getDuration();
             final boolean isEnableParticle = mainConfig.isMiscEnableParticlePotion();
-            final PotionEffect potion = PotionUtil.createPotion(potionType, duration, this.grade, true, isEnableParticle);
-            player.addPotionEffect(potion);
             passiveEffectManager.setPassiveEffectCooldown(BuffSaturation.buff, (OfflinePlayer)player, cooldown);
         }
     }

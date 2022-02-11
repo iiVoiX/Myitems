@@ -36,8 +36,6 @@ public class BuffLuck extends PassiveEffect
         if (ServerUtil.isCompatible(VersionNMS.V1_9_R2)) {
             final PotionEffectType potionType = this.getPotion();
             final boolean isEnableParticle = mainConfig.isMiscEnableParticlePotion();
-            final PotionEffect potion = PotionUtil.createPotion(potionType, 96000, this.grade, true, isEnableParticle);
-            player.addPotionEffect(potion);
         }
     }
 }

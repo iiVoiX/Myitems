@@ -141,8 +141,6 @@ public class AbilityWeaponVenomSpread extends AbilityWeapon implements AbilityWe
             final Collection<Player> players = (Collection<Player>)PlayerUtil.getNearbyPlayers(location, mainConfig.getEffectRange());
             final PotionEffectType potionType = PotionUtil.getPoisonType(victims);
             final int amplifier = potionType.equals((Object)PotionEffectType.WITHER) ? 3 : 2;
-            final PotionEffect potion = PotionUtil.createPotion(potionType, duration, amplifier);
-            victims.addPotionEffect(potion);
             Bridge.getBridgeParticle().playParticle((Collection)players, ParticleEnum.SLIME, location, 40, 0.25, 0.5, 0.25, 0.0);
             Bridge.getBridgeSound().playSound((Collection)players, location, SoundEnum.BLOCK_SLIME_HIT, 5.0f, 1.0f);
             new BukkitRunnable() {
@@ -169,8 +167,6 @@ public class AbilityWeaponVenomSpread extends AbilityWeapon implements AbilityWe
                         if (!unit.equals(attacker) && !unit.equals(victims)) {
                             final PotionEffectType potionType = PotionUtil.getPoisonType(victims);
                             final int grade = potionType.equals((Object)PotionEffectType.WITHER) ? 3 : 2;
-                            final PotionEffect potion = PotionUtil.createPotion(potionType, grade, duration);
-                            unit.addPotionEffect(potion);
                             CombatUtil.areaDamage(attacker, unit, spreadDamage);
                         }
                     }
