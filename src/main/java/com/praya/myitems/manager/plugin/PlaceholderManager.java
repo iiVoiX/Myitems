@@ -13,10 +13,10 @@ import api.praya.myitems.builder.passive.PassiveEffectEnum;
 import api.praya.myitems.builder.power.PowerClickEnum;
 import api.praya.myitems.builder.power.PowerEnum;
 import api.praya.myitems.builder.power.PowerSpecialEnum;
-import com.praya.agarthalib.AgarthaLib;
 import com.praya.agarthalib.utility.*;
 import com.praya.myitems.MyItems;
 import com.praya.myitems.builder.handler.HandlerManager;
+import com.praya.myitems.builder.placeholder.ReplacerMVDWPlaceholderAPIBuild;
 import com.praya.myitems.builder.placeholder.ReplacerPlaceholderAPIBuild;
 import com.praya.myitems.config.plugin.PlaceholderConfig;
 import com.praya.myitems.manager.game.*;
@@ -63,9 +63,14 @@ public class PlaceholderManager extends HandlerManager {
     }
 
     public final void registerAll() {
-        final AgarthaLib agarthaLibAPI = AgarthaLib.getPlugin(AgarthaLib.class);
-            if (agarthaLibAPI.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")){
-            new ReplacerPlaceholderAPIBuild().register();
+        final AgarthaLibAPI agarthaLibAPI = AgarthaLibAPI.getInstance();
+        final SupportManagerAPI supportManagerAPI = agarthaLibAPI.getPluginManagerAPI().getSupportManager();
+        final String placeholder = this.plugin.getPluginPlaceholder();
+        if (supportManagerAPI.isSupportPlaceholderAPI()) {
+            new ReplacerPlaceholderAPIBuild(this.plugin, placeholder).hook();
+        }
+        if (supportManagerAPI.isSupportMVdWPlaceholder()) {
+            new ReplacerMVDWPlaceholderAPIBuild(this.plugin, placeholder).register();
         }
     }
 

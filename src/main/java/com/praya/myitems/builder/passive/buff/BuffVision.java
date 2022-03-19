@@ -6,6 +6,7 @@ package com.praya.myitems.builder.passive.buff;
 
 import api.praya.myitems.builder.passive.PassiveEffectEnum;
 import com.praya.agarthalib.utility.MathUtil;
+import com.praya.agarthalib.utility.PotionUtil;
 import com.praya.myitems.MyItems;
 import com.praya.myitems.builder.abs.PassiveEffect;
 import com.praya.myitems.config.plugin.MainConfig;
@@ -14,6 +15,7 @@ import com.praya.myitems.manager.game.PassiveEffectManager;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class BuffVision extends PassiveEffect {
@@ -42,6 +44,8 @@ public class BuffVision extends PassiveEffect {
             final long cooldown = this.getCooldown();
             final int duration = this.getDuration();
             final boolean isEnableParticle = mainConfig.isMiscEnableParticlePotion();
+            final PotionEffect potion = PotionUtil.createPotion(potionType, duration, this.grade, true, isEnableParticle);
+            player.addPotionEffect(potion);
             passiveEffectManager.setPassiveEffectCooldown(BuffVision.buff, player, cooldown);
         }
     }

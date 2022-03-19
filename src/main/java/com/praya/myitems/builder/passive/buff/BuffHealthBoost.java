@@ -5,12 +5,14 @@
 package com.praya.myitems.builder.passive.buff;
 
 import api.praya.myitems.builder.passive.PassiveEffectEnum;
+import com.praya.agarthalib.utility.PotionUtil;
 import com.praya.myitems.MyItems;
 import com.praya.myitems.builder.abs.PassiveEffect;
 import com.praya.myitems.config.plugin.MainConfig;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -34,6 +36,8 @@ public class BuffHealthBoost extends PassiveEffect {
         final MainConfig mainConfig = MainConfig.getInstance();
         final PotionEffectType potionType = this.getPotion();
         final boolean isEnableParticle = mainConfig.isMiscEnableParticlePotion();
+        final PotionEffect potion = PotionUtil.createPotion(potionType, 96000, this.grade, true, isEnableParticle);
+        player.addPotionEffect(potion);
     }
 
     public final void reset(final Player player) {

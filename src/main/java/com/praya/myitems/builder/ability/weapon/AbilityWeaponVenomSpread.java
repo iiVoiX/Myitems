@@ -22,6 +22,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -134,6 +135,8 @@ public class AbilityWeaponVenomSpread extends AbilityWeapon implements AbilityWe
             final Collection<Player> players = PlayerUtil.getNearbyPlayers(location, mainConfig.getEffectRange());
             final PotionEffectType potionType = PotionUtil.getPoisonType(victims);
             final int amplifier = potionType.equals(PotionEffectType.WITHER) ? 3 : 2;
+            final PotionEffect potion = PotionUtil.createPotion(potionType, duration, amplifier);
+            victims.addPotionEffect(potion);
             Bridge.getBridgeParticle().playParticle(players, ParticleEnum.SLIME, location, 40, 0.25, 0.5, 0.25, 0.0);
             Bridge.getBridgeSound().playSound(players, location, SoundEnum.BLOCK_SLIME_HIT, 5.0f, 1.0f);
             new BukkitRunnable() {
@@ -160,6 +163,8 @@ public class AbilityWeaponVenomSpread extends AbilityWeapon implements AbilityWe
                         if (!unit.equals(attacker) && !unit.equals(victims)) {
                             final PotionEffectType potionType = PotionUtil.getPoisonType(victims);
                             final int grade = potionType.equals(PotionEffectType.WITHER) ? 3 : 2;
+                            final PotionEffect potion = PotionUtil.createPotion(potionType, grade, duration);
+                            unit.addPotionEffect(potion);
                             CombatUtil.areaDamage(attacker, unit, spreadDamage);
                         }
                     }

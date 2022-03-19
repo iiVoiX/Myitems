@@ -101,10 +101,10 @@ Ngọc_Chặn_Đòn_ST:
     Bonus_Base_Block_Amount: 2.5
     Bonus_Scale_Block_Amount: 2.5
   Lores:
-  - "&e▶ &7Ngọc: &eChặn Sát Thương"
-  - "&e▶ &7Tỉ Lệ: &a{success_rate}&8 |&c {failure_rate}"
-  - "&e▶ &7Phân Loại: &b{type_item}"
-  - "&e▶ &7Khảm Ngọc: &a+{block_amount}%"
+    - "&e▶ &7Ngọc: &eChặn Sát Thương"
+    - "&e▶ &7Tỉ Lệ: &a{success_rate}&8 |&c {failure_rate}"
+    - "&e▶ &7Phân Loại: &b{type_item}"
+    - "&e▶ &7Khảm Ngọc: &a+{block_amount}%"
 
 Ngọc_Chặn_Đòn:
   Keylore: "&8- &eTỉ Lệ Chặn Đòn:&a +{block_rate}%"
@@ -119,11 +119,11 @@ Ngọc_Chặn_Đòn:
     Bonus_Base_Block_Rate: 2.5
     Bonus_Scale_Block_Rate: 2.5
   Lores:
-  - "&e▶ &7Ngọc: &eTỉ Lệ Chặn Đòn"
-  - "&e▶ &7Tỉ Lệ: &a{success_rate}&8 |&c {failure_rate}"
-  - "&e▶ &7Phân Loại: &b{type_item}"
-  - "&e▶ &7Khảm Ngọc: &a+{block_rate}%"
-  
+    - "&e▶ &7Ngọc: &eTỉ Lệ Chặn Đòn"
+    - "&e▶ &7Tỉ Lệ: &a{success_rate}&8 |&c {failure_rate}"
+    - "&e▶ &7Phân Loại: &b{type_item}"
+    - "&e▶ &7Khảm Ngọc: &a+{block_rate}%"
+
 Ngọc_Trúng_Thêm:
   Keylore: "&8- &eTỉ Lệ Trúng Thêm:&a +{hit_rate}%"
   Display_Name: "&6Tỉ Lệ Né Tránh &7[&c {grade}&7 ]"
@@ -137,11 +137,11 @@ Ngọc_Trúng_Thêm:
     Bonus_Base_Hit_Rate: 2.5
     Bonus_Scale_Hit_Rate: 2.5
   Lores:
-  - "&e▶ &7Ngọc: &eTỉ Lệ Trúng Thêm"
-  - "&e▶ &7Tỉ Lệ: &a{success_rate}&8 |&c {failure_rate}"
-  - "&e▶ &7Phân Loại: &b{type_item}"
-  - "&e▶ &7Khảm Ngọc: &a+{hit_rate}%"
-  
+    - "&e▶ &7Ngọc: &eTỉ Lệ Trúng Thêm"
+    - "&e▶ &7Tỉ Lệ: &a{success_rate}&8 |&c {failure_rate}"
+    - "&e▶ &7Phân Loại: &b{type_item}"
+    - "&e▶ &7Khảm Ngọc: &a+{hit_rate}%"
+
 Ngọc_Né_Tránh:
   Keylore: "&8- &eTỉ Lệ Né Tránh:&a +{dodge_rate}%"
   Display_Name: "&6Tỉ Lệ Né Tránh &7[&c {grade}&7 ]"
@@ -155,11 +155,11 @@ Ngọc_Né_Tránh:
     Bonus_Base_Dodge_Rate: 2.5
     Bonus_Scale_Dodge_Rate: 2.5
   Lores:
-  - "&e▶ &7Ngọc: &eTỉ Lệ Né Tránh"
-  - "&e▶ &7Tỉ Lệ: &a{success_rate}&8 |&c {failure_rate}"
-  - "&e▶ &7Phân Loại: &b{type_item}"
-  - "&e▶ &7Khảm Ngọc: &a+{dodge_rate}%"
-  
+    - "&e▶ &7Ngọc: &eTỉ Lệ Né Tránh"
+    - "&e▶ &7Tỉ Lệ: &a{success_rate}&8 |&c {failure_rate}"
+    - "&e▶ &7Phân Loại: &b{type_item}"
+    - "&e▶ &7Khảm Ngọc: &a+{dodge_rate}%"
+
 Ngọc_Xuyên_Giáp:
   Keylore: "&8- &aXuyên Giáp: +{penetration}%"
   Display_Name: "&aXuyên Giáp &7[&c {grade}&7 ]"
@@ -173,11 +173,11 @@ Ngọc_Xuyên_Giáp:
     Bonus_Base_Penetration: 2.5
     Bonus_Scale_Penetration: 2.5
   Lores:
-  - "&e▶ &7Ngọc: &aXuyên Giáp"
-  - "&e▶ &7Tỉ Lệ: &a{success_rate}&8 |&c {failure_rate}"
-  - "&e▶ &7Phân Loại: &b{type_item}"
-  - "&e▶ &7Khảm Ngọc: &a+{penetration}%"
-  
+    - "&e▶ &7Ngọc: &aXuyên Giáp"
+    - "&e▶ &7Tỉ Lệ: &a{success_rate}&8 |&c {failure_rate}"
+    - "&e▶ &7Phân Loại: &b{type_item}"
+    - "&e▶ &7Khảm Ngọc: &a+{penetration}%"
+
 Ngọc_Phòng_Thủ:
   Keylore: "&8- &bPhòng Thủ:&a +{additional_defense}%"
   Display_Name: "&bPhòng Thủ &7[&c {grade}&7 ]"
@@ -191,11 +191,11 @@ Ngọc_Phòng_Thủ:
     Bonus_Base_Additional_Defense: 2.5
     Bonus_Scale_Additional_Defense: 2.5
   Lores:
-  - "&e▶ &7Ngọc: &bPhòng Thủ"
-  - "&e▶ &7Tỉ Lệ: &a{success_rate}&8 |&c {failure_rate}"
-  - "&e▶ &7Phân Loại: &b{type_item}"
-  - "&e▶ &7Khảm Ngọc: &a+{additional_defense}%"
-  
+    - "&e▶ &7Ngọc: &bPhòng Thủ"
+    - "&e▶ &7Tỉ Lệ: &a{success_rate}&8 |&c {failure_rate}"
+    - "&e▶ &7Phân Loại: &b{type_item}"
+    - "&e▶ &7Khảm Ngọc: &a+{additional_defense}%"
+
 Ngọc_Tỉ_Lệ_Bạo_Kích:
   Keylore: "&8- &cTỉ Lệ Chí Mạng:&a +{critical_chance}%"
   Display_Name: "&cTỉ Lệ Chí Mạng &7[&c {grade}&7 ]"
@@ -209,11 +209,11 @@ Ngọc_Tỉ_Lệ_Bạo_Kích:
     Bonus_Base_Critical_Chance: 2.5
     Bonus_Scale_Critical_Chance: 2.5
   Lores:
-  - "&e▶ &7Ngọc: &cTỉ Lệ Chí Mạng"
-  - "&e▶ &7Tỉ Lệ: &a{success_rate}&8 |&c {failure_rate}"
-  - "&e▶ &7Phân Loại: &b{type_item}"
-  - "&e▶ &7Khảm Ngọc: &a+{critical_chance}%"
-  
+    - "&e▶ &7Ngọc: &cTỉ Lệ Chí Mạng"
+    - "&e▶ &7Tỉ Lệ: &a{success_rate}&8 |&c {failure_rate}"
+    - "&e▶ &7Phân Loại: &b{type_item}"
+    - "&e▶ &7Khảm Ngọc: &a+{critical_chance}%"
+
 Ngọc_Sát_Thương_Bạo_Kích:
   Keylore: "&8- &4Sát Thương Chí Mạng:&a +{critical_damage}%"
   Display_Name: "&4Sát Thương Chí Mạng &7[&c {grade}&7 ]"
@@ -228,11 +228,11 @@ Ngọc_Sát_Thương_Bạo_Kích:
     Bonus_Base_Critical_Damage: 2.5
     Bonus_Scale_Critical_Damage: 2.5
   Lores:
-  - "&e▶ &7Ngọc: &4Sát Thương Chí Mạng"
-  - "&e▶ &7Tỉ Lệ: &a{success_rate}&8 |&c {failure_rate}"
-  - "&e▶ &7Phân Loại: &b{type_item}"
-  - "&e▶ &7Khảm Ngọc: &a+{critical_damage}%"
-  
+    - "&e▶ &7Ngọc: &4Sát Thương Chí Mạng"
+    - "&e▶ &7Tỉ Lệ: &a{success_rate}&8 |&c {failure_rate}"
+    - "&e▶ &7Phân Loại: &b{type_item}"
+    - "&e▶ &7Khảm Ngọc: &a+{critical_damage}%"
+
 Ngọc_Sát_Thương:
   Keylore: "&8- &6Sát Thương:&a +{additional_damage}%"
   Display_Name: "&6Sát Thương &7[&c {grade}&7 ]"
@@ -247,7 +247,7 @@ Ngọc_Sát_Thương:
     Bonus_Base_Additional_Damage: 2.5
     Bonus_Scale_Additional_Damage: 2.5
   Lores:
-  - "&e▶ &7Ngọc: &6Sát Thương"
-  - "&e▶ &7Tỉ Lệ: &a{success_rate}&8 |&c {failure_rate}"
-  - "&e▶ &7Phân Loại: &b{type_item}"
-  - "&e▶ &7Khảm Ngọc: &a+{additional_damage}%"
+    - "&e▶ &7Ngọc: &6Sát Thương"
+    - "&e▶ &7Tỉ Lệ: &a{success_rate}&8 |&c {failure_rate}"
+    - "&e▶ &7Phân Loại: &b{type_item}"
+    - "&e▶ &7Khảm Ngọc: &a+{additional_damage}%"

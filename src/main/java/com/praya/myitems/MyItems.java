@@ -10,7 +10,7 @@ import com.praya.agarthalib.utility.ServerUtil;
 import com.praya.myitems.command.*;
 import com.praya.myitems.listener.custom.*;
 import com.praya.myitems.listener.main.*;
-import com.praya.myitems.listener.support.ListenerPlayerHealthMaxChange;
+import com.praya.myitems.listener.support.*;
 import com.praya.myitems.manager.game.GameManager;
 import com.praya.myitems.manager.player.PlayerManager;
 import com.praya.myitems.manager.plugin.PluginManager;
@@ -27,7 +27,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
-import java.util.logging.Level;
 
 public class MyItems extends JavaPlugin implements Agartha {
     private final String type = "Premium";
@@ -265,15 +264,25 @@ public class MyItems extends JavaPlugin implements Agartha {
             ServerEventUtil.registerEvent(this, listenerBlockExplode);
             ServerEventUtil.registerEvent(this, listenerPlayerSwapHandItems);
         }
+        if (PluginUtil.isPluginInstalled("SkillAPI")) {
+            final Listener listenerPlayerLevelUp = new ListenerPlayerLevelUp(this);
+            ServerEventUtil.registerEvent(this, listenerPlayerLevelUp);
+        }
         if (PluginUtil.isPluginInstalled("MythicMobs")) {
-          /*  final Listener listenerMythicMobSpawn = (Listener)new ListenerMythicMobSpawn(this);
-            final Listener listenerMythicMobDeath = (Listener)new ListenerMythicMobDeath(this);
-            // TODO Add MythicMobs Support
-            ServerEventUtil.registerEvent((Plugin)this, listenerMythicMobSpawn);
-            ServerEventUtil.registerEvent((Plugin)this, listenerMythicMobDeath);
-
-           */
-            getLogger().log(Level.INFO, "MythicMobs Support will be add soon");
+            final Listener listenerMythicMobSpawn = new ListenerMythicMobSpawn(this);
+            final Listener listenerMythicMobDeath = new ListenerMythicMobDeath(this);
+            ServerEventUtil.registerEvent(this, listenerMythicMobSpawn);
+            ServerEventUtil.registerEvent(this, listenerMythicMobDeath);
+        }
+        if (PluginUtil.isPluginInstalled("LifeEssence")) {
+            final Listener listenerPlayerHealthRegenChange = new ListenerPlayerHealthRegenChange(this);
+            ServerEventUtil.registerEvent(this, listenerPlayerHealthRegenChange);
+        }
+        if (PluginUtil.isPluginInstalled("CombatStamina")) {
+            final Listener listenerPlayerStaminaMaxChange = new ListenerPlayerStaminaMaxChange(this);
+            final Listener listenerPlayerStaminaRegenChange = new ListenerPlayerStaminaRegenChange(this);
+            ServerEventUtil.registerEvent(this, listenerPlayerStaminaMaxChange);
+            ServerEventUtil.registerEvent(this, listenerPlayerStaminaRegenChange);
         }
     }
 

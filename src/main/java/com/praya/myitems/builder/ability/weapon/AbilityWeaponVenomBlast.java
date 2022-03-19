@@ -23,6 +23,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -137,8 +138,10 @@ public class AbilityWeaponVenomBlast extends AbilityWeapon implements AbilityWea
             final int limit = 4;
             final int duration = this.getEffectDuration(grade);
             final int amplifier = potionType.equals(PotionEffectType.WITHER) ? 2 : 1;
+            final PotionEffect potion = PotionUtil.createPotion(potionType, duration, amplifier);
             final Set<LivingEntity> units = new HashSet<LivingEntity>();
             final Collection<Player> players = PlayerUtil.getNearbyPlayers(location, mainConfig.getEffectRange());
+            victims.addPotionEffect(potion);
             new BukkitRunnable() {
                 int time = 0;
                 double radius = 3.0;
@@ -166,6 +169,8 @@ public class AbilityWeaponVenomBlast extends AbilityWeapon implements AbilityWea
                             if (!unit2.equals(attacker) && !unit2.equals(victims) && !units.contains(unit2)) {
                                 final PotionEffectType potionType = PotionUtil.getPoisonType(unit2);
                                 final int amplifier = potionType.equals(PotionEffectType.WITHER) ? 2 : 1;
+                                final PotionEffect potion = PotionUtil.createPotion(potionType, duration, amplifier);
+                                unit2.addPotionEffect(potion);
                                 CombatUtil.areaDamage(attacker, unit2, spreadDamage);
                                 units.add(unit2);
                             }

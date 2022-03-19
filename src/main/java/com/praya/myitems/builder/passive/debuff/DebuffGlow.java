@@ -5,11 +5,13 @@
 package com.praya.myitems.builder.passive.debuff;
 
 import api.praya.myitems.builder.passive.PassiveEffectEnum;
+import com.praya.agarthalib.utility.PotionUtil;
 import com.praya.agarthalib.utility.ServerUtil;
 import com.praya.myitems.builder.abs.PassiveEffect;
 import com.praya.myitems.config.plugin.MainConfig;
 import core.praya.agarthalib.enums.main.VersionNMS;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class DebuffGlow extends PassiveEffect {
@@ -33,6 +35,8 @@ public class DebuffGlow extends PassiveEffect {
         if (ServerUtil.isCompatible(VersionNMS.V1_9_R2)) {
             final PotionEffectType potionType = this.getPotion();
             final boolean isEnableParticle = mainConfig.isMiscEnableParticlePotion();
+            final PotionEffect potion = PotionUtil.createPotion(potionType, 96000, this.grade, true, isEnableParticle);
+            player.addPotionEffect(potion);
         }
     }
 }

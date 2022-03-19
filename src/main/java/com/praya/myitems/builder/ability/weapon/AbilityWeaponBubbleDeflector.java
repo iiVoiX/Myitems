@@ -7,6 +7,7 @@ package com.praya.myitems.builder.ability.weapon;
 import api.praya.myitems.builder.ability.*;
 import com.praya.agarthalib.utility.CombatUtil;
 import com.praya.agarthalib.utility.PlayerUtil;
+import com.praya.agarthalib.utility.PotionUtil;
 import com.praya.agarthalib.utility.ProjectileUtil;
 import com.praya.myitems.MyItems;
 import com.praya.myitems.config.plugin.MainConfig;
@@ -22,6 +23,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -134,8 +137,10 @@ public class AbilityWeaponBubbleDeflector extends AbilityWeapon implements Abili
             final int duration = this.getEffectDuration(grade);
             final double range = 1.5;
             final double bubbleDamage = this.getCastBonusDamage(grade) + damage * (this.getCastPercentDamage(grade) / 100.0);
+            final PotionEffect potionEffect = PotionUtil.createPotion(PotionEffectType.SLOW, duration, 4);
             final Set<LivingEntity> units = new HashSet<LivingEntity>();
             final Collection<Player> players = PlayerUtil.getNearbyPlayers(location, mainConfig.getEffectRange());
+            victims.addPotionEffect(potionEffect);
             Bridge.getBridgeParticle().playParticle(players, ParticleEnum.WATER_SPLASH, location, 40, 0.25, 0.25, 0.25, 0.0);
             Bridge.getBridgeParticle().playParticle(players, ParticleEnum.WATER_WAKE, location, 40, 0.25, 0.25, 0.25, 0.0);
             Bridge.getBridgeSound().playSound(players, location, SoundEnum.ENTITY_GUARDIAN_FLOP, 5.0f, 1.0f);
@@ -150,6 +155,7 @@ public class AbilityWeaponBubbleDeflector extends AbilityWeapon implements Abili
                     for (final LivingEntity unit : CombatUtil.getNearbyUnits(location, 1.5)) {
                         if (!unit.equals(attacker) && !unit.equals(victims) && !units.contains(unit)) {
                             CombatUtil.areaDamage(attacker, unit, bubbleDamage);
+                            unit.addPotionEffect(potionEffect);
                             units.add(unit);
                         }
                     }
