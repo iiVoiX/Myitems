@@ -13,7 +13,6 @@
 
     <properties>
         <java.version>8</java.version>
-        <devbuild.version>Build 1</devbuild.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
